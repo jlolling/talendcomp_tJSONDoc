@@ -1,0 +1,28 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+      org.talend.core.model.utils.NodeUtil
+		java.util.List
+	" 
+%>
+<% 
+   CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+   INode node = (INode) codeGenArgument.getArgument();
+   String cid = node.getUniqueName();	
+   String outputColumn = ElementParameterParser.getValue(node, "__JSON_OUTPUT_COLUMN__"); 
+	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
+	String outgoingConnName = null;
+	if (outConns != null && outConns.isEmpty() == false) {
+    	IConnection outConn = outConns.get(0);
+    	outgoingConnName = outConn.getName();
+	}
+%>
+<% if (outgoingConnName != null && outputColumn != null) { %>
+	} // close loop from <%=cid%>
+<% } %>
+		 
+	

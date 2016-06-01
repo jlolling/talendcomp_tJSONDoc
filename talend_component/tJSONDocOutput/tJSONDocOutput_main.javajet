@@ -1,0 +1,156 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List 
+		java.util.ArrayList 
+    	java.util.Map		
+	" 
+%>
+<% 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	IConnection conn = null;
+	if (node.getIncomingConnections().size() > 0) {
+		conn = node.getIncomingConnections().get(0);
+	}
+	List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>(); // dummy
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if (metadatas != null && metadatas.size() > 0) {
+    	IMetadataTable metadata = metadatas.get(0);
+    	if (metadata != null) {
+    		listColumns = metadata.getListColumns();
+		}
+	}
+	@SuppressWarnings("unchecked")	
+	List<Map<String, String>> configList = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__COLUMN_CONFIG__");
+   String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+   String jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
+   if (jsonPath == null || jsonPath.trim().isEmpty()) {
+		jsonPath = "null";
+   }
+   String outputType = ElementParameterParser.getValue(node, "__OUTPUT_STRUCTURE__");
+%>
+	if (globalMap.get("<%=cid%>") == null || (globalMap.get("<%=cid%>") != globalMap.get("<%=docComp%>"))) {
+		try {
+			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+			globalMap.put("<%=cid%>", <%=cid%>);
+			// get the parent object we have to dock on
+	   	    com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
+	   	    String jsonPath_<%=cid%> = <%=jsonPath%>;
+<% if (outputType.startsWith("ARRAY_")) { %>
+	   	    // take care the path will be created as array
+			if (jsonPath_<%=cid%> == null) {
+				jsonPath_<%=cid%> = "[]";
+			} else if (jsonPath_<%=cid%>.endsWith("]") == false) {
+				jsonPath_<%=cid%> = jsonPath_<%=cid%> + "[]";
+			}
+			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath_<%=cid%>, true);
+			com.fasterxml.jackson.databind.node.ArrayNode parentNode_<%=cid%> = null;
+			if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
+				parentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ArrayNode) node;
+			} else {
+				throw new Exception("Actually an ArrayNode is expected, but there is already an ObjectNode at the path: " + jsonPath_<%=cid%> + ". Check the configuration.");
+			}
+<% } else { %>
+			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath_<%=cid%>, true);
+			com.fasterxml.jackson.databind.node.ObjectNode parentNode_<%=cid%> = null;
+			if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
+				parentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ObjectNode) node;
+			} else {
+				throw new Exception("Actually an ObjectNode is expected, but there is already an ArrayNode at the path: " + jsonPath_<%=cid%> + ". Check the configuration.");
+			}
+<% } %>
+			globalMap.put("parent_node_<%=cid%>", parentNode_<%=cid%>);
+			globalMap.put("<%=cid%>_NB_LINE", 0);
+		} catch (Exception e) {
+			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+			throw e;
+		}
+   }	
+	try { // start block for <%=cid%>
+		// get the parent node
+<% if ("ARRAY_OF_OBJECTS".equals(outputType)) { %>
+        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+        com.fasterxml.jackson.databind.node.ArrayNode parentNode = null;
+		if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
+			parentNode = (com.fasterxml.jackson.databind.node.ArrayNode) node;
+		} else {
+			throw new Exception("Actually as parent an ArrayNode is expected, but there is already an ObjectNode from the component: " + <%=cid%> + ". Check the configuration.");
+		}
+		com.fasterxml.jackson.databind.node.ObjectNode currentNode = parentNode.addObject();
+<% } else if ("ARRAY_OF_VALUES".equals(outputType)) { %>
+        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+        com.fasterxml.jackson.databind.node.ArrayNode currentNode = null;
+		if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
+			currentNode = (com.fasterxml.jackson.databind.node.ArrayNode) node;
+		} else {
+			throw new Exception("Actually as parent an ArrayNode is expected, but there is already an ObjectNode from the component: " + <%=cid%> + ". Check the configuration.");
+		}
+<% } else if ("SINGLE_OBJECT".equals(outputType)) { %>
+        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+        com.fasterxml.jackson.databind.node.ObjectNode currentNode = null;
+		if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
+			currentNode = (com.fasterxml.jackson.databind.node.ObjectNode) node;
+		} else {
+			throw new Exception("Actually as parent an ObjectNode is expected, but there is already an ArrayNode from the component: " + <%=cid%> + ". Check the configuration.");
+		}
+<% }
+   for (int i = 0; i < listColumns.size(); i++) {
+		IMetadataColumn mc = listColumns.get(i);
+		Map<String, String> config = configList.get(i);
+		String fieldName = config.get("ATTRIBUTE_ALIAS");
+		if (fieldName == null || fieldName.trim().isEmpty() || fieldName.equals("\"\"")) {
+			fieldName = "\"" + mc.getLabel() + "\"";
+		}
+		String pattern = mc.getPattern();
+		String javaClassName = mc.getTalendType().substring(3);
+		boolean isDateValue = javaClassName.contains("Date");
+		boolean isDoc = "true".equals(config.get("IS_DOC"));
+		boolean ignore = "false".equals(config.get("USE"));
+		if (ignore) {
+			continue; // skip over this column
+		}
+		if ("ARRAY_OF_OBJECTS".equals(outputType) || "SINGLE_OBJECT".equals(outputType)) {
+			if (isDoc) {
+				if ("Object".equals(javaClassName)) { %>
+		<%=cid%>.setJsonObject(currentNode, <%=fieldName%>, (com.fasterxml.jackson.databind.JsonNode) <%=conn.getName()%>.<%=mc.getLabel()%>);
+<%   		   } else if ("String".equals(javaClassName)) { %>
+		<%=cid%>.setJsonObject(currentNode, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>);
+<%          } else { %>
+		throw new Exception("Misconfiguration in column: <%=mc.getLabel()%>. It must be of type Object (actually JsonNode) or String."); 
+<%          } %>
+<%			} else if (isDateValue) { %>
+		<%=cid%>.setValue(currentNode, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>);
+<%			} else { %>
+		<%=cid%>.setValue(currentNode, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>);
+<%			}
+		} else {
+			if (isDoc) {
+				if ("Object".equals(javaClassName)) { %>
+		currentNode.add(<%=cid%>.buildNode((com.fasterxml.jackson.databind.JsonNode) <%=conn.getName()%>.<%=mc.getLabel()%>));
+<%   		   } else if ("String".equals(javaClassName)) { %>
+		currentNode.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
+<%          } else { %>
+		throw new Exception("Misconfiguration in column: <%=mc.getLabel()%>. It must be of type Object (actually JsonNode) or String."); 
+<%          } %>
+<%			} else if (isDateValue) { %>
+		currentNode.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
+<%			} else { %>
+		currentNode.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
+<%			}
+		}
+	}
+%>
+		globalMap.put("<%=cid%>_CURRENT_NODE", currentNode);
+		Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
+		globalMap.put("<%=cid%>_NB_LINE", counter.intValue() + 1);
+	} catch (Exception e) {
+		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+		throw e;
+	}

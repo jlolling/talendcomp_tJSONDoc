@@ -1,0 +1,46 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	" 
+%>
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();	
+    boolean createEmptyDocument = "true".equals(ElementParameterParser.getValue(node, "__CREATE_EMPTY_DOCUMENT__"));
+    boolean readFromString = "true".equals(ElementParameterParser.getValue(node, "__READ_FROM_STRING__"));
+    String jsonString = ElementParameterParser.getValue(node, "__JSON_CONTENT__");
+    if (jsonString  != null) {
+    	jsonString = jsonString .trim().replace('\r', ' ').replace("\n", "\\n\" +\n\"");
+    } else {
+    	jsonString = "null"; 
+    }
+    String file = ElementParameterParser.getValue(node, "__FILENAME__");
+    if (file == null || file.trim().isEmpty()) {
+    	 file = "null";
+    }
+    boolean rootIsArray = "true".equals(ElementParameterParser.getValue(node, "__ROOT_IS_ARRAY__"));
+%>
+   try {
+<%  if (createEmptyDocument) { %>   
+		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(<%=rootIsArray%>); 
+<%  } else if (readFromString) { %>
+		String jsonContent = <%=jsonString%>;
+		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(jsonContent, <%=rootIsArray%>); 
+<%  } else { %>
+		String filePath = <%=file%>;
+		java.io.File jsonFile = null;
+		if (filePath != null && filePath.trim().isEmpty() == false) {
+			jsonFile = new java.io.File(filePath);
+		}
+		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(jsonFile, <%=rootIsArray%>); 
+<%  } %>
+		globalMap.put("<%=cid%>", <%=cid%>);
+		globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getRootNode());
+		globalMap.put("<%=cid%>_ROOT_NODE", <%=cid%>.getRootNode());
+   } catch (Exception e) {
+   	globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+   	throw e;
+   }

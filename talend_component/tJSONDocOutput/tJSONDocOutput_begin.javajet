@@ -1,0 +1,55 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	" 
+%>
+<% 
+   CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+   INode node = (INode)codeGenArgument.getArgument();
+   String cid = node.getUniqueName();
+   String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+   String jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
+   if (jsonPath == null || jsonPath.trim().isEmpty()) {
+		jsonPath = "null";
+   }
+   String outputType = ElementParameterParser.getValue(node, "__OUTPUT_STRUCTURE__");
+%>
+	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+	if (<%=cid%> != null) {
+		try {
+			globalMap.put("<%=cid%>", <%=cid%>);
+			// get the parent object we have to dock on
+	   	    com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
+	   	    String jsonPath_<%=cid%> = <%=jsonPath%>;
+<% if (outputType.startsWith("ARRAY_")) { %>
+	   	    // take care the path will be created as array
+			if (jsonPath_<%=cid%> == null) {
+				jsonPath_<%=cid%> = "[]";
+			} else if (jsonPath_<%=cid%>.endsWith("]") == false) {
+				jsonPath_<%=cid%> = jsonPath_<%=cid%> + "[]";
+			}
+			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath_<%=cid%>, true);
+			com.fasterxml.jackson.databind.node.ArrayNode parentNode_<%=cid%> = null;
+			if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
+				parentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ArrayNode) node;
+			} else {
+				throw new Exception("Actually an ArrayNode is expected, but there is already an ObjectNode at the path: " + jsonPath_<%=cid%> + ". Check the configuration.");
+			}
+	<% } else { %>
+			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath_<%=cid%>, true);
+			com.fasterxml.jackson.databind.node.ObjectNode parentNode_<%=cid%> = null;
+			if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
+				parentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ObjectNode) node;
+			} else {
+				throw new Exception("Actually an ObjectNode is expected, but there is already an ArrayNode at the path: " + jsonPath_<%=cid%> + ". Check the configuration.");
+			}			
+	<% } %>
+			globalMap.put("parent_node_<%=cid%>", parentNode_<%=cid%>);
+			globalMap.put("<%=cid%>_NB_LINE", 0);
+		} catch (Exception e) {
+			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+			throw e;
+		} 
+   }
