@@ -89,7 +89,7 @@ public class Test2 {
 	}
 
 	public static void testBuildJson() throws Exception {
-		JsonDocument doc = new JsonDocument(json, false);
+		JsonDocument doc = new JsonDocument(json);
 		System.out.println(doc.toString());
 		JsonNode startNode = doc.getNode("$.store.book[2]");
 		System.out.println(startNode.toString());

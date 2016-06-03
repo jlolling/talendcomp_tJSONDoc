@@ -15,7 +15,6 @@
  */
 package de.cimt.talendcomp.json;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,6 +59,7 @@ public class JsonDocument {
             .mappingProvider(new JacksonMappingProvider())
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
+	private Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
 	
 	public JsonDocument(boolean isArray) {
 		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
@@ -74,16 +75,12 @@ public class JsonDocument {
 		}
 	}
 
-	public JsonDocument(String jsonContent, boolean isArray) {
+	public JsonDocument(String jsonContent) {
 		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
 			rootContext = parseContext.parse(jsonContent);
 		} else { 
-			if (isArray) {
-				rootContext = parseContext.parse("[]");
-			} else {
-				rootContext = parseContext.parse("{}");
-			}
+			throw new IllegalArgumentException("Json input content cannot be empty or null");
 		}
 		rootNode = rootContext.read("$");
 		JsonNode testNode = rootContext.read("$");
@@ -92,7 +89,7 @@ public class JsonDocument {
 		}
 	}
 	
-	public JsonDocument(File jsonFile, boolean isArray) throws Exception {
+	public JsonDocument(File jsonFile) throws Exception {
 		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 		if (jsonFile != null) {
 			if (jsonFile.exists() == false) {
@@ -102,11 +99,7 @@ public class JsonDocument {
 			rootContext = parseContext.parse(in);
 			// parseContext closes this stream
 		} else { 
-			if (isArray) {
-				rootContext = parseContext.parse("[]");
-			} else {
-				rootContext = parseContext.parse("{}");
-			}
+			throw new IllegalArgumentException("Json input input file cannot be null!");
 		}
 		rootNode = rootContext.read("$");
 		JsonNode testNode = rootContext.read("$");
@@ -240,6 +233,15 @@ public class JsonDocument {
 		}
 	}
 
+	private JsonPath getCompiledJsonPath(String jsonPathStr) {
+		JsonPath compiledPath = compiledPathMap.get(jsonPathStr);
+		if (compiledPath == null) {
+			compiledPath = JsonPath.compile(jsonPathStr);
+			compiledPathMap.put(jsonPathStr, compiledPath);
+		}
+		return compiledPath;
+	}
+	
 	/**
 	 * returns the node start from the root
 	 * @param jsonPath
@@ -247,7 +249,9 @@ public class JsonDocument {
 	 */
 	public JsonNode getNode(String jsonPath) {
 		try {
-			JsonNode node = rootContext.read(jsonPath);
+			JsonPath compiledPath = getCompiledJsonPath(jsonPath);
+			rootContext.read(compiledPath);
+			JsonNode node = rootContext.read(compiledPath);
 			if (node.isMissingNode()) {
 				return null;
 			} else {
@@ -291,6 +295,9 @@ public class JsonDocument {
 	public JsonNode getNode(JsonNode parentNode, String jsonPath, boolean create) {
 		if (parentNode == null) {
 			parentNode = rootNode;
+		}
+		if (create == false && parentNode == rootNode && jsonPath.startsWith("$")) {
+			return getNode(jsonPath);
 		}
 		JsonNode childNode = null;
 		if (jsonPath == null || jsonPath.trim().isEmpty() || jsonPath.trim().equals(".")) {
@@ -344,7 +351,7 @@ public class JsonDocument {
 		return rootNode;
 	}
 	
-	public String getDateString(Date value, String pattern) {
+	public String formatDate(Date value, String pattern) {
 		if (value == null) {
 			return null;
 		}
@@ -357,6 +364,21 @@ public class JsonDocument {
 			dateFormatMap.put(pattern, sdf);
 		}
 		return sdf.format(value);
+	}
+
+	public Date parseDate(String value, String pattern) throws ParseException {
+		if (value == null) {
+			return null;
+		}
+		if (pattern == null || pattern.trim().isEmpty()) {
+			pattern = DEFAULT_DATE_PATTERN;
+		}
+		SimpleDateFormat sdf = dateFormatMap.get(pattern);
+		if (sdf == null) {
+			sdf = new SimpleDateFormat(pattern);
+			dateFormatMap.put(pattern, sdf);
+		}
+		return sdf.parse(value);
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, String value) {
@@ -420,19 +442,11 @@ public class JsonDocument {
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, Date value, String pattern) {
-		node.put(fieldName, getDateString(value, pattern));
+		node.put(fieldName, formatDate(value, pattern));
 		return node;
 	}
 	
-	public JsonNode buildNode(JsonNode value) throws Exception {
-		if (value instanceof JsonNode) {
-			return (JsonNode) value;
-		} else {
-			return null;
-		}
-	}
-
-	public JsonNode buildNode(String value) throws Exception {
+	private JsonNode buildNode(Object value) throws Exception {
 		if (value instanceof String) {
 			String jsonString = (String) value;
 			if (jsonString == null || jsonString.trim().isEmpty()) {
@@ -440,6 +454,8 @@ public class JsonDocument {
 			} else {
 				return objectMapper.readTree(jsonString);
 			}
+		} else if (value instanceof JsonNode) {
+			return (JsonNode) value;
 		} else {
 			return null;
 		}
@@ -474,6 +490,193 @@ public class JsonDocument {
 			if (br != null) {
 				br.close();
 			}
+		}
+	}
+	
+	public JsonNode getValueAsObject(JsonNode node, String fieldName, boolean isNullable, Object dummy) throws Exception {
+		if (node != null) {
+			JsonNode valueNode = null;
+			if (".".equals(fieldName)) {
+				valueNode = node;
+			} else {
+				valueNode = node.get(fieldName);
+			}
+			if (valueNode != null && valueNode.isMissingNode() == false) {
+				return valueNode;
+			} else if (isNullable == false) {
+				throw new Exception("Mandatory attribute: " + fieldName + " is empty or does not exists.");
+			}
+		} else if (isNullable == false) {
+			throw new Exception("Parent node does not exists.");
+		}
+		return null;
+	}
+	
+	public String getArrayValuesAsChain(ArrayNode arrayNode) {
+		StringBuilder sb = new StringBuilder();
+		if (arrayNode != null) {
+			boolean firstLoop = true;
+			for (JsonNode valueNode : arrayNode.elements().next()) {
+				if (valueNode.isValueNode()) {
+					String value = valueNode.asText();
+					if (value != null && value.isEmpty() == false) {
+						if (firstLoop) {
+							firstLoop = false;
+						} else {
+							sb.append(",");
+						}
+						sb.append(value);
+					}
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
+	public List<JsonNode> getArrayValuesAsList(ArrayNode arrayNode) {
+		List<JsonNode> result = new ArrayList<JsonNode>();
+		if (arrayNode != null) {
+			for (JsonNode childNode : arrayNode) {
+				result.add(childNode);
+			}
+		}
+		return result;
+	}
+	
+	public List<JsonNode> getArrayValuesAsList(ObjectNode objectNode) {
+		List<JsonNode> result = new ArrayList<JsonNode>();
+		if (objectNode != null) {
+			result.add(objectNode);
+		}
+		return result;
+	}
+
+	public String getValueAsString(JsonNode node, String fieldName, boolean isNullable, String defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			if (valueNode.isArray()) {
+				return getArrayValuesAsChain((ArrayNode) valueNode);
+			} else {
+				if (valueNode.isValueNode()) {
+					return valueNode.asText();
+				} else {
+					return valueNode.toString();
+				}
+			}
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
+		}
+	}
+
+	public Boolean getValueAsBoolean(JsonNode node, String fieldName, boolean isNullable, Boolean defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return valueNode.asBoolean();
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
+		}
+	}
+
+	public Integer getValueAsInteger(JsonNode node, String fieldName, boolean isNullable, Integer defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return valueNode.asInt();
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
+		}
+	}
+
+	public Long getValueAsLong(JsonNode node, String fieldName, boolean isNullable, Long defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return valueNode.asLong();
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
+		}
+	}
+
+	public Double getValueAsDouble(JsonNode node, String fieldName, boolean isNullable, Double defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return valueNode.asDouble();
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
+		}
+	}
+
+	public Float getValueAsFloat(JsonNode node, String fieldName, boolean isNullable, Float defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return (float) valueNode.asDouble();
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
+		}
+	}
+
+	public Short getValueAsShort(JsonNode node, String fieldName, boolean isNullable, Short defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return (short) valueNode.asInt();
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
+		}
+	}
+
+	public BigDecimal getValueAsBigDecimal(JsonNode node, String fieldName, boolean isNullable, BigDecimal defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return new BigDecimal(valueNode.asDouble());
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
+		}
+	}
+
+	public BigDecimal getValueAsBigDecimal(JsonNode node, String fieldName, boolean isNullable, Double defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return new BigDecimal(valueNode.asDouble());
+		} else if (defaultValue != null) {
+			return new BigDecimal(defaultValue);
+		} else {
+			return null;
+		}
+	}
+
+	public BigInteger getValueAsBigInteger(JsonNode node, String fieldName, boolean isNullable, BigInteger defaultValue) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return valueNode.bigIntegerValue();
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
+		}
+	}
+
+	public Date getValueAsDate(JsonNode node, String fieldName, boolean isNullable, Date defaultValue, String pattern) throws Exception {
+		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+		if (valueNode != null) {
+			return parseDate(valueNode.asText(), pattern);
+		} else if (defaultValue != null) {
+			return defaultValue;
+		} else {
+			return null;
 		}
 	}
 

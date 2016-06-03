@@ -21,7 +21,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<version>1.0</version>
 	<name>JSON Builder</name>
 	<dependencies>
 		<dependency>
@@ -50,6 +49,24 @@
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.12</version>
+		    <scope>test</scope>
+		</dependency>
+        <dependency>
+		    <groupId>de.cimt.talendcomp.test</groupId>
+		    <artifactId>talend-fake-job</artifactId>
+		    <version>0.9</version>
+		    <scope>test</scope>
+		</dependency>
 	</dependencies>
 	<artifactId>de.cimt.talendcomp.json</artifactId>
+	<version>2.0</version>
 </project>

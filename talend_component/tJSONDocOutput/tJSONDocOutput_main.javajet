@@ -5,6 +5,8 @@
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn 
 		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List 
 		java.util.ArrayList 
@@ -16,8 +18,9 @@
 	INode node = (INode) codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	IConnection conn = null;
-	if (node.getIncomingConnections().size() > 0) {
-		conn = node.getIncomingConnections().get(0);
+	List<? extends IConnection> inConns = NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA);
+	if (inConns.size() > 0) {
+		conn = inConns.get(0);
 	}
 	List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>(); // dummy
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -41,10 +44,10 @@
 			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 			globalMap.put("<%=cid%>", <%=cid%>);
 			// get the parent object we have to dock on
-	   	    com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
-	   	    String jsonPath_<%=cid%> = <%=jsonPath%>;
+	   	com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
+	   	String jsonPath_<%=cid%> = <%=jsonPath%>;
 <% if (outputType.startsWith("ARRAY_")) { %>
-	   	    // take care the path will be created as array
+	   	// take care the path will be created as array
 			if (jsonPath_<%=cid%> == null) {
 				jsonPath_<%=cid%> = "[]";
 			} else if (jsonPath_<%=cid%>.endsWith("]") == false) {
@@ -85,16 +88,16 @@
 		}
 		com.fasterxml.jackson.databind.node.ObjectNode currentNode = parentNode.addObject();
 <% } else if ("ARRAY_OF_VALUES".equals(outputType)) { %>
-        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
-        com.fasterxml.jackson.databind.node.ArrayNode currentNode = null;
+      com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+      com.fasterxml.jackson.databind.node.ArrayNode currentNode = null;
 		if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
 			currentNode = (com.fasterxml.jackson.databind.node.ArrayNode) node;
 		} else {
 			throw new Exception("Actually as parent an ArrayNode is expected, but there is already an ObjectNode from the component: " + <%=cid%> + ". Check the configuration.");
 		}
 <% } else if ("SINGLE_OBJECT".equals(outputType)) { %>
-        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
-        com.fasterxml.jackson.databind.node.ObjectNode currentNode = null;
+      com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+      com.fasterxml.jackson.databind.node.ObjectNode currentNode = null;
 		if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
 			currentNode = (com.fasterxml.jackson.databind.node.ObjectNode) node;
 		} else {
@@ -133,7 +136,7 @@
 		} else {
 			if (isDoc) {
 				if ("Object".equals(javaClassName)) { %>
-		currentNode.add(<%=cid%>.buildNode((com.fasterxml.jackson.databind.JsonNode) <%=conn.getName()%>.<%=mc.getLabel()%>));
+		currentNode.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
 <%   		   } else if ("String".equals(javaClassName)) { %>
 		currentNode.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
 <%          } else { %>

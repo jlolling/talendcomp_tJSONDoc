@@ -4,7 +4,7 @@
   <groupId>de.cimt.talendcomp</groupId>
   <artifactId>de.cimt.talendcomp.json</artifactId>
   <name>JSON Builder</name>
-  <version>1.0</version>
+  <version>2.0</version>
   <organization>
     <name>cimt AG</name>
   </organization>
@@ -23,5 +23,19 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
 </project>
 
