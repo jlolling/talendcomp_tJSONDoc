@@ -36,34 +36,26 @@
 	<PARAMETERS>
 
 		<PARAMETER 
-			NUM_ROW="20"
-			FIELD="CHECK" 
-			NAME="CREATE_EMPTY_DOCUMENT">
-			<DEFAULT>false</DEFAULT>
+			FIELD="CLOSED_LIST" 
+			NAME="SETUP" 
+			NUM_ROW="10" 
+			REQUIRED="true"
+		>
+	    	<ITEMS DEFAULT="EMPTY_OBJECT">
+	    		<ITEM NAME="EMPTY_OBJECT" VALUE="EMPTY_OBJECT" />
+	    		<ITEM NAME="EMPTY_ARRAY" VALUE="EMPTY_ARRAY" />
+	    		<ITEM NAME="READ_FROM_FLOW" VALUE="READ_FROM_FLOW" />
+	    		<ITEM NAME="READ_FROM_FILE" VALUE="READ_FROM_FILE" />
+	    		<ITEM NAME="READ_FROM_INPUT" VALUE="READ_FROM_INPUT" />
+	    	</ITEMS>
 		</PARAMETER>
 		
-		<PARAMETER 
-			NUM_ROW="20"
-			FIELD="CHECK" 
-			NAME="ROOT_IS_ARRAY"
-			SHOW_IF="CREATE_EMPTY_DOCUMENT == 'true'">
-			<DEFAULT>false</DEFAULT>
-		</PARAMETER>
-		
-		<PARAMETER 
-			NUM_ROW="30"
-			FIELD="CHECK" 
-			NAME="READ_FROM_STRING"
-			SHOW_IF="CREATE_EMPTY_DOCUMENT == 'false'">
-			<DEFAULT>false</DEFAULT>
-		</PARAMETER>
-	    
 	    <PARAMETER 
 	    	NAME="JSON_CONTENT" 
 	    	FIELD="MEMO" 
 	    	NUM_ROW="40" 
 	    	REQUIRED="true"
-	    	SHOW_IF="(CREATE_EMPTY_DOCUMENT == 'false') and (READ_FROM_STRING == 'true')">
+	    	SHOW_IF="SETUP == 'READ_FROM_INPUT'">
 	    	<DEFAULT>"{}"</DEFAULT>
 	    </PARAMETER> 
 		
@@ -73,10 +65,20 @@
 			NAME="FILENAME" 
 			REQUIRED="true" 
 			REPOSITORY_VALUE="FILE_PATH" 
-			SHOW_IF="(CREATE_EMPTY_DOCUMENT == 'false') and (READ_FROM_STRING == 'false')">
+			SHOW_IF="SETUP == 'READ_FROM_FILE'"
+		>
 			<DEFAULT>"/path/to/input_file.json"</DEFAULT>
 		</PARAMETER>
 
+		<PARAMETER 
+			NAME="JSON_INPUT_COLUMN" 
+			FIELD="PREV_COLUMN_LIST"
+			REQUIRED="true" 
+			NUM_ROW="40"
+			SHOW_IF="SETUP == 'READ_FROM_FLOW'"
+		>
+		</PARAMETER>
+		
 	</PARAMETERS>
 
 	<ADVANCED_PARAMETERS>
@@ -84,7 +86,7 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="de.cimt.talendcomp.json" MODULE="de.cimt.talendcomp.json-1.0.jar" REQUIRED="true" />
+			<IMPORT NAME="de.cimt.talendcomp.json" MODULE="de.cimt.talendcomp.json-2.0.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 

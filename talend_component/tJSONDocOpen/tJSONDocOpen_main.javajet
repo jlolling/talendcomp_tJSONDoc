@@ -3,39 +3,56 @@
 		org.talend.core.model.process.INode 
 		org.talend.core.model.process.ElementParameterParser 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
+		java.util.List 
 	" 
 %>
 <% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-    String cid = node.getUniqueName();	
-    boolean createEmptyDocument = "true".equals(ElementParameterParser.getValue(node, "__CREATE_EMPTY_DOCUMENT__"));
-    boolean readFromString = "true".equals(ElementParameterParser.getValue(node, "__READ_FROM_STRING__"));
+    String cid = node.getUniqueName();
+    String setup = ElementParameterParser.getValue(node, "__SETUP__");
     String jsonString = ElementParameterParser.getValue(node, "__JSON_CONTENT__");
     if (jsonString  != null) {
     	jsonString = jsonString .trim().replace('\r', ' ').replace("\n", "\\n\" +\n\"");
     } else {
-    	jsonString = "null"; 
+    	jsonString = "null";
     }
     String file = ElementParameterParser.getValue(node, "__FILENAME__");
     if (file == null || file.trim().isEmpty()) {
     	 file = "null";
     }
-    boolean rootIsArray = "true".equals(ElementParameterParser.getValue(node, "__ROOT_IS_ARRAY__"));
+	IConnection conn = null;
+	List<? extends IConnection> inConns = NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA);
+	if (inConns.size() > 0) {
+		conn = inConns.get(0);
+	}
+	String inputColumnName = null;
+	if (conn != null) {
+		inputColumnName = ElementParameterParser.getValue(node, "__JSON_INPUT_COLUMN__");
+	}
 %>
    try {
-<%  if (createEmptyDocument) { %>   
-		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(<%=rootIsArray%>); 
-<%  } else if (readFromString) { %>
+<%  if ("EMPTY_OBJECT".equals(setup)) { %>   
+		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(false); 
+<%  } else if ("EMPTY_ARRAY".equals(setup)) { %>
+		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(true); 
+<%  } else if ("READ_FROM_INPUT".equals(setup)) { %>
 		String jsonContent = <%=jsonString%>;
-		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(jsonContent, <%=rootIsArray%>); 
-<%  } else { %>
+		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(jsonContent); 
+<%  } else if ("READ_FROM_FLOW".equals(setup)) { 
+        if (inputColumnName != null) { %>
+		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(<%=conn.getName()%>.<%=inputColumnName%>);
+<%  	}
+	} else { %>
 		String filePath = <%=file%>;
 		java.io.File jsonFile = null;
 		if (filePath != null && filePath.trim().isEmpty() == false) {
 			jsonFile = new java.io.File(filePath);
 		}
-		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(jsonFile, <%=rootIsArray%>); 
+		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(jsonFile); 
 <%  } %>
 		globalMap.put("<%=cid%>", <%=cid%>);
 		globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getRootNode());
