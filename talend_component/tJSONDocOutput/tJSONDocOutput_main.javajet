@@ -49,9 +49,9 @@
 <% if (outputType.startsWith("ARRAY_")) { %>
 	   	// take care the path will be created as array
 			if (jsonPath_<%=cid%> == null) {
-				jsonPath_<%=cid%> = "[]";
+				jsonPath_<%=cid%> = "[0]";
 			} else if (jsonPath_<%=cid%>.endsWith("]") == false) {
-				jsonPath_<%=cid%> = jsonPath_<%=cid%> + "[]";
+				jsonPath_<%=cid%> = jsonPath_<%=cid%> + "[0]";
 			}
 			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath_<%=cid%>, true);
 			com.fasterxml.jackson.databind.node.ArrayNode parentNode_<%=cid%> = null;
@@ -79,8 +79,8 @@
 	try { // start block for <%=cid%>
 		// get the parent node
 <% if ("ARRAY_OF_OBJECTS".equals(outputType)) { %>
-        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
-        com.fasterxml.jackson.databind.node.ArrayNode parentNode = null;
+		com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+		com.fasterxml.jackson.databind.node.ArrayNode parentNode = null;
 		if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
 			parentNode = (com.fasterxml.jackson.databind.node.ArrayNode) node;
 		} else {

@@ -38,7 +38,7 @@
 			NAME="JSON_DOCUMENT" 
 			FIELD="COMPONENT_LIST" 
 			NUM_ROW="10"
-			FILTER="REGEXP:^(tJSONDocOutput|tJSONDocOpen)(.)*"
+			FILTER="REGEXP:^(tJSONDocOutput|tJSONDocOpen|tJSONDocInput)(.)*"
 			REQUIRED="true"
 		/>
 

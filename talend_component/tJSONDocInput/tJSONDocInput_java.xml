@@ -88,7 +88,7 @@
 		<PARAMETER 
 			NAME="SCHEMA" 
 			FIELD="SCHEMA_TYPE" 
-			REQUIRED="true" 
+			REQUIRED="false" 
 			NUM_ROW="50">
 			<DEFAULT />
 		</PARAMETER>

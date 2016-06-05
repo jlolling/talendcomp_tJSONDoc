@@ -21,14 +21,14 @@
 		try {
 			globalMap.put("<%=cid%>", <%=cid%>);
 			// get the parent object we have to dock on
-	   	    com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
-	   	    String jsonPath_<%=cid%> = <%=jsonPath%>;
+			com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
+			String jsonPath_<%=cid%> = <%=jsonPath%>;
 <% if (outputType.startsWith("ARRAY_")) { %>
-	   	    // take care the path will be created as array
+			// take care the path will be created as array
 			if (jsonPath_<%=cid%> == null) {
-				jsonPath_<%=cid%> = "[]";
+				jsonPath_<%=cid%> = "[0]";
 			} else if (jsonPath_<%=cid%>.endsWith("]") == false) {
-				jsonPath_<%=cid%> = jsonPath_<%=cid%> + "[]";
+				jsonPath_<%=cid%> = jsonPath_<%=cid%> + "[0]";
 			}
 			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath_<%=cid%>, true);
 			com.fasterxml.jackson.databind.node.ArrayNode parentNode_<%=cid%> = null;
