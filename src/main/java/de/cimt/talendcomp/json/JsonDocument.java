@@ -113,7 +113,7 @@ public class JsonDocument {
 		if (jsonNode != null) {
 			rootContext = parseContext.parse("{}");
 			rootContext.set("$", jsonNode);
-		} else { 
+		} else {
 			if (isArray) {
 				rootContext = parseContext.parse("[]");
 			} else {
@@ -493,10 +493,19 @@ public class JsonDocument {
 		}
 	}
 	
+	/**
+	 * Returns the value of the addressed field
+	 * @param node node containing the field 
+	 * @param fieldName attribute name
+	 * @param isNullable 
+	 * @param dummy only to become compatible with the other methods
+	 * @return if node is an ObjectNode: the value of the attribute, if node is a value node: the node itself, if the fieldName == ".": the node itself
+	 * @throws Exception if iNullable == false and the attribute does not exists or is null or the node is null.
+	 */
 	public JsonNode getValueAsObject(JsonNode node, String fieldName, boolean isNullable, Object dummy) throws Exception {
 		if (node != null) {
 			JsonNode valueNode = null;
-			if (".".equals(fieldName)) {
+			if (fieldName == null || ".".equals(fieldName) || node.isValueNode()) {
 				valueNode = node;
 			} else {
 				valueNode = node.get(fieldName);
@@ -533,24 +542,21 @@ public class JsonDocument {
 		return sb.toString();
 	}
 	
-	public List<JsonNode> getArrayValuesAsList(ArrayNode arrayNode) {
+	public List<JsonNode> getArrayValuesAsList(JsonNode node) {
 		List<JsonNode> result = new ArrayList<JsonNode>();
-		if (arrayNode != null) {
-			for (JsonNode childNode : arrayNode) {
-				result.add(childNode);
+		if (node instanceof ArrayNode) {
+			ArrayNode arrayNode = (ArrayNode) node;
+			if (arrayNode != null) {
+				for (JsonNode childNode : arrayNode) {
+					result.add(childNode);
+				}
 			}
+		} else if (node != null) {
+			result.add(node);
 		}
 		return result;
 	}
 	
-	public List<JsonNode> getArrayValuesAsList(ObjectNode objectNode) {
-		List<JsonNode> result = new ArrayList<JsonNode>();
-		if (objectNode != null) {
-			result.add(objectNode);
-		}
-		return result;
-	}
-
 	public String getValueAsString(JsonNode node, String fieldName, boolean isNullable, String defaultValue) throws Exception {
 		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
 		if (valueNode != null) {

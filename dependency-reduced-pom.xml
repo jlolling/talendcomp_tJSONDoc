@@ -36,6 +36,12 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>de.cimt.talendcomp.test</groupId>
+      <artifactId>talend-fake-job</artifactId>
+      <version>0.9</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
 
