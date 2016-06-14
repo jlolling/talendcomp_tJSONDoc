@@ -2,12 +2,23 @@ package examples;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import com.fasterxml.jackson.databind.ser.SerializerFactory;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -25,8 +36,8 @@ public class Test {
 			//testJsonPath();
 			//testJsonPathNew();
 			//testBuildJson();
-			testCreateObjects();
-			
+			//testCreateObjects();
+			testIgnoreNullValue();
 			//testGetDirectPathTokens();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -109,9 +120,9 @@ public class Test {
 						.put("pseudoPrice", 2.49d));
 		ObjectNode optionsNode = new ObjectNode(JsonNodeFactory.instance)
 			.put("name", "dgroupSizeInfo");
-		pn.with("configuratorSet")
-			.withArray("groups")
-				.add(optionsNode);
+		pn.with("configuratorSet");
+//			.withArray("groups")
+//				.add(optionsNode);
 		ArrayNode optionsArrayNode = optionsNode.withArray("options");
 		mainDetailNode
 			.with("attributes")
@@ -144,11 +155,34 @@ public class Test {
 				.put("dgroupImage4", "")
 				.put("dgroupIngredients", "9 ml")
 				.put("dgroupUsage", "9 ml")
-				.put("dgroupIdPim", "weiblich");
+				.set("dgroupIdPim", null);
 		ObjectMapper m = new ObjectMapper();
 		System.out.println(m
+				.setSerializationInclusion(Include.NON_NULL)
 				.writerWithDefaultPrettyPrinter()
 				.writeValueAsString(rootNode));
+	}
+	
+	public static void testIgnoreNullValue() throws Exception {
+		ObjectNode rootNode = new ObjectNode(JsonNodeFactory.instance);
+		rootNode.put("nonEmpty", "value");
+		rootNode.set("nullValue", null);
+		rootNode.withArray("nonEmptyArray").add(1).add(2);
+		rootNode.withArray("emptyArray");
+		ArrayNode nonEmptyArray = new ArrayNode(JsonNodeFactory.instance);
+		nonEmptyArray.add("v1").add("v2");
+		ArrayNode emptyArray1 = new ArrayNode(JsonNodeFactory.instance);
+		ArrayNode emptyArray2 = new ArrayNode(JsonNodeFactory.instance);
+		rootNode.withArray("array").add(nonEmptyArray).add(emptyArray1.add(emptyArray2));
+
+		ArrayNode rootArray = new ArrayNode(JsonNodeFactory.instance);
+		rootArray.add(rootNode);
+
+		ObjectMapper m = new ObjectMapper();
+		System.out.println(m
+				.setSerializationInclusion(Include.NON_EMPTY)
+				.writerWithDefaultPrettyPrinter()
+				.writeValueAsString(rootArray));
 	}
 
 	public static void createJson() throws JsonProcessingException, IOException {

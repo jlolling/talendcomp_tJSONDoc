@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -461,7 +462,12 @@ public class JsonDocument {
 		}
 	}
 	
-	public String getJsonString(boolean prettyPrint) throws JsonProcessingException {
+	public String getJsonString(boolean prettyPrint, boolean suppressEmpty) throws JsonProcessingException {
+		if (suppressEmpty) {
+			objectMapper.setSerializationInclusion(Include.NON_EMPTY);
+		} else {
+			objectMapper.setSerializationInclusion(Include.ALWAYS);
+		}
 		if (prettyPrint) {
 			return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
 		} else {
@@ -469,7 +475,7 @@ public class JsonDocument {
 		}
 	}
 	
-	public void writeToFile(String filePath, boolean prettyPrint) throws Exception {
+	public void writeToFile(String filePath, boolean prettyPrint, boolean suppressEmpty) throws Exception {
 		if (filePath == null || filePath.trim().isEmpty()) {
 			throw new IllegalArgumentException("Output file path cannot be null or empty!");
 		}
@@ -484,7 +490,7 @@ public class JsonDocument {
 		BufferedWriter br = null;
 		try {
 			br = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
-			br.write(getJsonString(prettyPrint));
+			br.write(getJsonString(prettyPrint, suppressEmpty));
 			br.flush();
 		} finally {
 			if (br != null) {

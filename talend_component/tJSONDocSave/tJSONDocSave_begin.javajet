@@ -17,6 +17,7 @@
    String file = ElementParameterParser.getValue(node, "__OUTPUT_FILE_PATH__");
    boolean outputAsfile = "true".equals(ElementParameterParser.getValue(node, "__OUTPUT_AS_FILE__"));
    boolean prettyPrint = "true".equals(ElementParameterParser.getValue(node, "__PRETTY_PRINT__"));
+   boolean ignoreEmpty = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY__"));
    String outputColumn = ElementParameterParser.getValue(node, "__JSON_OUTPUT_COLUMN__"); 
 	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
 	String outgoingConnName = null;
@@ -30,7 +31,7 @@
 <%	if (outputAsfile) { %>
 	String filePath_<%=cid%> = <%=file%>;
 	try {
-		<%=cid%>.writeToFile(filePath_<%=cid%>, <%=prettyPrint%>);
+		<%=cid%>.writeToFile(filePath_<%=cid%>, <%=prettyPrint%>, <%=ignoreEmpty%>);
 		globalMap.put("<%=cid%>_OUTPUT_FILE_PATH", filePath_<%=cid%>);
 	} catch (Exception e) {
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
@@ -39,7 +40,7 @@
 <% } %>
 	String jsonString_<%=cid%> = null;
 	try {
-		jsonString_<%=cid%> = <%=cid%>.getJsonString(<%=prettyPrint%>);
+		jsonString_<%=cid%> = <%=cid%>.getJsonString(<%=prettyPrint%>, <%=ignoreEmpty%>);
 	} catch (Exception e) {
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 		throw e;
