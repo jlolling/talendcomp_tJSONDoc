@@ -59,7 +59,7 @@
 			SHOW_IF="OUTPUT_AS_FILE == 'true'"
 			REQUIRED="true" 
 		> 
-			<DEFAULT>"/path/to/input_file.json"</DEFAULT>
+			<DEFAULT>"/path/to/output_file.json"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER 
