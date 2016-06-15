@@ -6,6 +6,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 public class TestInput extends TalendFakeJob {
 	
 	public static class row1Struct {
@@ -148,4 +150,67 @@ public class TestInput extends TalendFakeJob {
 		}
 	}
 
+	@Test
+	public void testReadNull() throws Exception {
+		String json = "{\n"
+			    + "   \"created_by\" : 101,\n"
+			    + "   \"data_status_id\" : 1,\n"
+			    + "   \"process_status_id\" : 1,\n"
+			    + "   \"participation\" : {\n"
+			    + "      \"product_id\" : 100,\n"
+			    + "      \"role_id\" : 1087,\n"
+			    + "      \"function_id\" : 1100,\n"
+			    + "      \"shooting_days\" : 12,\n"
+			    + "      \"participation_date\" : \"2012-01-01T11:22:33.999\",\n"
+			    + "      \"source_id\" : 102,\n"
+			    + "      \"participant\" : {\n"
+			    + "         \"participant_id\" : 103\n"
+			    + "      },\n"
+			    + "      \"pseudonym\" : {\n"
+			    + "         \"pseudonym_id\" : null,\n"
+			    + "         \"nametype_id\" : 5643,\n"
+			    + "         \"salutation\" : null,\n"
+			    + "         \"title\" : null,\n"
+			    + "         \"firstname_supplement\" : null,\n"
+			    + "         \"firstname\" : null,\n"
+			    + "         \"name\" : \"The Symbol\",\n"
+			    + "         \"name_supplement\" : null\n"
+			    + "      },\n"
+			    + "      \"participantname\" : {\n"
+			    + "         \"participant_name_id\" : null,\n"
+			    + "         \"nametype_id\" : null,\n"
+			    + "         \"salutation\" : null,\n"
+			    + "         \"title\" : null,\n"
+			    + "         \"firstname_supplement\" : null,\n"
+			    + "         \"firstname\" : null,\n"
+			    + "         \"name\" : null,\n"
+			    + "         \"name_supplement\" : null\n"
+			    + "      },\n"
+			    + "      \"rolenames\" : [\n"
+			    + "         {\n"
+			    + "            \"rolename\" : \"Landärztin Anna Maria Strickenbach\",\n"
+			    + "            \"language_id\" : 6541,\n"
+			    + "            \"default_selection\" : true\n"
+			    + "         },\n"
+			    + "         {\n"
+			    + "            \"rolename\" : \"Country doctor Anna Maria Strickenbach\",\n"
+			    + "            \"language_id\" : 6598,\n"
+			    + "            \"default_selection\" : false\n"
+			    + "         }\n"
+			    + "      ],\n"
+			    + "      \"remarks\" : [\n"
+			    + "         {\n"
+			    + "            \"remark\" : \"Hat nur in dieser einen Serienepisode mitgewirkt\",\n"
+			    + "            \"remark_type_id\" : 4321\n"
+			    + "         }\n"
+			    + "      ]\n"
+			    + "   }\n"
+			    + "}";
+		JsonDocument doc = new JsonDocument(json);
+		ObjectNode node = (ObjectNode) doc.getNode("$.participation.pseudonym");
+		Long pseudonym_id = doc.getValueAsLong(node, "pseudonym_id", true, null);
+		System.out.println(pseudonym_id);
+		assertNull("Expected null but got anything else", pseudonym_id);
+	}
+	
 }

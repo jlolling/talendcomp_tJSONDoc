@@ -75,7 +75,7 @@ public class Test {
 		System.out.println(doc.toString());
 		String jsonPath2 = "$.store.book[0].author.names[0]";
 		JsonNode n2 = doc.getNode(jsonPath2, true);
-		System.out.println(doc.getJsonString(true));
+		System.out.println(doc.getJsonString(true, false));
 		if (n1 != n2) {
 			throw new Exception("Out of sync (2)");
 		}

@@ -516,7 +516,7 @@ public class JsonDocument {
 			} else {
 				valueNode = node.get(fieldName);
 			}
-			if (valueNode != null && valueNode.isMissingNode() == false) {
+			if (valueNode != null && valueNode.isMissingNode() == false && valueNode.isNull() == false) {
 				return valueNode;
 			} else if (isNullable == false) {
 				throw new Exception("Mandatory attribute: " + fieldName + " is empty or does not exists.");
@@ -603,7 +603,7 @@ public class JsonDocument {
 			return null;
 		}
 	}
-
+	
 	public Long getValueAsLong(JsonNode node, String fieldName, boolean isNullable, Long defaultValue) throws Exception {
 		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
 		if (valueNode != null) {
