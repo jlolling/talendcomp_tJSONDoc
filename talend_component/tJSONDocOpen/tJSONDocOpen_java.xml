@@ -51,6 +51,15 @@
 		</PARAMETER>
 		
 	    <PARAMETER 
+	    	NAME="CONTENT_IS_PLAIN_TEXT" 
+	    	FIELD="CHECK" 
+	    	NUM_ROW="30" 
+	    	REQUIRED="true"
+	    	SHOW_IF="SETUP == 'READ_FROM_INPUT'">
+	    	<DEFAULT>false</DEFAULT>
+	    </PARAMETER> 
+
+	    <PARAMETER 
 	    	NAME="JSON_CONTENT" 
 	    	FIELD="MEMO" 
 	    	NUM_ROW="40" 

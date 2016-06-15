@@ -15,8 +15,13 @@
     String cid = node.getUniqueName();
     String setup = ElementParameterParser.getValue(node, "__SETUP__");
     String jsonString = ElementParameterParser.getValue(node, "__JSON_CONTENT__");
+    boolean isPlainText = "true".equals(ElementParameterParser.getValue(node, "__CONTENT_IS_PLAIN_TEXT__"));
     if (jsonString  != null) {
-    	jsonString = jsonString .trim().replace('\r', ' ').replace("\n", "\\n\" +\n\"");
+    	if (isPlainText) {
+	    	jsonString = "\"" + jsonString.trim().replace("\r", "").replace("\"", "\\\"").replace("\n", "\\n\" +\n\"") + "\"";
+    	} else {
+	    	jsonString = jsonString.trim().replace("\r", "").replace("\n", "\\n\" +\n\"");
+    	}
     } else {
     	jsonString = "null";
     }
