@@ -61,7 +61,7 @@
 
 	    <PARAMETER 
 	    	NAME="JSON_CONTENT" 
-	    	FIELD="MEMO" 
+	    	FIELD="MEMO_JAVA" 
 	    	NUM_ROW="40" 
 	    	REQUIRED="true"
 	    	SHOW_IF="SETUP == 'READ_FROM_INPUT'">
