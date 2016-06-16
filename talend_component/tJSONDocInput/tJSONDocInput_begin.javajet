@@ -8,6 +8,7 @@
 		org.talend.core.model.process.IConnectionCategory
 		org.talend.core.model.utils.NodeUtil
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
 		java.util.List 
 		java.util.ArrayList 
     	java.util.Map		
@@ -26,7 +27,7 @@
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if (metadatas != null && metadatas.size() > 0) {
     	IMetadataTable metadata = metadatas.get(0);
-    	if (metadata != null && conn != null) {
+    	if (metadata != null) {
     		listColumns = metadata.getListColumns();
 		}
 	}
@@ -79,6 +80,7 @@
 			pattern = "null";
 		}
 		String javaClassName = mc.getTalendType().substring(3);
+		String javaPackageClassName = JavaTypesManager.getTypeToGenerate(mc.getTalendType(), mc.isNullable());
 		boolean isDateValue = javaClassName.contains("Date");
 		boolean ignore = "false".equals(config.get("USE"));
 		boolean isNullable = mc.isNullable();
@@ -86,9 +88,17 @@
 			continue; // skip over this column
 		} %>
 <%		if (isDateValue) { %>
-			<%=conn.getName()%>.<%=mc.getLabel()%> = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, null, <%=pattern%>);
+			<%=javaPackageClassName%> <%=mc.getLabel()%> = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, null, <%=pattern%>);
+			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", <%=mc.getLabel()%>);
+<%       if (conn != null) { %>
+				<%=conn.getName()%>.<%=mc.getLabel()%> = <%=mc.getLabel()%>;
+<%       } %>
 <%		} else { %>
-			<%=conn.getName()%>.<%=mc.getLabel()%> = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, null);
+			<%=javaPackageClassName%> <%=mc.getLabel()%> = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, (<%=javaClassName%>) null);
+			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", <%=mc.getLabel()%>);
+<%       if (conn != null) { %>
+				<%=conn.getName()%>.<%=mc.getLabel()%> = <%=mc.getLabel()%>;
+<%       } %>
 <%		}
 	} // for %>
 			globalMap.put("<%=cid%>_CURRENT_NODE", currentNode_<%=cid%>);
