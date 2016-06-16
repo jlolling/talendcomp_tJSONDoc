@@ -14,16 +14,26 @@
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
     String setup = ElementParameterParser.getValue(node, "__SETUP__");
-    String jsonString = ElementParameterParser.getValue(node, "__JSON_CONTENT__");
-    boolean isPlainText = "true".equals(ElementParameterParser.getValue(node, "__CONTENT_IS_PLAIN_TEXT__"));
-    if (jsonString  != null && jsonString.trim().isEmpty() == false) {
-    	if (isPlainText) {
+    String jsonString = "null";
+    if ("READ_FROM_INPUT_PLAIN_TEXT".equals(setup)) {
+		jsonString = ElementParameterParser.getValue(node, "__JSON_CONTENT_PLAIN_TEXT__");
+    	if (jsonString  != null && jsonString.trim().isEmpty() == false) {
 	    	jsonString = "\"" + jsonString.trim().replace("\r", "").replace("\"", "\\\"").replace("\n", "\\n\" +\n\"") + "\"";
-    	} else {
-	    	jsonString = jsonString.trim().replace("\r", "").replace("\n", "\\n\" +\n\"");
+	   } else {
+    		jsonString = "null";
     	}
-    } else {
-    	jsonString = "null";
+    } else if ("READ_FROM_INPUT".equals(setup)) {
+    	boolean simplifiedLineBreaks = "true".equals(ElementParameterParser.getValue(node, "__SIMPLIFIED_LINE_BREAKS__"));
+		jsonString = ElementParameterParser.getValue(node, "__JSON_CONTENT__");
+    	if (jsonString  != null && jsonString.trim().isEmpty() == false) {
+    		if (simplifiedLineBreaks) {
+	    		jsonString = jsonString.trim().replace("\r", "").replace("\n", "\\n\" +\n\"");
+    		} else {
+	    		jsonString = jsonString.trim().replace("\r", "");
+    		}
+	   } else {
+    		jsonString = "null";
+    	}
     }
     String file = ElementParameterParser.getValue(node, "__FILENAME__");
     if (file == null || file.trim().isEmpty()) {
@@ -44,7 +54,7 @@
 		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(false); 
 <%  } else if ("EMPTY_ARRAY".equals(setup)) { %>
 		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(true); 
-<%  } else if ("READ_FROM_INPUT".equals(setup)) { %>
+<%  } else if ("READ_FROM_INPUT".equals(setup) || "READ_FROM_INPUT_PLAIN_TEXT".equals(setup)) { %>
 		String jsonContent = <%=jsonString%>;
 		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(jsonContent); 
 <%  } else if ("READ_FROM_FLOW".equals(setup)) { 
