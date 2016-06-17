@@ -132,8 +132,8 @@
 		<%=cid%>.setValue(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>);
 <%			} else { %>
 		<%=cid%>.setValue(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>);
-<%			}
-		} else {
+<%			} %>
+<%		} else {
 			if (isDoc) {
 				if ("Object".equals(javaClassName)) { %>
 		currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
@@ -147,8 +147,9 @@
 <%			} else { %>
 		currentNode_<%=cid%>.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
 <%			}
-		}
-	}
+		} %>
+		globalMap.put("<%=cid%>.<%=mc.getLabel()%>", <%=conn.getName()%>.<%=mc.getLabel()%>);
+<%	} // for
 %>
 		globalMap.put("<%=cid%>_CURRENT_NODE", currentNode_<%=cid%>);
 		Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
