@@ -88,16 +88,16 @@
 			continue; // skip over this column
 		} %>
 <%		if (isDateValue) { %>
-			<%=javaPackageClassName%> <%=mc.getLabel()%> = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, null, <%=pattern%>);
-			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", <%=mc.getLabel()%>);
+			<%=javaPackageClassName%> var_<%=mc.getLabel()%> = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, null, <%=pattern%>);
+			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var_<%=mc.getLabel()%>);
 <%       if (conn != null) { %>
-				<%=conn.getName()%>.<%=mc.getLabel()%> = <%=mc.getLabel()%>;
+				<%=conn.getName()%>.<%=mc.getLabel()%> = var_<%=mc.getLabel()%>;
 <%       } %>
 <%		} else { %>
-			<%=javaPackageClassName%> <%=mc.getLabel()%> = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, (<%=javaClassName%>) null);
-			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", <%=mc.getLabel()%>);
+			<%=javaPackageClassName%> var_<%=mc.getLabel()%> = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, (<%=javaClassName%>) null);
+			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var_<%=mc.getLabel()%>);
 <%       if (conn != null) { %>
-				<%=conn.getName()%>.<%=mc.getLabel()%> = <%=mc.getLabel()%>;
+				<%=conn.getName()%>.<%=mc.getLabel()%> = var_<%=mc.getLabel()%>;
 <%       } %>
 <%		}
 	} // for %>
