@@ -18,6 +18,7 @@
    boolean outputAsfile = "true".equals(ElementParameterParser.getValue(node, "__OUTPUT_AS_FILE__"));
    boolean prettyPrint = "true".equals(ElementParameterParser.getValue(node, "__PRETTY_PRINT__"));
    boolean ignoreEmpty = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY__"));
+   boolean debugOutput = "true".equals(ElementParameterParser.getValue(node, "__STD_OUTPUT__"));
    String outputColumn = ElementParameterParser.getValue(node, "__JSON_OUTPUT_COLUMN__"); 
 	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
 	String outgoingConnName = null;
@@ -46,6 +47,9 @@
 		throw e;
 	}
 	globalMap.put("<%=cid%>_JSON_STRING", jsonString_<%=cid%>);
+<% if (debugOutput) { %>
+	System.out.println(jsonString_<%=cid%>);
+<% } %>
 <% if (outgoingConnName != null && outputColumn != null) { %>
 	if (true) { // open a loop for one row
 		 <%=outgoingConnName%>.<%=outputColumn%> = jsonString_<%=cid%>;
