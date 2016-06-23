@@ -153,6 +153,10 @@ public class ArrayNode
         	if (ignoreNull) {
         		if (n.getNodeType() == JsonNodeType.NULL || n.getNodeType() == JsonNodeType.MISSING) {
             		continue;
+        		} else if (n.isObject()) {
+        			if (n.size() == 0) {
+        				continue; // if the ObjectNode has no attributes: skip it
+        			}
         		} else if (n.isArray()) {
         			ArrayNode arrayNode = (ArrayNode) n;
         			if (arrayNode.size() == 0) {

@@ -289,11 +289,15 @@ public class ObjectNode
         	JsonNode value = en.getValue();
         	if (ignoreNull) {
         		if (value.getNodeType() == JsonNodeType.NULL || value.getNodeType() == JsonNodeType.MISSING) {
-            		continue;
+            		continue; // if the node is null replacement: skip it
+        		} else if (value.isObject()) {
+        			if (value.size() == 0) {
+        				continue; // if the ObjectNode has no attributes: skip it
+        			}
         		} else if (value.isArray()) {
         			ArrayNode arrayNode = (ArrayNode) value;
         			if (arrayNode.size() == 0) {
-        				continue;
+        				continue; // if the array has no elements: skip it
         			}
         		}
         	}
