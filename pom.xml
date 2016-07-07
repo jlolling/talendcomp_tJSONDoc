@@ -67,6 +67,6 @@
 		    <scope>test</scope>
 		</dependency>
 	</dependencies>
-	<artifactId>de.cimt.talendcomp.json</artifactId>
+	<artifactId>cimt-talendcomp-json</artifactId>
 	<version>3.2</version>
 </project>
