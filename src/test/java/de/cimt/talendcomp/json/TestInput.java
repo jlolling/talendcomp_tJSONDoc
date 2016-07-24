@@ -6,6 +6,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public class TestInput extends TalendFakeJob {
 	
 	public static class row1Struct {
@@ -125,14 +127,14 @@ public class TestInput extends TalendFakeJob {
 			
 			try {
 				row1.int_val = tJSONDocInput_1.getValueAsInteger(
-						currentNode, "integer-value", true, null);
+						currentNode, "integer-value", true, false, null);
 				
 				System.out.println(row1.int_val);
 				
 				row1.string_val = tJSONDocInput_1.getValueAsString(
-						currentNode, "string_val", true, null);
+						currentNode, "string_val", true, false, null);
 				row1.date_val = tJSONDocInput_1.getValueAsDate(
-						currentNode, "date_val", true, null,
+						currentNode, "date_val", true, false, null,
 						"dd-MM-yyyy");
 				globalMap.put("tJSONDocInput_1_CURRENT_NODE",
 						currentNode);
@@ -148,4 +150,49 @@ public class TestInput extends TalendFakeJob {
 		}
 	}
 
+	@Test
+	public void testCheckNullNode() throws Exception {
+		String json = "{\"a1\" : \"v1\", \"nullAttr\" : null}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode("$");
+		String jsonResult = doc.getJsonString(false, true);
+		System.out.println(jsonResult);
+		boolean checkNullWorked = false;
+		try {
+			doc.getValueAsString(parent, "nullAttr", false, false, null);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			checkNullWorked = true;
+		}
+		assertTrue("Null check does not work", checkNullWorked);
+	}
+
+	@Test
+	public void testCheckMissingNode() throws Exception {
+		String json = "{\"a1\" : \"v1\", \"a2\" : null}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode("$");
+		String jsonResult = doc.getJsonString(false, true);
+		System.out.println(jsonResult);
+		String missingAttrString = doc.getValueAsString(parent, "$.missingAttr", false, true, "xxx");
+		System.out.println("missingAttr replacement: " + missingAttrString);
+		assertEquals("Missing node value failed", "xxx", missingAttrString);
+		boolean checkMissingWorked = false;
+		try {
+			doc.getValueAsString(parent, "missingAttr", true, false, null);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			checkMissingWorked = true;
+		}
+		assertTrue("Missing check does not work", checkMissingWorked);
+		checkMissingWorked = false;
+		try {
+			doc.getValueAsString(parent, "missingAttr", false, true, null);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			checkMissingWorked = true;
+		}
+		assertTrue("Missing check: not null check for replacement does not work", checkMissingWorked);
+	}
+	
 }

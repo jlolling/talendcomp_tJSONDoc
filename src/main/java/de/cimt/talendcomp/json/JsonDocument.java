@@ -508,25 +508,61 @@ public class JsonDocument {
 	 * @return if node is an ObjectNode: the value of the attribute, if node is a value node: the node itself, if the fieldName == ".": the node itself
 	 * @throws Exception if iNullable == false and the attribute does not exists or is null or the node is null.
 	 */
-	public JsonNode getValueAsObject(JsonNode node, String fieldName, boolean isNullable, Object dummy) throws Exception {
+	public JsonNode getValueAsObject(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Object dummy) throws Exception {
 		if (node != null) {
 			JsonNode valueNode = null;
 			if (fieldName == null || ".".equals(fieldName) || node.isValueNode()) {
 				valueNode = node;
 			} else {
-				valueNode = node.get(fieldName);
+				valueNode = node.path(fieldName);
+				if (isNullable == false && valueNode != null && valueNode.isNull()) {
+					throw new Exception("Attribute: " + fieldName + ": value is null but configured as not-nullable!");
+				}
+				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {
+					throw new Exception("Attribute: " + fieldName + " is is missing but mandatory!");
+				}
 			}
-			if (valueNode != null && valueNode.isMissingNode() == false && valueNode.isNull() == false) {
-				return valueNode;
-			} else if (isNullable == false) {
-				throw new Exception("Mandatory attribute: " + fieldName + " is empty or does not exists.");
-			}
+			return valueNode;
 		} else if (isNullable == false) {
 			throw new Exception("Parent node does not exists.");
 		}
 		return null;
 	}
 	
+	/**
+	 * Returns the value of the addressed field
+	 * @param node node containing the field 
+	 * @param fieldName attribute name
+	 * @param isNullable 
+	 * @param dummy only to become compatible with the other methods
+	 * @return if node is an ObjectNode: the value of the attribute, if node is a value node: the node itself, if the fieldName == ".": the node itself
+	 * @throws Exception if iNullable == false and the attribute does not exists or is null or the node is null.
+	 */
+	private JsonNode getValueNode(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing) throws Exception {
+		if (node != null) {
+			JsonNode valueNode = null;
+			if (fieldName == null || ".".equals(fieldName) || node.isValueNode()) {
+				valueNode = node;
+				if (isNullable == false && valueNode != null && valueNode.isNull()) {
+					throw new Exception("Value of the given node is null but configured as not-nullable!");
+				}
+			} else {
+				valueNode = node.path(fieldName);
+				if (isNullable == false && valueNode != null && valueNode.isNull()) {
+					throw new Exception("Attribute: " + fieldName + ": value is null but configured as not-nullable!");
+				}
+				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {
+					throw new Exception("Attribute: " + fieldName + " is is missing but mandatory!");
+				}
+			}
+			return valueNode;
+		} else if (isNullable == false) {
+			throw new Exception("Parent node does not exists.");
+		} else {
+			return null;
+		}
+	}
+
 	public String getArrayValuesAsChain(ArrayNode arrayNode) {
 		StringBuilder sb = new StringBuilder();
 		if (arrayNode != null) {
@@ -563,9 +599,16 @@ public class JsonDocument {
 		return result;
 	}
 	
-	public String getValueAsString(JsonNode node, String fieldName, boolean isNullable, String defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public String getValueAsString(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, String missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
 			if (valueNode.isArray()) {
 				return getArrayValuesAsChain((ArrayNode) valueNode);
 			} else {
@@ -575,118 +618,170 @@ public class JsonDocument {
 					return valueNode.toString();
 				}
 			}
-		} else if (defaultValue != null) {
-			return defaultValue;
 		} else {
 			return null;
 		}
 	}
 
-	public Boolean getValueAsBoolean(JsonNode node, String fieldName, boolean isNullable, Boolean defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public Boolean getValueAsBoolean(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Boolean missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
 			return valueNode.asBoolean();
-		} else if (defaultValue != null) {
-			return defaultValue;
 		} else {
 			return null;
 		}
 	}
 
-	public Integer getValueAsInteger(JsonNode node, String fieldName, boolean isNullable, Integer defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public Integer getValueAsInteger(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Integer missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
 			return valueNode.asInt();
-		} else if (defaultValue != null) {
-			return defaultValue;
 		} else {
 			return null;
 		}
 	}
 	
-	public Long getValueAsLong(JsonNode node, String fieldName, boolean isNullable, Long defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public Long getValueAsLong(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Long missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
 			return valueNode.asLong();
-		} else if (defaultValue != null) {
-			return defaultValue;
 		} else {
 			return null;
 		}
 	}
 
-	public Double getValueAsDouble(JsonNode node, String fieldName, boolean isNullable, Double defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public Double getValueAsDouble(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Double missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
 			return valueNode.asDouble();
-		} else if (defaultValue != null) {
-			return defaultValue;
 		} else {
 			return null;
 		}
 	}
 
-	public Float getValueAsFloat(JsonNode node, String fieldName, boolean isNullable, Float defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public Float getValueAsFloat(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Float missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
 			return (float) valueNode.asDouble();
-		} else if (defaultValue != null) {
-			return defaultValue;
 		} else {
 			return null;
 		}
 	}
 
-	public Short getValueAsShort(JsonNode node, String fieldName, boolean isNullable, Short defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public Short getValueAsShort(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Short missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
 			return (short) valueNode.asInt();
-		} else if (defaultValue != null) {
-			return defaultValue;
 		} else {
 			return null;
 		}
 	}
 
-	public BigDecimal getValueAsBigDecimal(JsonNode node, String fieldName, boolean isNullable, BigDecimal defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public BigDecimal getValueAsBigDecimal(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, BigDecimal missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
-			return new BigDecimal(valueNode.asDouble());
-		} else if (defaultValue != null) {
-			return defaultValue;
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
+			return new BigDecimal(valueNode.asText());
 		} else {
 			return null;
 		}
 	}
 
-	public BigDecimal getValueAsBigDecimal(JsonNode node, String fieldName, boolean isNullable, Double defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public BigDecimal getValueAsBigDecimal(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, String missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
-			return new BigDecimal(valueNode.asDouble());
-		} else if (defaultValue != null) {
-			return new BigDecimal(defaultValue);
+			if (valueNode.isMissingNode()) {
+				if (missingNodeValue == null || missingNodeValue.trim().isEmpty()) {
+					if (isNullable) {
+						throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null or empty!");
+					} else {
+						return null;
+					}
+				} else {
+					return new BigDecimal(missingNodeValue);
+				}
+			}
+			return new BigDecimal(valueNode.asText());
 		} else {
 			return null;
 		}
 	}
 
-	public BigInteger getValueAsBigInteger(JsonNode node, String fieldName, boolean isNullable, BigInteger defaultValue) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public BigInteger getValueAsBigInteger(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, BigInteger missingNodeValue) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
 			return valueNode.bigIntegerValue();
-		} else if (defaultValue != null) {
-			return defaultValue;
 		} else {
 			return null;
 		}
 	}
 
-	public Date getValueAsDate(JsonNode node, String fieldName, boolean isNullable, Date defaultValue, String pattern) throws Exception {
-		JsonNode valueNode = getValueAsObject(node, fieldName, isNullable, null);
+	public Date getValueAsDate(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Date missingNodeValue, String pattern) throws Exception {
+		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
+			if (valueNode.isMissingNode()) {
+				if (isNullable == false && missingNodeValue == null) {
+					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+				} else {
+					return missingNodeValue;
+				}
+			}
 			return parseDate(valueNode.asText(), pattern);
-		} else if (defaultValue != null) {
-			return defaultValue;
 		} else {
 			return null;
 		}

@@ -39,6 +39,9 @@ public class Test {
 			//testCreateObjects();
 			testIgnoreNullValue();
 			//testGetDirectPathTokens();
+			int i = 0;
+//			Double d = (Double) 2;
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

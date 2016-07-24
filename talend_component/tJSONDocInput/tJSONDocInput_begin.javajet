@@ -83,18 +83,23 @@
 		String javaPackageClassName = JavaTypesManager.getTypeToGenerate(mc.getTalendType(), mc.isNullable());
 		boolean isDateValue = javaClassName.contains("Date");
 		boolean ignore = "false".equals(config.get("USE"));
+		boolean allowMissing = "true".equals(config.get("MISSING_ATTRIBUTE_ALLOWED"));
+		String missingAttributeValue = config.get("MISSING_ATTRIBUTE_REPLACEMENT");
+		if (allowMissing == false || missingAttributeValue == null || missingAttributeValue.trim().isEmpty()) {
+			missingAttributeValue = "null";
+		}
 		boolean isNullable = mc.isNullable();
 		if (ignore) {
 			continue; // skip over this column
 		} %>
 <%		if (isDateValue) { %>
-			<%=javaPackageClassName%> var_<%=mc.getLabel()%> = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, null, <%=pattern%>);
+			<%=javaPackageClassName%> var_<%=mc.getLabel()%> = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, <%=allowMissing%>, <%=missingAttributeValue%>, <%=pattern%>);
 			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var_<%=mc.getLabel()%>);
 <%       if (conn != null) { %>
 				<%=conn.getName()%>.<%=mc.getLabel()%> = var_<%=mc.getLabel()%>;
 <%       } %>
 <%		} else { %>
-			<%=javaPackageClassName%> var_<%=mc.getLabel()%> = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, (<%=javaClassName%>) null);
+			<%=javaPackageClassName%> var_<%=mc.getLabel()%> = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, <%=allowMissing%>, (<%=javaClassName%>) <%=missingAttributeValue%>);
 			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var_<%=mc.getLabel()%>);
 <%       if (conn != null) { %>
 				<%=conn.getName()%>.<%=mc.getLabel()%> = var_<%=mc.getLabel()%>;

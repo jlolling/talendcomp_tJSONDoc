@@ -6,11 +6,11 @@
 		COMPATIBILITY="ALL"
 		SCHEMA_AUTO_PROPAGATE="true" 
 		PLATEFORM="ALL" 
-		RELEASE_DATE="20160722"
+		RELEASE_DATE="20160724"
 		SERIAL="" 
 		STARTABLE="true" 
 		STATUS="PROD" 
-		VERSION="3.2">
+		VERSION="4.0">
 		<SIGNATURE />
 	</HEADER>
 
@@ -66,7 +66,7 @@
 	    	NUM_ROW="40" 
 	    	REQUIRED="true"
 	    	SHOW_IF="SETUP == 'READ_FROM_INPUT'">
-	    	<DEFAULT>"{}"</DEFAULT>
+	    	<DEFAULT></DEFAULT>
 	    </PARAMETER> 
 
 	    <PARAMETER 
@@ -114,7 +114,7 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-3.2.jar" REQUIRED="true" />
+			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-4.0.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 
