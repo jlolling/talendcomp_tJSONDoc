@@ -638,8 +638,12 @@ public class JsonDocument {
 				}
 			} else {
 				valueNode = node.path(fieldName);
-				if (isNullable == false && valueNode != null && valueNode.isNull()) {
-					throw new Exception("Attribute: " + fieldName + ": value is null but configured as not-nullable!");
+				if (valueNode != null && valueNode.isNull()) {
+					if (isNullable == false) {
+						throw new Exception("Attribute: " + fieldName + ": value is null but configured as not-nullable!");
+					} else {
+						return null;
+					}
 				}
 				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {
 					throw new Exception("Attribute: " + fieldName + " is is missing but mandatory!");
