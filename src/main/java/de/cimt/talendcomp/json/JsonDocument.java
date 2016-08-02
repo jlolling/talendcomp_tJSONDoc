@@ -50,6 +50,16 @@ import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
  */
 public class JsonDocument {
 	
+	public static final String NULL_STRING = "null";
+	public static final Integer NULL_INTEGER = Integer.MAX_VALUE;
+	public static final Long NULL_LONG = Long.MAX_VALUE;
+	public static final Double NULL_DOUBLE = Double.MAX_VALUE;
+	public static final Float NULL_FLOAT = Float.MAX_VALUE;
+	public static final Short NULL_SHORT = Short.MAX_VALUE;
+	public static final BigDecimal NULL_BIGDECIMAL = new BigDecimal(Long.MAX_VALUE);
+	public static final BigInteger NULL_BIGINTEGER = new BigInteger(String.valueOf(Long.MAX_VALUE)); 
+	public static final Date NULL_DATE = new Date(Long.MAX_VALUE);
+	
 	private JsonNode rootNode = null;
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
@@ -382,71 +392,151 @@ public class JsonDocument {
 		return sdf.parse(value);
 	}
 
-	public ObjectNode setValue(ObjectNode node, String fieldName, String value) {
-		node.put(fieldName, value);
-		return node;
-	}
-	
 	public JsonNode setJsonObject(ObjectNode node, String fieldName, String json) throws Exception {
+		return setJsonObject(node, fieldName, json, false);
+	}
+
+	public JsonNode setJsonObject(ObjectNode node, String fieldName, String json, boolean omitAttrIfNullValue) throws Exception {
+		if (omitAttrIfNullValue && json == null) {
+			return node;
+		}
 		JsonNode newnode = buildNode(json);
 		node.set(fieldName, newnode);
 		return node;
 	}
 
 	public JsonNode setJsonObject(ObjectNode node, String fieldName, JsonNode json) throws Exception {
+		return setJsonObject(node, fieldName, json, false);
+	}
+
+	public JsonNode setJsonObject(ObjectNode node, String fieldName, JsonNode json, boolean omitAttrIfNullValue) throws Exception {
+		if (omitAttrIfNullValue && json == null) {
+			return node;
+		}
 		node.set(fieldName, json);
 		return node;
 	}
 
+	public ObjectNode setValue(ObjectNode node, String fieldName, String value) {
+		return setValue(node, fieldName, value, false);
+	}
+	
+	public ObjectNode setValue(ObjectNode node, String fieldName, String value, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
+		}
+		node.put(fieldName, value);
+		return node;
+	}
+
 	public ObjectNode setValue(ObjectNode node, String fieldName, Boolean value) {
+		return setValue(node, fieldName, value, false);
+	}
+
+	public ObjectNode setValue(ObjectNode node, String fieldName, Boolean value, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
+		}
 		node.put(fieldName, value);
 		return node;
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, Integer value) {
+		return setValue(node, fieldName, value, false);
+	}
+
+	public ObjectNode setValue(ObjectNode node, String fieldName, Integer value, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
+		}
 		node.put(fieldName, value);
 		return node;
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, Long value) {
+		return setValue(node, fieldName, value, false);
+	}
+
+	public ObjectNode setValue(ObjectNode node, String fieldName, Long value, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
+		}
 		node.put(fieldName, value);
 		return node;
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, BigDecimal value) {
+		return setValue(node, fieldName, value, false);
+	}
+
+	public ObjectNode setValue(ObjectNode node, String fieldName, BigDecimal value, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
+		}
 		node.put(fieldName, value);
 		return node;
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, BigInteger value) {
-		if (value != null) {
-			node.put(fieldName, value.longValue());
-		} else {
-			node.set(fieldName, null);
+		return setValue(node, fieldName, value, false);
+	}
+
+	public ObjectNode setValue(ObjectNode node, String fieldName, BigInteger value, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
 		}
+		node.put(fieldName, value);
 		return node;
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, Double value) {
+		return setValue(node, fieldName, value, false);
+	}
+
+	public ObjectNode setValue(ObjectNode node, String fieldName, Double value, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
+		}
 		node.put(fieldName, value);
 		return node;
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, Float value) {
+		return setValue(node, fieldName, value, false);
+	}
+
+	public ObjectNode setValue(ObjectNode node, String fieldName, Float value, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
+		}
 		node.put(fieldName, value);
 		return node;
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, Short value) {
+		return setValue(node, fieldName, value, false);
+	}
+
+	public ObjectNode setValue(ObjectNode node, String fieldName, Short value, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
+		}
 		node.put(fieldName, value);
 		return node;
 	}
 
 	public ObjectNode setValue(ObjectNode node, String fieldName, Date value, String pattern) {
+		return setValue(node, fieldName, value, pattern, false);
+	}
+	
+	public ObjectNode setValue(ObjectNode node, String fieldName, Date value, String pattern, boolean omitAttrIfNullValue) {
+		if (omitAttrIfNullValue && value == null) {
+			return node;
+		}
 		node.put(fieldName, formatDate(value, pattern));
 		return node;
 	}
-	
+
 	private JsonNode buildNode(Object value) throws Exception {
 		if (value instanceof String) {
 			String jsonString = (String) value;
@@ -787,4 +877,30 @@ public class JsonDocument {
 		}
 	}
 
+	public static String escape(String value) {
+		if (value == null) {
+			return null;
+		} else if (value.isEmpty()) {
+			return "";
+		} else {
+			StringBuilder sb = new StringBuilder();
+			char c;
+			int n = value.length();
+			for (int i = 0; i < n; i++) {
+				c = value.charAt(i);
+				switch (c) {
+				case '\n': sb.append("\\n"); break;
+				case '\t': sb.append("\\t"); break;
+				case '\"': sb.append("\\\""); break;
+				case '\\': sb.append("\\\\"); break;
+				case '\r': sb.append("\\r"); break;
+				case '\f': sb.append("\\f"); break;
+				case '\b': sb.append("\\b"); break;
+				default: sb.append(c);
+				}
+			}
+			return sb.toString();
+		}
+	}
+	
 }

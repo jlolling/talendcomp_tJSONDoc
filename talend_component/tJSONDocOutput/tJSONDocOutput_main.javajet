@@ -116,36 +116,61 @@
 		boolean isDateValue = javaClassName.contains("Date");
 		boolean isDoc = "true".equals(config.get("IS_DOC"));
 		boolean ignore = "false".equals(config.get("USE"));
+		boolean omitAttribute = "true".equals(config.get("OMIT_ATTRIBUTE_IF_NULL"));
 		if (ignore) {
 			continue; // skip over this column
 		}
 		if ("ARRAY_OF_OBJECTS".equals(outputType) || "SINGLE_OBJECT".equals(outputType)) {
 			if (isDoc) {
 				if ("Object".equals(javaClassName)) { %>
-		<%=cid%>.setJsonObject(currentNode_<%=cid%>, <%=fieldName%>, (com.fasterxml.jackson.databind.JsonNode) <%=conn.getName()%>.<%=mc.getLabel()%>);
+		<%=cid%>.setJsonObject(currentNode_<%=cid%>, <%=fieldName%>, (com.fasterxml.jackson.databind.JsonNode) <%=conn.getName()%>.<%=mc.getLabel()%>, <%=omitAttribute%>);
 <%   		   } else if ("String".equals(javaClassName)) { %>
-		<%=cid%>.setJsonObject(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>);
+		<%=cid%>.setJsonObject(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=omitAttribute%>);
 <%          } else { %>
 		throw new Exception("Misconfiguration in column: <%=mc.getLabel()%>. It must be of type Object (actually JsonNode) or String."); 
 <%          } %>
 <%			} else if (isDateValue) { %>
-		<%=cid%>.setValue(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>);
+		<%=cid%>.setValue(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>, <%=omitAttribute%>);
 <%			} else { %>
-		<%=cid%>.setValue(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>);
+		<%=cid%>.setValue(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=omitAttribute%>);
 <%			} %>
 <%		} else {
 			if (isDoc) {
-				if ("Object".equals(javaClassName)) { %>
+				if ("Object".equals(javaClassName)) {
+            	if (omitAttribute) { %>
+		if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
+			currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
+		}
+<%          	} else { %>
 		currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
-<%   		   } else if ("String".equals(javaClassName)) { %>
+<%          	} %>              
+<%   		   } else if ("String".equals(javaClassName)) {
+            	if (omitAttribute) { %>
+		if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
+			currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
+		}
+<%          	} else { %>
 		currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
+<%          	} %>              
 <%          } else { %>
 		throw new Exception("Misconfiguration in column: <%=mc.getLabel()%>. It must be of type Object (actually JsonNode) or String."); 
 <%          } %>
-<%			} else if (isDateValue) { %>
+<%			} else if (isDateValue) { 
+            if (omitAttribute) { %>
+		if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
+			currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
+		}
+<%          } else { %>
 		currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
-<%			} else { %>
+<%          } %>              
+<%			} else { 
+            if (omitAttribute) { %>
+		if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
+			currentNode_<%=cid%>.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
+		}
+<%          } else { %>
 		currentNode_<%=cid%>.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
+<%          } %>
 <%			}
 		} %>
 		globalMap.put("<%=cid%>.<%=mc.getLabel()%>", <%=conn.getName()%>.<%=mc.getLabel()%>);

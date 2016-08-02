@@ -168,6 +168,22 @@ public class TestInput extends TalendFakeJob {
 	}
 
 	@Test
+	public void testCheckMultiLineText() throws Exception {
+		String expected = "line1\"line2\\nline3 \\ \\\" ";
+		System.out.println("expected=" + expected);
+		String value = JsonDocument.escape(expected);
+		System.out.println("escaped value=" + value);
+		String json = "{\"multiline\" : \"" + value + "\"}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode("$");
+		String jsonResult = doc.getJsonString(false, true);
+		System.out.println(jsonResult);
+		String actual = doc.getValueAsString(parent, "multiline", false, false, null);
+		System.out.println("actual=" + actual);
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void testCheckMissingNode() throws Exception {
 		String json = "{\"a1\" : \"v1\", \"a2\" : null}";
 		JsonDocument doc = new JsonDocument(json);

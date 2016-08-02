@@ -69,7 +69,7 @@ public class TestRemoveEmpty extends TalendFakeJob {
 			    + "}";
 		JsonDocument doc = new JsonDocument(json);
 		ObjectNode node = (ObjectNode) doc.getNode("$.participation.pseudonym");
-		Long pseudonym_id = doc.getValueAsLong(node, "pseudonym_id", true, null);
+		Long pseudonym_id = doc.getValueAsLong(node, "pseudonym_id", true, true, null);
 		System.out.println(pseudonym_id);
 		assertNull("Expected null but got anything else", pseudonym_id);
 	}
