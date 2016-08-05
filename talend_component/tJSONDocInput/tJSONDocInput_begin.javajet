@@ -39,6 +39,7 @@
 		jsonPath = "null";
    }
    boolean dieIfParentNotExists = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_PATH_DOES_NOT_EXISTS__"));
+   boolean dieIfParentIsEmpty = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_OBJECT_IS_EMPTY__"));
 %>
 	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
@@ -65,6 +66,11 @@
    	throw new Exception("No JSON document received from the parent component: <%=docComp%>");
    }
 	java.util.List<com.fasterxml.jackson.databind.JsonNode> listNodes_<%=cid%> = <%=cid%>.getArrayValuesAsList(parentNode_<%=cid%>);
+<% if (dieIfParentIsEmpty) { %>
+	if (listNodes_<%=cid%>.isEmpty()) {
+		throw new Exception("The referenced object: " + <%=jsonPath%> + " is empty!");
+	}
+<% } %>
 	for (com.fasterxml.jackson.databind.JsonNode currentNode_<%=cid%> : listNodes_<%=cid%>) {
 		// loop over the given children of the parent node or the values of the array
 		try {
