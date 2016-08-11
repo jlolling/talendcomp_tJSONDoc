@@ -4,7 +4,7 @@
   <groupId>de.cimt.talendcomp</groupId>
   <artifactId>cimt-talendcomp-json</artifactId>
   <name>JSON Builder</name>
-  <version>4.1</version>
+  <version>4.2</version>
   <organization>
     <name>cimt AG</name>
   </organization>

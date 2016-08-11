@@ -633,8 +633,12 @@ public class JsonDocument {
 			JsonNode valueNode = null;
 			if (fieldName == null || ".".equals(fieldName) || node.isValueNode()) {
 				valueNode = node;
-				if (isNullable == false && valueNode != null && valueNode.isNull()) {
-					throw new Exception("Value of the given node is null but configured as not-nullable!");
+				if (valueNode != null && valueNode.isNull()) {
+					if (isNullable == false) {
+						throw new Exception("Value of the given node is null but configured as not-nullable!");
+					} else {
+						valueNode = null;
+					}
 				}
 			} else {
 				valueNode = node.path(fieldName);
@@ -642,7 +646,7 @@ public class JsonDocument {
 					if (isNullable == false) {
 						throw new Exception("Attribute: " + fieldName + ": value is null but configured as not-nullable!");
 					} else {
-						return null;
+						valueNode = null;
 					}
 				}
 				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {

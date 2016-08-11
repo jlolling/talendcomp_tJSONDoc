@@ -34,15 +34,22 @@
 	@SuppressWarnings("unchecked")
 	List<Map<String, String>> configList = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__COLUMN_CONFIG__");
    String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
-   String jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
-   if (jsonPath == null || jsonPath.trim().isEmpty()) {
-		jsonPath = "null";
+   String jsonPath = null;
+   boolean useParentObject = "true".equals(ElementParameterParser.getValue(node, "__USE_PARENT_AS_CURRENT_OBJECT__"));
+   if (useParentObject) {
+			jsonPath = "\".\"";
+   } else {
+   	jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
+	   if (jsonPath == null || jsonPath.trim().isEmpty()) {
+			jsonPath = "null";
+   	}
    }
    boolean dieIfParentNotExists = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_PATH_DOES_NOT_EXISTS__"));
    boolean dieIfParentIsEmpty = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_OBJECT_IS_EMPTY__"));
 %>
 	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
+	globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
 	if (<%=cid%> != null) {
 		try {
 			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
@@ -51,11 +58,15 @@
 	   	com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
 	   	String jsonPath = <%=jsonPath%>;
 			parentNode_<%=cid%> = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath, false);
-<% if (dieIfParentNotExists) { %>
 			if (parentNode_<%=cid%> == null) {
+<% if (dieIfParentNotExists) { %>
 				throw new Exception("JSONPath: " + jsonPath + " does not exists!");
-			}
+<% } else { %>
+				globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
 <% } %>
+			} else {
+				globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", true);
+			}
 			globalMap.put("parent_node_<%=cid%>", parentNode_<%=cid%>);
 			globalMap.put("<%=cid%>_NB_LINE", 0);
 		} catch (Exception e) {
