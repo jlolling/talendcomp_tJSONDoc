@@ -300,7 +300,7 @@ public class JsonDocument {
 	 * Retrieve a node by direct-path jsonPath
 	 * @param parentNode node to start
 	 * @param jsonPath must be a path with query parts and starts with the given parent node
-	 * @param create if true, missing nodes will be created
+	 * @param create if true, missing nodes will be created otherwise it returns null
 	 * @return node
 	 */
 	public JsonNode getNode(JsonNode parentNode, String jsonPath, boolean create) {
@@ -347,6 +347,8 @@ public class JsonDocument {
 							childNode = ((ObjectNode) parentNode).with(token);
 						}
 					}
+				} else {
+					break; // child is null and we are not allowed to create a node.
 				}
 			}
 			parentNode = childNode;

@@ -218,9 +218,23 @@ public class TestInput extends TalendFakeJob {
 			    + "}";
 		JsonDocument doc = new JsonDocument(json);
 		JsonNode parent = doc.getNode("$.array1");
+		
 		Integer value = doc.getValueAsInteger(parent, ".", true, true, null);
 		
 		
 	}
 	
+	@Test
+	public void testGetNodeNullSave() throws Exception {
+		String json = "{\n"
+			    + "	\"attr1\" : null,\n"
+			    + "	\"attr2\" : [1,2,3,4]\n"
+			    + "}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode(doc.getRootNode(), "nix.dummy", false);
+		if (parent == null) {
+			assertTrue(true);
+		}
+	}
+
 }
