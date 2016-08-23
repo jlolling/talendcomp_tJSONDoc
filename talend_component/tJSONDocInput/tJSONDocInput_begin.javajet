@@ -54,13 +54,28 @@
 		try {
 			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 			globalMap.put("<%=cid%>", <%=cid%>);
+	   	String jsonPath = <%=jsonPath%>;
+	   	// build path to enhance the error messages
+	   	String path = null;
+	   	if (jsonPath != null && jsonPath.isEmpty() == false) {
+	   		if (jsonPath.startsWith("$")) {
+	   			path = jsonPath;
+	   		} else if (".".equals(jsonPath)) {
+	   			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
+	   		} else {
+	   			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH") + "." + jsonPath;
+	   		}
+	   	} else {
+   			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
+	   	}
+	   	globalMap.put("<%=cid%>_CURRENT_PATH", path);
+	   	<%=cid%>.setCurrentPath(path);
 			// get the parent object we have to dock on
 	   	com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
-	   	String jsonPath = <%=jsonPath%>;
 			parentNode_<%=cid%> = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath, false);
 			if (parentNode_<%=cid%> == null) {
 <% if (dieIfParentNotExists) { %>
-				throw new Exception("JSONPath: " + jsonPath + " does not exists!");
+				throw new Exception("Path: " + path + " does not exists!");
 <% } else { %>
 				globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
 <% } %>
@@ -74,7 +89,7 @@
 			throw e;
 		}
    } else {
-   	throw new Exception("No JSON document received from the parent component: <%=docComp%>");
+   	throw new Exception("No JSON document received from the parent component: <%=docComp%>. This is a misconfiguration within the job!");
    }
 	java.util.List<com.fasterxml.jackson.databind.JsonNode> listNodes_<%=cid%> = <%=cid%>.getArrayValuesAsList(parentNode_<%=cid%>);
 <% if (dieIfParentIsEmpty) { %>

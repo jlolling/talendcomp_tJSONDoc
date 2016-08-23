@@ -90,6 +90,7 @@
 		globalMap.put("<%=cid%>", <%=cid%>);
 		globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getRootNode());
 		globalMap.put("<%=cid%>_ROOT_NODE", <%=cid%>.getRootNode());
+		globalMap.put("<%=cid%>_CURRENT_PATH", "$");
    } catch (Exception e) {
    	globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
    	throw e;

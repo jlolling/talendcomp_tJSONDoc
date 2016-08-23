@@ -6,11 +6,11 @@
 		COMPATIBILITY="ALL"
 		SCHEMA_AUTO_PROPAGATE="true" 
 		PLATEFORM="ALL" 
-		RELEASE_DATE="20160816"
+		RELEASE_DATE="20160823"
 		SERIAL="" 
 		STARTABLE="true" 
 		STATUS="PROD" 
-		VERSION="4.3">
+		VERSION="4.4">
 		<SIGNATURE />
 	</HEADER>
 
@@ -114,12 +114,13 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-4.3.jar" REQUIRED="true" />
+			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-4.4.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 
 	<RETURNS>
-		<RETURN AVAILABILITY="AFTER" NAME="CURRENT_NODE" TYPE="id_Object" />
+		<RETURN AVAILABILITY="FLOW" NAME="CURRENT_NODE" TYPE="id_Object" />
+		<RETURN AVAILABILITY="FLOW" NAME="CURRENT_PATH" TYPE="id_String" />
 	</RETURNS>
 </COMPONENT>
 	

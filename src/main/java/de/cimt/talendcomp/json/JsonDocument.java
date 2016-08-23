@@ -71,6 +71,7 @@ public class JsonDocument {
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
 	private Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
+	private String currentPath = "";
 	
 	public JsonDocument(boolean isArray) {
 		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
@@ -608,15 +609,15 @@ public class JsonDocument {
 			} else {
 				valueNode = node.path(fieldName);
 				if (isNullable == false && valueNode != null && valueNode.isNull()) {
-					throw new Exception("Attribute: " + fieldName + ": value is null but configured as not-nullable!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + ": value is null but configured as not-nullable!");
 				}
 				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {
-					throw new Exception("Attribute: " + fieldName + " is is missing but mandatory!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is is missing but mandatory!");
 				}
 			}
 			return valueNode;
 		} else if (isNullable == false) {
-			throw new Exception("Parent node does not exists.");
+			throw new Exception(currentPath + ": Parent node does not exists.");
 		}
 		return null;
 	}
@@ -637,7 +638,7 @@ public class JsonDocument {
 				valueNode = node;
 				if (valueNode != null && valueNode.isNull()) {
 					if (isNullable == false) {
-						throw new Exception("Value of the given node is null but configured as not-nullable!");
+						throw new Exception(currentPath + ": Value of the given node is null but configured as not-nullable!");
 					} else {
 						valueNode = null;
 					}
@@ -646,18 +647,18 @@ public class JsonDocument {
 				valueNode = node.path(fieldName);
 				if (valueNode != null && valueNode.isNull()) {
 					if (isNullable == false) {
-						throw new Exception("Attribute: " + fieldName + ": value is null but configured as not-nullable!");
+						throw new Exception(currentPath + ": Attribute: " + fieldName + ": value is null but configured as not-nullable!");
 					} else {
 						valueNode = null;
 					}
 				}
 				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {
-					throw new Exception("Attribute: " + fieldName + " is is missing but mandatory!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is is missing but mandatory!");
 				}
 			}
 			return valueNode;
 		} else if (isNullable == false) {
-			throw new Exception("Parent node does not exists.");
+			throw new Exception(currentPath + ": Parent node does not exists.");
 		} else {
 			return null;
 		}
@@ -704,7 +705,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -728,7 +729,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -744,7 +745,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -760,7 +761,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -776,7 +777,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -792,7 +793,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -808,7 +809,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -824,7 +825,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -841,7 +842,7 @@ public class JsonDocument {
 			if (valueNode.isMissingNode()) {
 				if (missingNodeValue == null || missingNodeValue.trim().isEmpty()) {
 					if (isNullable) {
-						throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null or empty!");
+						throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null or empty!");
 					} else {
 						return null;
 					}
@@ -860,7 +861,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -876,7 +877,7 @@ public class JsonDocument {
 		if (valueNode != null) {
 			if (valueNode.isMissingNode()) {
 				if (isNullable == false && missingNodeValue == null) {
-					throw new Exception("Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing and configured as not-nullable but the replacement value is also null!");
 				} else {
 					return missingNodeValue;
 				}
@@ -911,6 +912,17 @@ public class JsonDocument {
 			}
 			return sb.toString();
 		}
+	}
+
+	public String getCurrentPath() {
+		return currentPath;
+	}
+
+	public void setCurrentPath(String currentPath) {
+		if (currentPath == null) {
+			currentPath = "Unknown path";
+		}
+		this.currentPath = currentPath;
 	}
 	
 }
