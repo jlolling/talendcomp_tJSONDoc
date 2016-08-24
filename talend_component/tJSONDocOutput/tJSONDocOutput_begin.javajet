@@ -21,13 +21,6 @@
 		try {
 			globalMap.put("<%=cid%>", <%=cid%>);
 			String jsonPath = <%=jsonPath%>;
-<% if (outputType.startsWith("ARRAY_")) { %>
-			// take care the path will be created as array
-			if (jsonPath == null) {
-				jsonPath = "[0]";
-			} else if (jsonPath.endsWith("]") == false) {
-				jsonPath = jsonPath + "[0]";
-			}
 	   	// build path to enhance the error messages
 	   	String path = null;
 	   	if (jsonPath != null && jsonPath.isEmpty() == false) {
@@ -45,6 +38,13 @@
 	   	<%=cid%>.setCurrentPath(path);
 			// get the parent object we have to dock on
 			com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
+<% if (outputType.startsWith("ARRAY_")) { %>
+			// take care the path will be created as array
+			if (jsonPath == null) {
+				jsonPath = "[0]";
+			} else if (jsonPath.endsWith("]") == false) {
+				jsonPath = jsonPath + "[0]";
+			}
 			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath, true);
 			com.fasterxml.jackson.databind.node.ArrayNode parentNode_<%=cid%> = null;
 			if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
