@@ -33,7 +33,11 @@
 	if ("READ_FROM_INPUT_PLAIN_TEXT".equals(setup)) {
 		jsonStringPlain = ElementParameterParser.getValue(node, "__JSON_CONTENT_PLAIN_TEXT__");
     	if (jsonStringPlain  != null && jsonStringPlain.trim().isEmpty() == false) {
-	    	jsonStringPlain = "\"" + jsonStringPlain.trim().replace("\r", "").replace("\"", "\\\"").replace("\n", "\\n\" +\n\"") + "\"";
+	    	jsonStringPlain = "\"" + jsonStringPlain.trim()
+	    														.replace("\r", "")
+	    														.replace("\\", "\\\\")
+	    														.replace("\"", "\\\"")
+	    														.replace("\n", "\\n\" +\n\"") + "\"";
     	} else {
     		jsonStringPlain = "null";
     	}
