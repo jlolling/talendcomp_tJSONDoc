@@ -123,9 +123,10 @@
 		IMetadataColumn mc = listColumns.get(i);
 		Map<String, String> config = configList.get(i);
 		String fieldName = config.get("ATTRIBUTE_ALIAS");
-		if (fieldName == null || fieldName.trim().isEmpty() || fieldName.equals("\"\"")) {
-			fieldName = "\"" + mc.getLabel() + "\"";
+		if (fieldName == null || fieldName.trim().isEmpty()) {
+			fieldName = "null";
 		}
+		String fieldLabel = "\"" + mc.getLabel()  + "\"";
 		String pattern = mc.getPattern();
 		String javaClassName = mc.getTalendType().substring(3);
 		boolean isDateValue = javaClassName.contains("Date");
@@ -134,60 +135,66 @@
 		boolean omitAttribute = "true".equals(config.get("OMIT_ATTRIBUTE_IF_NULL"));
 		if (ignore) {
 			continue; // skip over this column
-		}
-		if ("ARRAY_OF_OBJECTS".equals(outputType) || "SINGLE_OBJECT".equals(outputType)) {
+		} %>
+		{
+			String fieldName = <%=fieldName%>;
+			if (fieldName == null || fieldName.trim().isEmpty()) {
+				fieldName = <%=fieldLabel%>;
+			}
+<%		if ("ARRAY_OF_OBJECTS".equals(outputType) || "SINGLE_OBJECT".equals(outputType)) {
 			if (isDoc) {
 				if ("Object".equals(javaClassName)) { %>
-		<%=cid%>.setJsonObject(currentNode_<%=cid%>, <%=fieldName%>, (com.fasterxml.jackson.databind.JsonNode) <%=conn.getName()%>.<%=mc.getLabel()%>, <%=omitAttribute%>);
+			<%=cid%>.setJsonObject(currentNode_<%=cid%>, fieldName, (com.fasterxml.jackson.databind.JsonNode) <%=conn.getName()%>.<%=mc.getLabel()%>, <%=omitAttribute%>);
 <%   		   } else if ("String".equals(javaClassName)) { %>
-		<%=cid%>.setJsonObject(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=omitAttribute%>);
+			<%=cid%>.setJsonObject(currentNode_<%=cid%>, fieldName, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=omitAttribute%>);
 <%          } else { %>
-		throw new Exception("Misconfiguration in column: <%=mc.getLabel()%>. It must be of type Object (actually JsonNode) or String."); 
+			throw new Exception("Misconfiguration in column: <%=mc.getLabel()%>. It must be of type Object (actually JsonNode) or String."); 
 <%          } %>
 <%			} else if (isDateValue) { %>
-		<%=cid%>.setValue(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>, <%=omitAttribute%>);
+			<%=cid%>.setValue(currentNode_<%=cid%>, fieldName, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>, <%=omitAttribute%>);
 <%			} else { %>
-		<%=cid%>.setValue(currentNode_<%=cid%>, <%=fieldName%>, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=omitAttribute%>);
+			<%=cid%>.setValue(currentNode_<%=cid%>, fieldName, <%=conn.getName()%>.<%=mc.getLabel()%>, <%=omitAttribute%>);
 <%			} %>
 <%		} else {
 			if (isDoc) {
 				if ("Object".equals(javaClassName)) {
             	if (omitAttribute) { %>
-		if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
-			currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
-		}
+			if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
+				currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
+			}
 <%          	} else { %>
-		currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
+			currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
 <%          	} %>              
 <%   		   } else if ("String".equals(javaClassName)) {
             	if (omitAttribute) { %>
-		if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
-			currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
-		}
+			if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
+				currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
+			}
 <%          	} else { %>
-		currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
+			currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
 <%          	} %>              
 <%          } else { %>
-		throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Misconfiguration in column: <%=mc.getLabel()%>. It must be of type Object (actually JsonNode) or String."); 
+			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Misconfiguration in column: <%=mc.getLabel()%>. It must be of type Object (actually JsonNode) or String."); 
 <%          } %>
 <%			} else if (isDateValue) { 
             if (omitAttribute) { %>
-		if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
-			currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
-		}
+			if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
+				currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
+			}
 <%          } else { %>
-		currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
+			currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
 <%          } %>              
 <%			} else { 
             if (omitAttribute) { %>
-		if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
-			currentNode_<%=cid%>.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
-		}
+			if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
+				currentNode_<%=cid%>.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
+			}
 <%          } else { %>
-		currentNode_<%=cid%>.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
+			currentNode_<%=cid%>.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
 <%          } %>
 <%			}
 		} %>
+		}
 		globalMap.put("<%=cid%>.<%=mc.getLabel()%>", <%=conn.getName()%>.<%=mc.getLabel()%>);
 <%	} // for
 %>

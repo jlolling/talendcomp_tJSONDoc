@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -923,6 +924,24 @@ public class JsonDocument {
 			currentPath = "Unknown path";
 		}
 		this.currentPath = currentPath;
+	}
+	
+	public static int countNotNullAttributes(JsonNode node) {
+		if (node == null) {
+			throw new IllegalArgumentException("Node is null");
+		} else if (node.size() == 0) {
+			return 0;
+		} else {
+			int count = 0;
+			Iterator<JsonNode> it = node.elements();
+			while (it.hasNext()) {
+				JsonNode valueNode = it.next();
+				if (valueNode.isMissingNode() == false && valueNode.isNull() == false) {
+					count++;
+				}
+			}
+			return count;
+		}
 	}
 	
 }

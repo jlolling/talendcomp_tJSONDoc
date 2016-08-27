@@ -97,16 +97,19 @@
 		throw new Exception("The referenced object: " + <%=jsonPath%> + " is empty!");
 	}
 <% } %>
+	globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", 0);
 	for (com.fasterxml.jackson.databind.JsonNode currentNode_<%=cid%> : listNodes_<%=cid%>) {
 		// loop over the given children of the parent node or the values of the array
+		int countNotNullAttributes_<%=cid%> = 0;
 		try {
 <% for (int i = 0; i < listColumns.size(); i++) {
 		IMetadataColumn mc = listColumns.get(i);
 		Map<String, String> config = configList.get(i);
 		String fieldName = config.get("ATTRIBUTE_ALIAS");
-		if (fieldName == null || fieldName.trim().isEmpty() || fieldName.equals("\"\"")) {
-			fieldName = "\"" + mc.getLabel() + "\"";
+		if (fieldName == null || fieldName.trim().isEmpty()) {
+			fieldName = "null";
 		}
+		String fieldLabel = "\"" + mc.getLabel()  + "\"";
 		String pattern = mc.getPattern();
 		if (pattern == null || pattern.trim().isEmpty()) {
 			pattern = "null";
@@ -124,23 +127,33 @@
 		if (ignore) {
 			continue; // skip over this column
 		} %>
+				{
+					String fieldName = <%=fieldName%>;
+					if (fieldName == null || fieldName.trim().isEmpty()) {
+						fieldName = <%=fieldLabel%>;
+					}
 <%		if (isDateValue) { %>
-			<%=javaPackageClassName%> var_<%=mc.getLabel()%> = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, <%=allowMissing%>, <%=missingAttributeValue%>, <%=pattern%>);
-			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var_<%=mc.getLabel()%>);
+					<%=javaPackageClassName%> var = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, <%=missingAttributeValue%>, <%=pattern%>);
+					globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
 <%       if (conn != null) { %>
-				<%=conn.getName()%>.<%=mc.getLabel()%> = var_<%=mc.getLabel()%>;
+					<%=conn.getName()%>.<%=mc.getLabel()%> = var;
 <%       } %>
 <%		} else { %>
-			<%=javaPackageClassName%> var_<%=mc.getLabel()%> = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, <%=fieldName%>, <%=isNullable%>, <%=allowMissing%>, (<%=javaClassName%>) <%=missingAttributeValue%>);
-			globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var_<%=mc.getLabel()%>);
+					<%=javaPackageClassName%> var = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, (<%=javaClassName%>) <%=missingAttributeValue%>);
+					globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
 <%       if (conn != null) { %>
-				<%=conn.getName()%>.<%=mc.getLabel()%> = var_<%=mc.getLabel()%>;
+					<%=conn.getName()%>.<%=mc.getLabel()%> = var;
 <%       } %>
-<%		}
-	} // for %>
+<%		} %>
+					if (var != null) {
+						countNotNullAttributes_<%=cid%>++;
+					}
+				}
+<%	} // for %>
 			globalMap.put("<%=cid%>_CURRENT_NODE", currentNode_<%=cid%>);
 			Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
 			globalMap.put("<%=cid%>_NB_LINE", counter.intValue() + 1);
+			globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", countNotNullAttributes_<%=cid%>);
 		} catch (Exception e) {
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 			throw e;
