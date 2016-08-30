@@ -115,7 +115,7 @@
 			pattern = "null";
 		}
 		String javaClassName = mc.getTalendType().substring(3);
-		String javaPackageClassName = JavaTypesManager.getTypeToGenerate(mc.getTalendType(), mc.isNullable());
+		String javaPackageClassName = JavaTypesManager.getTypeToGenerate(mc.getTalendType(), true);
 		boolean isDateValue = javaClassName.contains("Date");
 		boolean ignore = "false".equals(config.get("USE"));
 		boolean allowMissing = "true".equals(config.get("MISSING_ATTRIBUTE_ALLOWED"));
