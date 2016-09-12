@@ -110,7 +110,7 @@ public class JsonStreamParser {
 				}
 				String path = push(name);
 				// check if the path is expected, start collecting tokens
-				appendContent(path, "{");
+				appendObject(path, "{");
 				jsonLevel++;
 			} else if (token == JsonToken.START_ARRAY) {
 				if (firstToken) {
@@ -121,22 +121,22 @@ public class JsonStreamParser {
 					// in case of an array within an array
 					name = "";
 				}
-				String path = push(name + "[*]");
 				// check if the path is expected, start collecting tokens
-				appendContent(path, "[");
+				appendContent(getCurrentStackPath(), "["); // the start of the array applies to the former object
+				push(name + "[*]");
 				jsonLevel++;
 			} else if (token == JsonToken.FIELD_NAME) {
 				appendName(getCurrentStackPath(), "\"" + parser.getText() + "\":");
 			} else if (token == JsonToken.VALUE_TRUE || token == JsonToken.VALUE_FALSE) {
-				appendContent(getCurrentStackPath() + "." + parser.getCurrentName(), parser.getText());
+				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), parser.getText());
 			} else if (token == JsonToken.VALUE_NULL) {
-				appendContent(getCurrentStackPath() + "." + parser.getCurrentName(), "null");
+				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), "null");
 			} else if (token == JsonToken.VALUE_NUMBER_FLOAT) {
-				appendContent(getCurrentStackPath() + "." + parser.getCurrentName(), parser.getText());
+				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), parser.getText());
 			} else if (token == JsonToken.VALUE_NUMBER_INT) {
-				appendContent(getCurrentStackPath() + "." + parser.getCurrentName(), parser.getText());
+				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), parser.getText());
 			} else if (token == JsonToken.VALUE_STRING) {
-				appendContent(getCurrentStackPath() + "." + parser.getCurrentName(), "\"" + parser.getText().replace("\n", "\\n") + "\"");
+				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), "\"" + parser.getText().replace("\n", "\\n") + "\"");
 			} else if (token == JsonToken.END_OBJECT) {
 				String path = pop();
 				appendContent(path, "}");
@@ -155,8 +155,6 @@ public class JsonStreamParser {
 						} else if (loopPathLevel == jsonLevel) {
 							currentLoopIndex++;
 							endReached = true;
-							break;
-						} else {
 							break;
 						}
 					}
@@ -178,8 +176,6 @@ public class JsonStreamParser {
 					} else if (loopPathLevel == jsonLevel) {
 						currentLoopIndex++;
 						endReached = true;
-						break;
-					} else {
 						break;
 					}
 				}
@@ -226,6 +222,53 @@ public class JsonStreamParser {
 					currentPathContentMap.put(ep, sb);
 				} else {
 					if (sb.toString().endsWith("{") == false) {
+						sb.append(",");
+					}
+					sb.append(name);
+				}
+			}
+		}
+	}
+
+	private void appendObject(String path, String name) {
+		if (logger.isTraceEnabled()) {
+			logger.trace("appendObject: path: " + path + " name: " + name);
+		}
+		for (String ep : expectedPathSet) {
+			if (path.startsWith(ep)) {
+				if (logger.isTraceEnabled()) {
+					logger.trace("	apply to ep: " + ep);
+				}
+				StringBuilder sb = currentPathContentMap.get(ep);
+				if (sb == null) {
+					sb = new StringBuilder(name);
+					currentPathContentMap.put(ep, sb);
+				} else {
+					if (sb.toString().endsWith("}")) {
+						sb.append(",");
+					}
+					sb.append(name);
+				}
+			}
+		}
+	}
+
+	private void appendValue(String path, String name) {
+		if (logger.isTraceEnabled()) {
+			logger.trace("appendObject: path: " + path + " name: " + name);
+		}
+		for (String ep : expectedPathSet) {
+			if (path.startsWith(ep)) {
+				if (logger.isTraceEnabled()) {
+					logger.trace("	apply to ep: " + ep);
+				}
+				StringBuilder sb = currentPathContentMap.get(ep);
+				if (sb == null) {
+					sb = new StringBuilder(name);
+					currentPathContentMap.put(ep, sb);
+				} else {
+					if (sb.toString().endsWith(":") == false && sb.toString().endsWith("[") == false) {
+						// we have no attribute name before, it must be an value array
 						sb.append(",");
 					}
 					sb.append(name);
