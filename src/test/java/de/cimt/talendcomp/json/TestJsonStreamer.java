@@ -19,18 +19,20 @@ public class TestJsonStreamer {
 	
 	@Test
 	public void testReadSimpleArray() throws Exception {
+		System.out.println("Test testReadSimpleArray #################################");
 		JsonStreamParser p = new JsonStreamParser();
 		p.addColumnAttrPath("id", "$[*].id");
 		p.addColumnAttrPath("name", "$[*].name");
 		p.addColumnAttrPath("city", "$[*].city");
-		p.addColumnAttrPath("json", "$[*]");
 		p.setLoopPath("$[*]");
 		p.setInputFile("/Volumes/Data/Talend/testdata/json/small_simple_array.json");
 		int index = 0;
 		while (p.next()) {
 			System.out.println("id=" + p.getValue("id"));
 			System.out.println("name=" + p.getValue("name"));
-			System.out.println("json=" + p.getValue("json"));
+			System.out.println("city=" + p.getValue("city"));
+			System.out.println("json=" + p.getLoopJsonNode());
+			System.out.println("-------------------------");
 			index++;
 		}
 		System.out.println("loop index: " + index);
@@ -39,14 +41,14 @@ public class TestJsonStreamer {
 	
 	@Test
 	public void testReadComplexArray() throws Exception {
+		System.out.println("Test testReadComplexArray #################################");
 		JsonStreamParser p = new JsonStreamParser();
 		p.addColumnAttrPath("integer-value", "$.test.object[*].demo[*].integer-value");
-		p.addColumnAttrPath("json", "$.test.object[*].demo[*]");
 		p.setLoopPath("$.test.object[*].demo[*]");
 		p.setInputFile("/Volumes/Data/Talend/testdata/json/test_1.json");
 		int index = 0;
 		while (p.next()) {
-			System.out.println("json=" + p.getValue("json"));
+			System.out.println("json=" + p.getLoopJsonNode());
 			index++;
 		}
 		System.out.println("loop index: " + index);
@@ -55,14 +57,14 @@ public class TestJsonStreamer {
 
 	@Test
 	public void testReadComplexArray2() throws Exception {
+		System.out.println("Test testReadComplexArray2 #################################");
 		JsonStreamParser p = new JsonStreamParser();
 		p.addColumnAttrPath("integer-value", "$.test.object[*].demo[*].integer-value");
-		p.addColumnAttrPath("json", "$.test.object[*]");
 		p.setLoopPath("$.test.object[*]");
 		p.setInputFile("/Volumes/Data/Talend/testdata/json/test_1.json");
 		int index = 0;
 		while (p.next()) {
-			System.out.println("json=" + p.getValue("json"));
+			System.out.println("json=" + p.getLoopJsonNode());
 			index++;
 		}
 		System.out.println("loop index: " + index);

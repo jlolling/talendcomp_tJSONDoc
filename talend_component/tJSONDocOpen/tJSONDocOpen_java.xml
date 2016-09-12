@@ -114,7 +114,7 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-4.4.jar" REQUIRED="true" />
+			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-5.0.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 

@@ -4,7 +4,7 @@
   <groupId>de.cimt.talendcomp</groupId>
   <artifactId>cimt-talendcomp-json</artifactId>
   <name>JSON Builder</name>
-  <version>4.4</version>
+  <version>5.0</version>
   <organization>
     <name>cimt AG</name>
   </organization>
@@ -18,6 +18,32 @@
             <goals>
               <goal>shade</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.coderplus.maven.plugins</groupId>
+        <artifactId>copy-rename-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <id>copy-file</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <fileSets>
+                <fileSet>
+                  <sourceFile>target/${project.build.finalName}.jar</sourceFile>
+                  <destinationFile>talend_component/tJSONDocOpen/${project.artifactId}-${project.version}.jar</destinationFile>
+                </fileSet>
+                <fileSet>
+                  <sourceFile>target/${project.build.finalName}.jar</sourceFile>
+                  <destinationFile>talend_component/tJSONDocInputStream/${project.artifactId}-${project.version}.jar</destinationFile>
+                </fileSet>
+              </fileSets>
+            </configuration>
           </execution>
         </executions>
       </plugin>

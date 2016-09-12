@@ -35,6 +35,7 @@ public class JsonStreamParser {
 	private boolean firstToken = true;
 	private int jsonLevel = 0;
 	private int loopPathLevel = -1;
+	private static String loopPathDummyName = "#LOOP";
 	
 	public static void enableTraceLogging(boolean on) {
 		if (on) {
@@ -336,6 +337,7 @@ public class JsonStreamParser {
 			throw new IllegalArgumentException("loop path must not be null or empty!");
 		}
 		this.loopPath = loopPath;
+		addColumnAttrPath(loopPathDummyName, loopPath);
 	}
 	
 	public String getValue(String name) {
@@ -354,8 +356,9 @@ public class JsonStreamParser {
 		}
 	}
 	
-	public JsonNode parseString(String jsonString) throws Exception {
+	public JsonNode getLoopJsonNode() throws Exception {
+		String jsonString = getValue(loopPathDummyName);
 		return objectMapper.readTree(jsonString);
 	}
-	
+		
 }
