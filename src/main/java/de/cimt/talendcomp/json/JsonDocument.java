@@ -66,6 +66,7 @@ public class JsonDocument {
 	private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 	private Map<String, SimpleDateFormat> dateFormatMap = new HashMap<String, SimpleDateFormat>();
 	private DocumentContext rootContext = null;
+	private ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 	private static final Configuration JACKSON_JSON_NODE_CONFIGURATION = Configuration
             .builder()
             .mappingProvider(new JacksonMappingProvider())
@@ -75,7 +76,6 @@ public class JsonDocument {
 	private String currentPath = "";
 	
 	public JsonDocument(boolean isArray) {
-		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 		if (isArray) {
 			rootContext = parseContext.parse("[]");
 		} else {
@@ -89,7 +89,6 @@ public class JsonDocument {
 	}
 
 	public JsonDocument(String jsonContent) {
-		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
 			rootContext = parseContext.parse(jsonContent);
 		} else { 
@@ -103,7 +102,6 @@ public class JsonDocument {
 	}
 	
 	public JsonDocument(File jsonFile) throws Exception {
-		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 		if (jsonFile != null) {
 			if (jsonFile.exists() == false) {
 				throw new Exception("JSON input file: " + jsonFile.getAbsolutePath() + " does not exists or is not readable!");
@@ -122,7 +120,6 @@ public class JsonDocument {
 	}
 
 	public JsonDocument(JsonNode jsonNode, boolean isArray) throws Exception {
-		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 		if (jsonNode != null) {
 			rootContext = parseContext.parse("{}");
 			rootContext.set("$", jsonNode);
