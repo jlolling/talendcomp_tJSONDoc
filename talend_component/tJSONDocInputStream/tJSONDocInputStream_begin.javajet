@@ -38,6 +38,8 @@
     if (loopPath == null || loopPath.trim().isEmpty()) {
     	loopPath = "null";
     }
+    boolean provideJsonObject = "true".equals(ElementParameterParser.getValue(node, "__PROVIDE_CURRENT_JSON_OBJECT__"));
+    boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 %>
 	de.cimt.talendcomp.json.streaming.JsonStreamParser <%=cid%> = new de.cimt.talendcomp.json.streaming.JsonStreamParser();
 	<%=cid%>.setInputFile(<%=jsonFile%>);
@@ -55,12 +57,15 @@
 	<%=cid%>.addColumnAttrPath("<%=name%>", <%=jsonPath%>);
 <%  } %>
 	int count_<%=cid%> = 0;
+	int countRejected_<%=cid%> = 0;
 	while (true) {
 		try {
 			if (<%=cid%>.next() == false) {
 				break;
 			}
+<%  if (provideJsonObject) { %>
 			globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getLoopJsonNode());
+<%  } %>
 <%  for (int i = 0; i < listColumns.size(); i++) {
 		Map<String, String> config = configList.get(i);
 		boolean use = "true".equals(config.get("USE"));
@@ -94,5 +99,8 @@
 <%	} // for %> 
 		} catch (Exception e) {
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+			countRejected_<%=cid%>++;
+<%  if (dieOnError) { %>
 			throw e;
+<%  } %>
 		}

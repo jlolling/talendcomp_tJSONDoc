@@ -71,15 +71,32 @@
 			<DEFAULT />
 		</PARAMETER>
 
+		<PARAMETER 
+			NAME="DIE_ON_ERROR" 
+			FIELD="CHECK" 
+			REQUIRED="true" 
+			NUM_ROW="90"
+		>
+			<DEFAULT>true</DEFAULT>
+		</PARAMETER>
+
 	</PARAMETERS>
 	
 	<ADVANCED_PARAMETERS>
+		<PARAMETER 
+			NAME="PROVIDE_CURRENT_JSON_OBJECT" 
+			FIELD="CHECK" 
+			REQUIRED="true" 
+			NUM_ROW="10"
+		>
+			<DEFAULT>true</DEFAULT>
+		</PARAMETER>
 		
 	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-5.0.jar" REQUIRED="true" />
+			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-5.1.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 	

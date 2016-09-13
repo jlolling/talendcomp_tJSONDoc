@@ -205,7 +205,7 @@ public final class TypeUtil {
 		if (value == null || value.isEmpty()) {
 			return null;
 		}
-		value = value.replace("\\n", "\n");
+		value = value.replace("\\n", "\n").replace("\\\"", "\"");
 		return value;
 	}
 

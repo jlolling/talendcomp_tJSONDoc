@@ -14,9 +14,11 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 public class JsonStreamParser {
 	
@@ -137,7 +139,7 @@ public class JsonStreamParser {
 			} else if (token == JsonToken.VALUE_NUMBER_INT) {
 				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), parser.getText());
 			} else if (token == JsonToken.VALUE_STRING) {
-				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), "\"" + parser.getText().replace("\n", "\\n") + "\"");
+				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), getJsonStringValue(parser.getText()));
 			} else if (token == JsonToken.END_OBJECT) {
 				String path = pop();
 				appendContent(path, "}");
@@ -162,7 +164,7 @@ public class JsonStreamParser {
 				}
 			} else if (token == JsonToken.END_ARRAY) {
 				String path = pop();
-				appendContent(path, "]");
+				appendContent(getCurrentStackPath(), "]"); // the end of the array applies to the former object
 				jsonLevel--;
 				if (logger.isTraceEnabled()) {
 					logger.trace("END_ARRAY: path: " + path);
@@ -188,12 +190,16 @@ public class JsonStreamParser {
 		return endReached;
 	}
 	
+	private String getJsonStringValue(String rawText) throws JsonProcessingException {
+		return objectMapper.writeValueAsString(TextNode.valueOf(rawText));
+	}
+	
 	private void appendContent(String path, String value) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("appendContent: path: " + path + " value: " + value);
 		}
 		for (String ep : expectedPathSet) {
-			if (path.startsWith(ep)) {
+			if (isMatchingSubpath(path,ep)) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("	apply to ep: " + ep);
 				}
@@ -208,12 +214,32 @@ public class JsonStreamParser {
 		}
 	}
 	
+	public static boolean isMatchingSubpath(String path, String expectedPath) {
+		if (path.equals(expectedPath)) {
+			return true;
+		}
+		int pos = -1;
+		String ep = "";
+		while (true) {
+			pos = path.indexOf(".", pos + 1);
+			if (pos == -1) {
+				break;
+			} else {
+				ep = path.substring(0, pos);
+				if (expectedPath.equals(ep)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	private void appendName(String path, String name) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("appendName: path: " + path + " name: " + name);
 		}
 		for (String ep : expectedPathSet) {
-			if (path.startsWith(ep)) {
+			if (isMatchingSubpath(path,ep)) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("	apply to ep: " + ep);
 				}
@@ -236,7 +262,7 @@ public class JsonStreamParser {
 			logger.trace("appendObject: path: " + path + " name: " + name);
 		}
 		for (String ep : expectedPathSet) {
-			if (path.startsWith(ep)) {
+			if (isMatchingSubpath(path,ep)) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("	apply to ep: " + ep);
 				}
@@ -259,7 +285,7 @@ public class JsonStreamParser {
 			logger.trace("appendObject: path: " + path + " name: " + name);
 		}
 		for (String ep : expectedPathSet) {
-			if (path.startsWith(ep)) {
+			if (isMatchingSubpath(path,ep)) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("	apply to ep: " + ep);
 				}
@@ -350,7 +376,11 @@ public class JsonStreamParser {
 		}
 		StringBuilder sb = currentPathContentMap.get(path);
 		if (sb != null) {
-			return sb.toString();
+			String value = sb.toString();
+			if (value.startsWith("\"") && value.endsWith("\"")) {
+				value = value.substring(1, value.length() - 1);
+			}
+			return value;
 		} else {
 			return null;
 		}

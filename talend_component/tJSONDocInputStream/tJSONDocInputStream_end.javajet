@@ -11,3 +11,4 @@
 %>	
 	} // close loop for <%=cid%>
 	globalMap.put("<%=cid%>_NB_LINE", count_<%=cid%>);
+	globalMap.put("<%=cid%>_NB_LINE_REJECTED", countRejected_<%=cid%>);

@@ -99,5 +99,5 @@
 		</dependency>
 	</dependencies>
 	<artifactId>cimt-talendcomp-json</artifactId>
-	<version>5.0</version>
+	<version>5.1</version>
 </project>

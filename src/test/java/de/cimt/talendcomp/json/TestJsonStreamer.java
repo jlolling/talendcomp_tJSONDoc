@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.cimt.talendcomp.json.streaming.JsonStreamParser;
+import de.cimt.talendcomp.json.streaming.TypeUtil;
 
 public class TestJsonStreamer {
 
@@ -20,35 +21,41 @@ public class TestJsonStreamer {
 	@Test
 	public void testReadSimpleArray() throws Exception {
 		System.out.println("Test testReadSimpleArray #################################");
+		JsonStreamParser.enableTraceLogging(true);
 		JsonStreamParser p = new JsonStreamParser();
 		p.addColumnAttrPath("id", "$[*].id");
 		p.addColumnAttrPath("name", "$[*].name");
 		p.addColumnAttrPath("city", "$[*].city");
+		p.addColumnAttrPath("json", "$[*]");
 		p.setLoopPath("$[*]");
 		p.setInputFile("/Volumes/Data/Talend/testdata/json/small_simple_array.json");
 		int index = 0;
 		while (p.next()) {
-			System.out.println("id=" + p.getValue("id"));
-			System.out.println("name=" + p.getValue("name"));
-			System.out.println("city=" + p.getValue("city"));
+			System.out.println("id=" + TypeUtil.convertToInteger(p.getValue("id")));
+			System.out.println("name=" + TypeUtil.convertToString(p.getValue("name")));
+			System.out.println("city=" + TypeUtil.convertToString(p.getValue("city")));
 			System.out.println("json=" + p.getLoopJsonNode());
 			System.out.println("-------------------------");
 			index++;
 		}
 		System.out.println("loop index: " + index);
-		assertTrue(p.getCurrentLoopIndex() == 3);
+		assertTrue(index == 1);
 	}
 	
 	@Test
 	public void testReadComplexArray() throws Exception {
 		System.out.println("Test testReadComplexArray #################################");
+		JsonStreamParser.enableTraceLogging(true);
 		JsonStreamParser p = new JsonStreamParser();
 		p.addColumnAttrPath("integer-value", "$.test.object[*].demo[*].integer-value");
+		p.addColumnAttrPath("json", "$.test.object[*].demo[*]");
 		p.setLoopPath("$.test.object[*].demo[*]");
 		p.setInputFile("/Volumes/Data/Talend/testdata/json/test_1.json");
 		int index = 0;
 		while (p.next()) {
-			System.out.println("json=" + p.getLoopJsonNode());
+			System.out.println("integer-value=" + p.getValue("integer-value"));
+			System.out.println("json=" + p.getValue("json"));
+			System.out.println("node=" + p.getLoopJsonNode());
 			index++;
 		}
 		System.out.println("loop index: " + index);
@@ -64,11 +71,51 @@ public class TestJsonStreamer {
 		p.setInputFile("/Volumes/Data/Talend/testdata/json/test_1.json");
 		int index = 0;
 		while (p.next()) {
-			System.out.println("json=" + p.getLoopJsonNode());
+//			System.out.println("json=" + p.getLoopJsonNode());
 			index++;
 		}
 		System.out.println("loop index: " + index);
 		assertTrue(p.getCurrentLoopIndex() == 2);
+	}
+
+	@Test
+	public void testReadEscaped() throws Exception {
+		System.out.println("Test testReadEscaped #################################");
+		JsonStreamParser.enableTraceLogging(true);
+		JsonStreamParser p = new JsonStreamParser();
+		p.addColumnAttrPath("title", "$.products[*].titel");
+		p.addColumnAttrPath("json", "$.products[*]");
+		p.setLoopPath("$.products[*]");
+		p.setInputFile("/Volumes/Data/Talend/testdata/json/products_small.json");
+		int index = 0;
+		while (p.next()) {
+			System.out.println("json=" + p.getValue("json"));
+			System.out.println("title=" + p.getValue("title"));
+			index++;
+		}
+		System.out.println("loop index: " + index);
+		assertTrue(true);
+	}
+	
+	@Test
+	public void testPathMathingFalse() {
+		String expath = "$.products[*].titel";
+		String path = "$.products[*].titelBereinigt";
+		assertTrue(JsonStreamParser.isMatchingSubpath(path, expath) == false);
+	}
+
+	@Test
+	public void testPathMathingTrue() {
+		String expath = "$.products[*]";
+		String path = "$.products[*].titel";
+		assertTrue(JsonStreamParser.isMatchingSubpath(path, expath));
+	}
+
+	@Test
+	public void testPathMathingNoObject() {
+		String expath = "$[*]";
+		String path = "$[*]";
+		assertTrue(JsonStreamParser.isMatchingSubpath(path, expath));
 	}
 
 }
