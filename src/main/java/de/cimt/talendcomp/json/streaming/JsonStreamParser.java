@@ -377,6 +377,9 @@ public class JsonStreamParser {
 		StringBuilder sb = currentPathContentMap.get(path);
 		if (sb != null) {
 			String value = sb.toString();
+			if ("null".equals(value)) {
+				return null;
+			}
 			if (value.startsWith("\"") && value.endsWith("\"")) {
 				value = value.substring(1, value.length() - 1);
 			}
