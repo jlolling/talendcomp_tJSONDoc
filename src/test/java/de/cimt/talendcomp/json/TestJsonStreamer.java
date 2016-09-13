@@ -26,7 +26,6 @@ public class TestJsonStreamer {
 		p.addColumnAttrPath("id", "$[*].id");
 		p.addColumnAttrPath("name", "$[*].name");
 		p.addColumnAttrPath("city", "$[*].city");
-		p.addColumnAttrPath("json", "$[*]");
 		p.setLoopPath("$[*]");
 		p.setInputFile("/Volumes/Data/Talend/testdata/json/small_simple_array.json");
 		int index = 0;
@@ -39,7 +38,7 @@ public class TestJsonStreamer {
 			index++;
 		}
 		System.out.println("loop index: " + index);
-		assertTrue(index == 1);
+		assertTrue(index == 3);
 	}
 	
 	@Test
