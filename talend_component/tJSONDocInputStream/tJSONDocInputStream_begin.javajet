@@ -97,6 +97,7 @@
 <%		} %>
 			}
 <%	} // for %> 
+			count_<%=cid%>++;
 		} catch (Exception e) {
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 			countRejected_<%=cid%>++;

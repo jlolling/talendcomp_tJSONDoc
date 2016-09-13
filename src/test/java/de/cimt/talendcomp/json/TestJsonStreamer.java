@@ -30,6 +30,7 @@ public class TestJsonStreamer {
 		p.setInputFile("/Volumes/Data/Talend/testdata/json/small_simple_array.json");
 		int index = 0;
 		while (p.next()) {
+			System.out.println("index=" + p.getCurrentLoopIndex());
 			System.out.println("id=" + TypeUtil.convertToInteger(p.getValue("id")));
 			System.out.println("name=" + TypeUtil.convertToString(p.getValue("name")));
 			System.out.println("city=" + TypeUtil.convertToString(p.getValue("city")));
