@@ -62,6 +62,11 @@
 			}
 			globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getLoopJsonNode());
 <%  for (int i = 0; i < listColumns.size(); i++) {
+		Map<String, String> config = configList.get(i);
+		boolean use = "true".equals(config.get("USE"));
+		if (use == false) {
+			continue;
+		}
 		IMetadataColumn mc = listColumns.get(i);
 		String pattern = mc.getPattern();
 		if (pattern == null || pattern.trim().isEmpty()) {
