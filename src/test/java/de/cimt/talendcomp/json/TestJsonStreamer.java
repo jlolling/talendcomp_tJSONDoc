@@ -23,10 +23,10 @@ public class TestJsonStreamer {
 		System.out.println("Test testReadSimpleArray #################################");
 		JsonStreamParser.enableTraceLogging(true);
 		JsonStreamParser p = new JsonStreamParser();
-		p.addColumnAttrPath("id", "$[*].id");
-		p.addColumnAttrPath("name", "$[*].name");
-		p.addColumnAttrPath("city", "$[*].city");
 		p.setLoopPath("$[*]");
+		p.addColumnAttrPath("id", "id");
+		p.addColumnAttrPath("name", "name");
+		p.addColumnAttrPath("city", "city");
 		p.setInputFile("/Volumes/Data/Talend/testdata/json/small_simple_array.json");
 		int index = 0;
 		while (p.next()) {

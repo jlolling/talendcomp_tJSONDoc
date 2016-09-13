@@ -5,11 +5,11 @@
 		AUTHOR="cimt AG" 
 		COMPATIBILITY="ALL"
 		PLATEFORM="ALL" 
-		RELEASE_DATE="20160827"
+		RELEASE_DATE="20160913"
 		SERIAL="" 
 		STARTABLE="true" 
 		STATUS="PROD" 
-		VERSION="4.5">
+		VERSION="5.2">
 		<SIGNATURE />
 	</HEADER>
 
@@ -96,7 +96,7 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-5.1.jar" REQUIRED="true" />
+			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-5.2.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 	

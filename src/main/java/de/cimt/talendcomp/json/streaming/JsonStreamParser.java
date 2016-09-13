@@ -48,11 +48,17 @@ public class JsonStreamParser {
 	}
 	
 	public void addColumnAttrPath(String name, String attrPath) {
+		if (loopPath == null) {
+			throw new IllegalStateException("Loop path must be set before!");
+		}
 		if (name == null || name.trim().isEmpty()) {
 			throw new IllegalArgumentException("name must not be null or empty");
 		}
 		if (attrPath == null || attrPath.trim().isEmpty()) {
 			throw new IllegalArgumentException("attrPath must not be null or empty");
+		}
+		if (attrPath.startsWith("$") == false) {
+			attrPath = loopPath + "." + attrPath;
 		}
 		columnExpectedPathMap.put(name, attrPath);
 		expectedPathSet.add(attrPath);

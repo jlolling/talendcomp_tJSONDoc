@@ -43,7 +43,7 @@
 %>
 	de.cimt.talendcomp.json.streaming.JsonStreamParser <%=cid%> = new de.cimt.talendcomp.json.streaming.JsonStreamParser();
 	<%=cid%>.setInputFile(<%=jsonFile%>);
-	<%=cid%>.setLoopPath(<%=loopPath%>);
+	<%=cid%>.setLoopPath(<%=loopPath%>); // must set before adding the column attribute paths
 <%  for (Map<String, String> config : configList) {
 		String name = config.get("SCHEMA_COLUMN");
 		String jsonPath = config.get("JSON_PATH");
