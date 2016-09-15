@@ -23,6 +23,11 @@
 	if (outConns.size() > 0) {
 		conn = outConns.get(0);
 	}
+    IConnection rejectConn = null;
+	List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+	if (rejectConns != null && rejectConns.size() > 0) {
+		rejectConn = rejectConns.get(0);
+	}
 	List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>(); // dummy
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if (metadatas != null && metadatas.size() > 0) {
@@ -63,6 +68,7 @@
 			if (<%=cid%>.next() == false) {
 				break;
 			}
+			<%=conn.getName()%> = new <%=conn.getName()%>Struct();
 <%  if (provideJsonObject) { %>
 			globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getLoopJsonNode());
 <%  } %>
@@ -87,7 +93,7 @@
 <%      } else { %>
 				<%=javaPackageClassName%> var = de.cimt.talendcomp.json.streaming.TypeUtil.convertTo<%=javaClassName%>(valueStr);
 <%      } 
-		if (conn != null) { 
+		if (conn != null) {
 			if (mc.isNullable() == false) { %>
 				if (var == null) {
 					throw new Exception("Not-nullable attribute: <%=mc.getLabel()%> is null in record index: " + count_<%=cid%>);
@@ -98,10 +104,23 @@
 			}
 <%	} // for %> 
 			count_<%=cid%>++;
+<%  if (rejectConn != null) { %>
+			<%=rejectConn.getName()%> = null; // set reject flow to null, not problem received
+<%  } %>
 		} catch (Exception e) {
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
-			countRejected_<%=cid%>++;
 <%  if (dieOnError) { %>
 			throw e;
+<%  } else { %>
+			countRejected_<%=cid%>++;
+<%		if (conn != null) { %>
+			<%=conn.getName()%> = null;
+<%  	} %>
+<%  	if (rejectConn != null) { %>
+			<%=rejectConn.getName()%> = new <%=rejectConn.getName()%>Struct();
+			<%=rejectConn.getName()%>.documentNumber = count_<%=cid%>;
+			<%=rejectConn.getName()%>.json = <%=cid%>.getLoopJsonString();
+			<%=rejectConn.getName()%>.errorMessage = e.getMessage();			
+<%  	} %>
 <%  } %>
 		}

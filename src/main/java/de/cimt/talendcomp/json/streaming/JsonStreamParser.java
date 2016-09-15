@@ -395,6 +395,10 @@ public class JsonStreamParser {
 		}
 	}
 	
+	public String getLoopJsonString() {
+		return getValue(loopPathDummyName);
+	}
+	
 	public JsonNode getLoopJsonNode() throws Exception {
 		String jsonString = getValue(loopPathDummyName);
 		return objectMapper.readTree(jsonString);
