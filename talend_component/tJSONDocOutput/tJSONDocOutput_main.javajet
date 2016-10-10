@@ -38,31 +38,33 @@
 		jsonPath = "null";
    }
    String outputType = ElementParameterParser.getValue(node, "__OUTPUT_STRUCTURE__");
+   boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+   							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
 	if (globalMap.get("<%=cid%>") == null || (globalMap.get("<%=cid%>") != globalMap.get("<%=docComp%>"))) {
 		try {
 			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 			globalMap.put("<%=cid%>", <%=cid%>);
 			// get the parent object we have to dock on
-	   	com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
-	   	String jsonPath = <%=jsonPath%>;
-	   	// build path to enhance the error messages
-	   	String path = null;
-	   	if (jsonPath != null && jsonPath.isEmpty() == false) {
-	   		if (jsonPath.startsWith("$")) {
-	   			path = jsonPath;
-	   		} else if (".".equals(jsonPath)) {
-	   			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
+	   		com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
+	   		String jsonPath = <%=jsonPath%>;
+	   		// build path to enhance the error messages
+	   		String path = null;
+	   		if (jsonPath != null && jsonPath.isEmpty() == false) {
+	   			if (jsonPath.startsWith("$")) {
+	   				path = jsonPath;
+	   			} else if (".".equals(jsonPath)) {
+	   				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
+	   			} else {
+	   				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH") + "." + jsonPath;
+	   			}
 	   		} else {
-	   			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH") + "." + jsonPath;
+   				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
 	   		}
-	   	} else {
-   			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
-	   	}
-	   	globalMap.put("<%=cid%>_CURRENT_PATH", path);
-	   	<%=cid%>.setCurrentPath(path);
+	   		globalMap.put("<%=cid%>_CURRENT_PATH", path);
+	   		<%=cid%>.setCurrentPath(path);
 <% if (outputType.startsWith("ARRAY_")) { %>
-	   	// take care the path will be created as array
+	   		// take care the path will be created as array
 			if (jsonPath == null) {
 				jsonPath = "[0]";
 			} else if (jsonPath.endsWith("]") == false) {
@@ -87,10 +89,13 @@
 			globalMap.put("parent_node_<%=cid%>", parentNode_<%=cid%>);
 			globalMap.put("<%=cid%>_NB_LINE", 0);
 		} catch (Exception e) {
+<% if (log4jEnabled) { %>
+			log.error(currentComponent + ": " + e.getMessage(), e);
+<% } %>
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 			throw e;
 		}
-   }	
+    }	
 	try { // start block for <%=cid%>
 		// get the parent node
 <% if ("ARRAY_OF_OBJECTS".equals(outputType)) { %>
@@ -103,16 +108,16 @@
 		}
 		com.fasterxml.jackson.databind.node.ObjectNode currentNode_<%=cid%> = parentNode.addObject();
 <% } else if ("ARRAY_OF_VALUES".equals(outputType)) { %>
-      com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
-      com.fasterxml.jackson.databind.node.ArrayNode currentNode_<%=cid%> = null;
+        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+        com.fasterxml.jackson.databind.node.ArrayNode currentNode_<%=cid%> = null;
 		if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
 			currentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ArrayNode) node;
 		} else {
 			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ArrayNode is expected, but there is already an ObjectNode from the component: " + <%=cid%> + ". Check the configuration.");
 		}
 <% } else if ("SINGLE_OBJECT".equals(outputType)) { %>
-      com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
-      com.fasterxml.jackson.databind.node.ObjectNode currentNode_<%=cid%> = null;
+        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+        com.fasterxml.jackson.databind.node.ObjectNode currentNode_<%=cid%> = null;
 		if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
 			currentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ObjectNode) node;
 		} else {
@@ -158,40 +163,40 @@
 <%		} else {
 			if (isDoc) {
 				if ("Object".equals(javaClassName)) {
-            	if (omitAttribute) { %>
+            		if (omitAttribute) { %>
 			if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
 				currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
 			}
-<%          	} else { %>
+<%          		} else { %>
 			currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
-<%          	} %>              
+<%          		} %>              
 <%   		   } else if ("String".equals(javaClassName)) {
-            	if (omitAttribute) { %>
+            		if (omitAttribute) { %>
 			if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
 				currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
 			}
-<%          	} else { %>
+<%          		} else { %>
 			currentNode_<%=cid%>.add(<%=cid%>.buildNode(<%=conn.getName()%>.<%=mc.getLabel()%>));
-<%          	} %>              
-<%          } else { %>
+<%          		} %>              
+<%          	} else { %>
 			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Misconfiguration in column: <%=mc.getLabel()%>. It must be of type Object (actually JsonNode) or String."); 
-<%          } %>
+<%          	} %>
 <%			} else if (isDateValue) { 
-            if (omitAttribute) { %>
+            	if (omitAttribute) { %>
 			if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
 				currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
 			}
-<%          } else { %>
+<%          	} else { %>
 			currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
-<%          } %>              
+<%          	} %>              
 <%			} else { 
-            if (omitAttribute) { %>
+            	if (omitAttribute) { %>
 			if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
 				currentNode_<%=cid%>.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
 			}
-<%          } else { %>
+<%          	} else { %>
 			currentNode_<%=cid%>.add(<%=conn.getName()%>.<%=mc.getLabel()%>);
-<%          } %>
+<%          	} %>
 <%			}
 		} %>
 		}
@@ -202,6 +207,9 @@
 		Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
 		globalMap.put("<%=cid%>_NB_LINE", counter.intValue() + 1);
 	} catch (Exception e) {
+<% if (log4jEnabled) { %>
+		log.error(currentComponent + ": " + e.getMessage(), e);
+<% } %>
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 		throw e;
 	}

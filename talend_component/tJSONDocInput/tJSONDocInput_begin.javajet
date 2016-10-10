@@ -33,19 +33,21 @@
 	}
 	@SuppressWarnings("unchecked")
 	List<Map<String, String>> configList = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__COLUMN_CONFIG__");
-   String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
-   String jsonPath = null;
-   boolean useParentObject = "true".equals(ElementParameterParser.getValue(node, "__USE_PARENT_AS_CURRENT_OBJECT__"));
-   if (useParentObject) {
-			jsonPath = "\".\"";
-   } else {
-   	jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
-	   if (jsonPath == null || jsonPath.trim().isEmpty()) {
+    String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+    String jsonPath = null;
+    boolean useParentObject = "true".equals(ElementParameterParser.getValue(node, "__USE_PARENT_AS_CURRENT_OBJECT__"));
+    if (useParentObject) {
+		jsonPath = "\".\"";
+    } else {
+   		jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
+	   		if (jsonPath == null || jsonPath.trim().isEmpty()) {
 			jsonPath = "null";
    	}
-   }
-   boolean dieIfParentNotExists = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_PATH_DOES_NOT_EXISTS__"));
-   boolean dieIfParentIsEmpty = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_OBJECT_IS_EMPTY__"));
+   	}
+   	boolean dieIfParentNotExists = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_PATH_DOES_NOT_EXISTS__"));
+   	boolean dieIfParentIsEmpty = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_OBJECT_IS_EMPTY__"));
+    boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+   							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
 	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
@@ -85,12 +87,15 @@
 			globalMap.put("parent_node_<%=cid%>", parentNode_<%=cid%>);
 			globalMap.put("<%=cid%>_NB_LINE", 0);
 		} catch (Exception e) {
+<% 		if (log4jEnabled) { %>
+			log.error(currentComponent + ": " + e.getMessage(), e);
+<% 		} %>
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 			throw e;
 		}
-   } else {
-   	throw new Exception("No JSON document received from the parent component: <%=docComp%>. This is a misconfiguration within the job!");
-   }
+	} else {
+   		throw new Exception("No JSON document received from the parent component: <%=docComp%>. This is a misconfiguration within the job!");
+	}
 	java.util.List<com.fasterxml.jackson.databind.JsonNode> listNodes_<%=cid%> = <%=cid%>.getArrayValuesAsList(parentNode_<%=cid%>);
 <% if (dieIfParentIsEmpty) { %>
 	if (listNodes_<%=cid%>.isEmpty()) {
@@ -127,34 +132,37 @@
 		if (ignore) {
 			continue; // skip over this column
 		} %>
-				{
-					String fieldName = <%=fieldName%>;
-					if (fieldName == null || fieldName.trim().isEmpty()) {
-						fieldName = <%=fieldLabel%>;
-					}
-<%		if (isDateValue) { %>
-					<%=javaPackageClassName%> var = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, <%=missingAttributeValue%>, <%=pattern%>);
-					globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
-<%       if (conn != null) { %>
-					<%=conn.getName()%>.<%=mc.getLabel()%> = var;
-<%       } %>
-<%		} else { %>
-					<%=javaPackageClassName%> var = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, (<%=javaClassName%>) <%=missingAttributeValue%>);
-					globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
-<%       if (conn != null) { %>
-					<%=conn.getName()%>.<%=mc.getLabel()%> = var;
-<%       } %>
-<%		} %>
-					if (var != null) {
-						countNotNullAttributes_<%=cid%>++;
-					}
+			{
+				String fieldName = <%=fieldName%>;
+				if (fieldName == null || fieldName.trim().isEmpty()) {
+					fieldName = <%=fieldLabel%>;
 				}
+<%		if (isDateValue) { %>
+				<%=javaPackageClassName%> var = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, <%=missingAttributeValue%>, <%=pattern%>);
+				globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
+<%      	if (conn != null) { %>
+				<%=conn.getName()%>.<%=mc.getLabel()%> = var;
+<%       	} %>
+<%		} else { %>
+				<%=javaPackageClassName%> var = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, (<%=javaClassName%>) <%=missingAttributeValue%>);
+				globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
+<%      	if (conn != null) { %>
+				<%=conn.getName()%>.<%=mc.getLabel()%> = var;
+<%       	} %>
+<%		} %>
+				if (var != null) {
+					countNotNullAttributes_<%=cid%>++;
+				}
+			}
 <%	} // for %>
 			globalMap.put("<%=cid%>_CURRENT_NODE", currentNode_<%=cid%>);
 			Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
 			globalMap.put("<%=cid%>_NB_LINE", counter.intValue() + 1);
 			globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", countNotNullAttributes_<%=cid%>);
 		} catch (Exception e) {
+<% 	if (log4jEnabled) { %>
+			log.error(currentComponent + ": " + e.getMessage(), e);
+<% 	} %>
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 			throw e;
 		}

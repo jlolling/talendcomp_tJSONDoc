@@ -10,8 +10,8 @@
 	" 
 %>
 <% 
-   CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-   INode node = (INode)codeGenArgument.getArgument();
+   	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+   	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	String setup = ElementParameterParser.getValue(node, "__SETUP__");
 	String jsonStringJava = "null";
@@ -55,6 +55,8 @@
 	if (conn != null) {
 		inputColumnName = ElementParameterParser.getValue(node, "__JSON_INPUT_COLUMN__");
 	}
+    boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+   							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
    try {
 <%  if ("EMPTY_OBJECT".equals(setup)) { %>   
@@ -96,6 +98,9 @@
 		globalMap.put("<%=cid%>_ROOT_NODE", <%=cid%>.getRootNode());
 		globalMap.put("<%=cid%>_CURRENT_PATH", "$");
    } catch (Exception e) {
-   	globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
-   	throw e;
+<% if (log4jEnabled) { %>
+		log.error(currentComponent + ": " + e.getMessage(), e);
+<% } %>
+   		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+   		throw e;
    }

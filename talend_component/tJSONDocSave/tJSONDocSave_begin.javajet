@@ -10,23 +10,24 @@
 	" 
 %>
 <% 
-   CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-   INode node = (INode) codeGenArgument.getArgument();
-   String cid = node.getUniqueName();
-   String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
-   String file = ElementParameterParser.getValue(node, "__OUTPUT_FILE_PATH__");
-   boolean outputAsfile = "true".equals(ElementParameterParser.getValue(node, "__OUTPUT_AS_FILE__"));
-   boolean prettyPrint = "true".equals(ElementParameterParser.getValue(node, "__PRETTY_PRINT__"));
-   boolean ignoreEmpty = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY__"));
-   boolean debugOutput = "true".equals(ElementParameterParser.getValue(node, "__STD_OUTPUT__"));
-   String outputColumn = ElementParameterParser.getValue(node, "__JSON_OUTPUT_COLUMN__"); 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+	String file = ElementParameterParser.getValue(node, "__OUTPUT_FILE_PATH__");
+	boolean outputAsfile = "true".equals(ElementParameterParser.getValue(node, "__OUTPUT_AS_FILE__"));
+	boolean prettyPrint = "true".equals(ElementParameterParser.getValue(node, "__PRETTY_PRINT__"));
+	boolean ignoreEmpty = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY__"));
+	boolean debugOutput = "true".equals(ElementParameterParser.getValue(node, "__STD_OUTPUT__"));
+	String outputColumn = ElementParameterParser.getValue(node, "__JSON_OUTPUT_COLUMN__"); 
 	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
 	String outgoingConnName = null;
 	if (outConns != null && outConns.isEmpty() == false) {
     	IConnection outConn = outConns.get(0);
     	outgoingConnName = outConn.getName();
 	}
-   
+	boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+   							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
 	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 <%	if (outputAsfile) { %>
@@ -35,6 +36,9 @@
 		<%=cid%>.writeToFile(filePath_<%=cid%>, <%=prettyPrint%>, <%=ignoreEmpty%>);
 		globalMap.put("<%=cid%>_OUTPUT_FILE_PATH", filePath_<%=cid%>);
 	} catch (Exception e) {
+<% 		if (log4jEnabled) { %>
+		log.error(currentComponent + ": " + e.getMessage(), e);
+<% 		} %>
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 		throw e;
 	}
@@ -43,6 +47,9 @@
 	try {
 		jsonString_<%=cid%> = <%=cid%>.getJsonString(<%=prettyPrint%>, <%=ignoreEmpty%>);
 	} catch (Exception e) {
+<% 		if (log4jEnabled) { %>
+		log.error(currentComponent + ": " + e.getMessage(), e);
+<% 		} %>
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 		throw e;
 	}

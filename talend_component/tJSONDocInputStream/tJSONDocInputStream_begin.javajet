@@ -45,6 +45,8 @@
     }
     boolean provideJsonObject = "true".equals(ElementParameterParser.getValue(node, "__PROVIDE_CURRENT_JSON_OBJECT__"));
     boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+    boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+   							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
 	de.cimt.talendcomp.json.streaming.JsonStreamParser <%=cid%> = new de.cimt.talendcomp.json.streaming.JsonStreamParser();
 	<%=cid%>.setInputFile(<%=jsonFile%>);
@@ -110,6 +112,9 @@
 		} catch (Exception e) {
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 <%  if (dieOnError) { %>
+<% 		if (log4jEnabled) { %>
+			log.error(currentComponent + ": " + e.getMessage(), e);
+<% 		} %>
 			throw e;
 <%  } else { %>
 			countRejected_<%=cid%>++;
