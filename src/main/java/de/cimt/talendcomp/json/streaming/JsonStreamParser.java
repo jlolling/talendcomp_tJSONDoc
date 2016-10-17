@@ -2,7 +2,9 @@ package de.cimt.talendcomp.json.streaming;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -32,11 +34,12 @@ public class JsonStreamParser {
 	private Map<String, String> columnExpectedPathMap = new HashMap<String, String>();
 	private Set<String> expectedPathSet = new TreeSet<String>();
 	private TreeMap<String, StringBuilder> currentPathContentMap = new TreeMap<String, StringBuilder>();
+	private List<String> keysToDel = new ArrayList<String>();
 	private boolean streamEnded = false;
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private boolean firstToken = true;
 	private int jsonLevel = 0;
-	private int loopPathLevel = -1;
+	private int currLoopPathLevel = -1;
 	private static String loopPathDummyName = "#LOOP";
 	
 	public static void enableTraceLogging(boolean on) {
@@ -89,6 +92,84 @@ public class JsonStreamParser {
 		parser = factory.createParser(in);
 	}
 	
+	public static int getKeyLevel(String key) {
+		int level = 0;
+		for (int i = 0, n = key.length(); i < n; i++) {
+			char c = key.charAt(i);
+			if (c == '$') {
+				level++;
+			} else if (c == '[') {
+				level++;
+			} else if (c == '.') {
+				level++;
+			}
+		}
+		return level;
+	}
+	
+	private void clearPathContentMap() {
+		// prepare for next record
+		if (logger.isTraceEnabled()) {
+			logger.trace("clearPathContentMap:----------------------------");
+		}
+		for (String key : keysToDel) {
+			if (logger.isTraceEnabled()) {
+				logger.trace("clearPathContentMap: key=" + key + " -> remove");
+			}
+			currentPathContentMap.remove(key);
+		}
+		keysToDel.clear();
+//		Set<String> keys = new HashSet<String>(currentPathContentMap.keySet());
+//		for (String key : keys) {
+//			int keyLevel = getKeyLevel(key);
+//			if (logger.isTraceEnabled()) {
+//				logger.trace("clearPathContentMap: key=" + key + ", keyLevel=" + keyLevel + ", jsonLevel=" + jsonLevel);
+//			}
+//			if (keyLevel > jsonLevel) {
+//				if (logger.isTraceEnabled()) {
+//					logger.trace("clearPathContentMap: key=" + key + " -> remove");
+//				}
+//				currentPathContentMap.remove(key);
+//			}
+//		}
+	}
+	
+	private void collectKeysToDelete() {
+		// prepare for next record
+		if (logger.isTraceEnabled()) {
+			logger.trace("collectKeysToDelete:----------------------------");
+		}
+		for (String key : currentPathContentMap.keySet()) {
+			int keyLevel = getKeyLevel(key);
+			if (logger.isTraceEnabled()) {
+				logger.trace("collectKeysToDelete: key=" + key + ", keyLevel=" + keyLevel + ", jsonLevel=" + jsonLevel);
+			}
+			if (keyLevel > jsonLevel) {
+				if (logger.isTraceEnabled()) {
+					logger.trace("collectKeysToDelete: key=" + key + " -> mark");
+				}
+				if (keysToDel.contains(key) == false) {
+					keysToDel.add(key);
+				}
+			}
+		}
+	}
+		
+	private void incrementJsonLevel() {
+		jsonLevel++;
+		if (logger.isTraceEnabled()) {
+			logger.trace("incrementJsonLevel: jsonLevel=" + jsonLevel);
+		}
+	}
+	
+	private void decrementJsonLevel() {
+		jsonLevel--;
+		if (logger.isTraceEnabled()) {
+			logger.trace("decrementJsonLevel: jsonLevel=" + jsonLevel);
+		}
+		collectKeysToDelete();
+	}
+	
 	/**
 	 * parse the stream
 	 * @return true if an end of an loop element or the end was found
@@ -102,7 +183,7 @@ public class JsonStreamParser {
 			throw new IllegalArgumentException("Loop-path not set.");
 		}
 		// prepare for next record
-		currentPathContentMap = new TreeMap<String, StringBuilder>();
+		clearPathContentMap();
 		boolean endReached = false;
 		JsonToken token = null;
 		String name = null;
@@ -119,8 +200,8 @@ public class JsonStreamParser {
 				}
 				String path = push(name);
 				// check if the path is expected, start collecting tokens
+				incrementJsonLevel();
 				appendObject(path, "{");
-				jsonLevel++;
 			} else if (token == JsonToken.START_ARRAY) {
 				if (firstToken) {
 					firstToken = false;
@@ -131,9 +212,9 @@ public class JsonStreamParser {
 					name = "";
 				}
 				// check if the path is expected, start collecting tokens
+				incrementJsonLevel();
 				appendContent(getCurrentStackPath(), "["); // the start of the array applies to the former object
 				push(name + "[*]");
-				jsonLevel++;
 			} else if (token == JsonToken.FIELD_NAME) {
 				appendName(getCurrentStackPath(), "\"" + parser.getText() + "\":");
 			} else if (token == JsonToken.VALUE_TRUE || token == JsonToken.VALUE_FALSE) {
@@ -149,40 +230,38 @@ public class JsonStreamParser {
 			} else if (token == JsonToken.END_OBJECT) {
 				String path = pop();
 				appendContent(path, "}");
-				jsonLevel--;
+				decrementJsonLevel();
 				// check if we have reached the loop path end
 				if (logger.isTraceEnabled()) {
-					logger.trace("END_OBJECT: path: " + path);
+					logger.trace("END_OBJECT: path: " + path + ", level: " + jsonLevel);
 				}
 				if (loopPath.equals(path)) {
-					if (loopPath.equals(path)) {
-						if (loopPathLevel == -1) {
-							loopPathLevel = jsonLevel;
-							currentLoopIndex++;
-							endReached = true;
-							break;
-						} else if (loopPathLevel == jsonLevel) {
-							currentLoopIndex++;
-							endReached = true;
-							break;
-						}
+					if (currLoopPathLevel == -1) {
+						currLoopPathLevel = jsonLevel;
+						currentLoopIndex++;
+						endReached = true;
+						break;
+					} else if (currLoopPathLevel == jsonLevel) {
+						currentLoopIndex++;
+						endReached = true;
+						break;
 					}
 				}
 			} else if (token == JsonToken.END_ARRAY) {
 				String path = pop();
 				appendContent(getCurrentStackPath(), "]"); // the end of the array applies to the former object
-				jsonLevel--;
+				decrementJsonLevel();
 				if (logger.isTraceEnabled()) {
-					logger.trace("END_ARRAY: path: " + path);
+					logger.trace("END_ARRAY: path: " + path + ", level: " + jsonLevel);
 				}
 				// check if we have reached the loop path end
 				if (loopPath.equals(path)) {
-					if (loopPathLevel == -1) {
-						loopPathLevel = jsonLevel;
+					if (currLoopPathLevel == -1) {
+						currLoopPathLevel = jsonLevel;
 						currentLoopIndex++;
 						endReached = true;
 						break;
-					} else if (loopPathLevel == jsonLevel) {
+					} else if (currLoopPathLevel == jsonLevel) {
 						currentLoopIndex++;
 						endReached = true;
 						break;
@@ -202,12 +281,20 @@ public class JsonStreamParser {
 	
 	private void appendContent(String path, String value) {
 		if (logger.isTraceEnabled()) {
-			logger.trace("appendContent: path: " + path + " value: " + value);
+			logger.trace("appendContent: path: " + path + " level: " + jsonLevel + " value: " + value);
 		}
 		for (String ep : expectedPathSet) {
 			if (isMatchingSubpath(path,ep)) {
-				if (logger.isTraceEnabled()) {
-					logger.trace("	apply to ep: " + ep);
+				if (keysToDel.contains(ep)) {
+					currentPathContentMap.remove(ep);
+					keysToDel.remove(ep);
+					if (logger.isTraceEnabled()) {
+						logger.trace("	remove and set ep: " + ep);
+					}
+				} else {
+					if (logger.isTraceEnabled()) {
+						logger.trace("	append to ep: " + ep);
+					}
 				}
 				StringBuilder sb = currentPathContentMap.get(ep);
 				if (sb == null) {
@@ -242,10 +329,10 @@ public class JsonStreamParser {
 	
 	private void appendName(String path, String name) {
 		if (logger.isTraceEnabled()) {
-			logger.trace("appendName: path: " + path + " name: " + name);
+			logger.trace("appendName: path: " + path + " level: " + jsonLevel + " name: " + name);
 		}
 		for (String ep : expectedPathSet) {
-			if (isMatchingSubpath(path,ep)) {
+			if (isMatchingSubpath(path, ep)) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("	apply to ep: " + ep);
 				}
@@ -263,48 +350,64 @@ public class JsonStreamParser {
 		}
 	}
 
-	private void appendObject(String path, String name) {
+	private void appendObject(String path, String object) {
 		if (logger.isTraceEnabled()) {
-			logger.trace("appendObject: path: " + path + " name: " + name);
+			logger.trace("appendObject: path: " + path + " level: " + jsonLevel + " object: " + object);
 		}
 		for (String ep : expectedPathSet) {
 			if (isMatchingSubpath(path,ep)) {
-				if (logger.isTraceEnabled()) {
-					logger.trace("	apply to ep: " + ep);
+				if (keysToDel.contains(ep)) {
+					currentPathContentMap.remove(ep);
+					keysToDel.remove(ep);
+					if (logger.isTraceEnabled()) {
+						logger.trace("	remove and set ep: " + ep);
+					}
+				} else {
+					if (logger.isTraceEnabled()) {
+						logger.trace("	append to ep: " + ep);
+					}
 				}
 				StringBuilder sb = currentPathContentMap.get(ep);
 				if (sb == null) {
-					sb = new StringBuilder(name);
+					sb = new StringBuilder(object);
 					currentPathContentMap.put(ep, sb);
 				} else {
 					if (sb.toString().endsWith("}")) {
 						sb.append(",");
 					}
-					sb.append(name);
+					sb.append(object);
 				}
 			}
 		}
 	}
 
-	private void appendValue(String path, String name) {
+	private void appendValue(String path, String value) {
 		if (logger.isTraceEnabled()) {
-			logger.trace("appendObject: path: " + path + " name: " + name);
+			logger.trace("appendValue: path: " + path + " level: " + jsonLevel + " value: " + value);
 		}
 		for (String ep : expectedPathSet) {
-			if (isMatchingSubpath(path,ep)) {
-				if (logger.isTraceEnabled()) {
-					logger.trace("	apply to ep: " + ep);
+			if (isMatchingSubpath(path, ep)) {
+				if (keysToDel.contains(ep)) {
+					currentPathContentMap.remove(ep);
+					keysToDel.remove(ep);
+					if (logger.isTraceEnabled()) {
+						logger.trace("	remove and set ep: " + ep);
+					}
+				} else {
+					if (logger.isTraceEnabled()) {
+						logger.trace("	append to ep: " + ep);
+					}
 				}
 				StringBuilder sb = currentPathContentMap.get(ep);
 				if (sb == null) {
-					sb = new StringBuilder(name);
+					sb = new StringBuilder(value);
 					currentPathContentMap.put(ep, sb);
 				} else {
 					if (sb.toString().endsWith(":") == false && sb.toString().endsWith("[") == false) {
 						// we have no attribute name before, it must be an value array
 						sb.append(",");
 					}
-					sb.append(name);
+					sb.append(value);
 				}
 			}
 		}
@@ -320,7 +423,7 @@ public class JsonStreamParser {
 
 	private String pop() {
 		if (logger.isTraceEnabled()) {
-			logger.trace("POP");
+			logger.trace("POP level=" + jsonLevel);
 		}
 		String path = getCurrentStackPath();
 		stack.pop();
@@ -401,7 +504,11 @@ public class JsonStreamParser {
 	
 	public JsonNode getLoopJsonNode() throws Exception {
 		String jsonString = getValue(loopPathDummyName);
-		return objectMapper.readTree(jsonString);
+		if (jsonString != null) {
+			return objectMapper.readTree(jsonString);
+		} else {
+			return null;
+		}
 	}
 		
 }
