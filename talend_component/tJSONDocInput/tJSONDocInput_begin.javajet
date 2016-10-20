@@ -56,24 +56,24 @@
 		try {
 			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 			globalMap.put("<%=cid%>", <%=cid%>);
-	   	String jsonPath = <%=jsonPath%>;
-	   	// build path to enhance the error messages
-	   	String path = null;
-	   	if (jsonPath != null && jsonPath.isEmpty() == false) {
-	   		if (jsonPath.startsWith("$")) {
-	   			path = jsonPath;
-	   		} else if (".".equals(jsonPath)) {
-	   			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
+	   		String jsonPath = <%=jsonPath%>;
+	   		// build path to enhance the error messages
+	   		String path = null;
+	   		if (jsonPath != null && jsonPath.isEmpty() == false) {
+	   			if (jsonPath.startsWith("$")) {
+	   				path = jsonPath;
+	   			} else if (".".equals(jsonPath)) {
+	   				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
+	   			} else {
+	   				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH") + "." + jsonPath;
+	   			}
 	   		} else {
-	   			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH") + "." + jsonPath;
+   				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
 	   		}
-	   	} else {
-   			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
-	   	}
-	   	globalMap.put("<%=cid%>_CURRENT_PATH", path);
-	   	<%=cid%>.setCurrentPath(path);
+	   		globalMap.put("<%=cid%>_CURRENT_PATH", path);
+	   		<%=cid%>.setCurrentPath(path);
 			// get the parent object we have to dock on
-	   	com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
+	   		com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
 			parentNode_<%=cid%> = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath, false);
 			if (parentNode_<%=cid%> == null) {
 <% if (dieIfParentNotExists) { %>
