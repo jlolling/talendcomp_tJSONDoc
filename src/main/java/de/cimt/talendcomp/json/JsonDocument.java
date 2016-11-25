@@ -47,7 +47,7 @@ import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
 /**
- * Convenient class to work with the Jackson API for JSON
+ * Convenient class to work with the Jackson-API for JSON
  */
 public class JsonDocument {
 	
@@ -610,7 +610,7 @@ public class JsonDocument {
 					throw new Exception(currentPath + ": Attribute: " + fieldName + ": value is null but configured as not-nullable!");
 				}
 				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {
-					throw new Exception(currentPath + ": Attribute: " + fieldName + " is is missing but mandatory!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing but mandatory!");
 				}
 			}
 			return valueNode;
@@ -651,7 +651,7 @@ public class JsonDocument {
 					}
 				}
 				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {
-					throw new Exception(currentPath + ": Attribute: " + fieldName + " is is missing but mandatory!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing but mandatory!");
 				}
 			}
 			return valueNode;
@@ -898,14 +898,14 @@ public class JsonDocument {
 			for (int i = 0; i < n; i++) {
 				c = value.charAt(i);
 				switch (c) {
-				case '\n': sb.append("\\n"); break;
-				case '\t': sb.append("\\t"); break;
-				case '\"': sb.append("\\\""); break;
-				case '\\': sb.append("\\\\"); break;
-				case '\r': sb.append("\\r"); break;
-				case '\f': sb.append("\\f"); break;
-				case '\b': sb.append("\\b"); break;
-				default: sb.append(c);
+					case '\n': sb.append("\\n"); break;
+					case '\t': sb.append("\\t"); break;
+					case '\"': sb.append("\\\""); break;
+					case '\\': sb.append("\\\\"); break;
+					case '\r': sb.append("\\r"); break;
+					case '\f': sb.append("\\f"); break;
+					case '\b': sb.append("\\b"); break;
+					default: sb.append(c);
 				}
 			}
 			return sb.toString();
