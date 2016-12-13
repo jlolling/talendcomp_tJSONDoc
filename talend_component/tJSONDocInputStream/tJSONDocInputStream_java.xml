@@ -5,12 +5,12 @@
 		AUTHOR="cimt AG" 
 		COMPATIBILITY="ALL"
 		PLATEFORM="ALL" 
-		RELEASE_DATE="20161017"
+		RELEASE_DATE="20161213"
 		SERIAL="" 
 		STARTABLE="true" 
 		STATUS="PROD" 
 		HAS_CONDITIONAL_OUTPUTS="true"
-		VERSION="5.3">
+		VERSION="5.4">
 		<SIGNATURE />
 	</HEADER>
 
@@ -113,7 +113,7 @@
 		<IMPORTS>
 			<IMPORT NAME="accessors-smart" MODULE="accessors-smart-1.1.jar" REQUIRED="true" />
 			<IMPORT NAME="asm" MODULE="asm-5.0.3.jar" REQUIRED="true" />
-			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-5.3.jar" REQUIRED="true" />
+			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-5.4.jar" REQUIRED="true" />
 			<IMPORT NAME="commons-lang3" MODULE="commons-lang3-3.4.jar" REQUIRED="true" />
 			<IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.7.0.jar" REQUIRED="true" />
 			<IMPORT NAME="jackson-core" MODULE="jackson-core-2.7.5.jar" REQUIRED="true" />

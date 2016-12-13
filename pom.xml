@@ -101,5 +101,5 @@
 		</dependency>
 	</dependencies>
 	<artifactId>cimt-talendcomp-json</artifactId>
-	<version>5.3</version>
+	<version>5.4</version>
 </project>

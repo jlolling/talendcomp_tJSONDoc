@@ -44,8 +44,15 @@
 			jsonPath = "null";
    	}
    	}
-   	boolean dieIfParentNotExists = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_PATH_DOES_NOT_EXISTS__"));
+   	boolean provideEmptyNode = "true".equals(ElementParameterParser.getValue(node, "__PROVIDE_EMPTY_OUTPUT_IF_PARENT_DOES_NOT_EXISTS__"));
+   	boolean dieIfParentNotExists = 	"true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_PATH_DOES_NOT_EXISTS__"));
+   	if (provideEmptyNode) {
+   		dieIfParentNotExists = false;
+   	}
    	boolean dieIfParentIsEmpty = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_OBJECT_IS_EMPTY__"));
+   	if (provideEmptyNode) {
+   		dieIfParentIsEmpty = false;
+   	}
     boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
@@ -78,18 +85,18 @@
 			if (parentNode_<%=cid%> == null) {
 <% if (dieIfParentNotExists) { %>
 				throw new Exception("Path: " + path + " does not exists!");
-<% } else { %>
+<%	} else { %>
 				globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
-<% } %>
+<%	} %>
 			} else {
 				globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", true);
 			}
 			globalMap.put("parent_node_<%=cid%>", parentNode_<%=cid%>);
 			globalMap.put("<%=cid%>_NB_LINE", 0);
 		} catch (Exception e) {
-<% 		if (log4jEnabled) { %>
+<%	if (log4jEnabled) { %>
 			log.error(currentComponent + ": " + e.getMessage(), e);
-<% 		} %>
+<%	} %>
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 			throw e;
 		}
@@ -97,11 +104,13 @@
    		throw new Exception("No JSON document received from the parent component: <%=docComp%>. This is a misconfiguration within the job!");
 	}
 	java.util.List<com.fasterxml.jackson.databind.JsonNode> listNodes_<%=cid%> = <%=cid%>.getArrayValuesAsList(parentNode_<%=cid%>);
-<% if (dieIfParentIsEmpty) { %>
 	if (listNodes_<%=cid%>.isEmpty()) {
+<% if (dieIfParentIsEmpty) { %>
 		throw new Exception("The referenced object: " + <%=jsonPath%> + " is empty!");
-	}
+<% } else if (provideEmptyNode) { %>
+		listNodes_<%=cid%>.add(<%=cid%>.createEmptyNode());
 <% } %>
+	}
 	globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", 0);
 	for (com.fasterxml.jackson.databind.JsonNode currentNode_<%=cid%> : listNodes_<%=cid%>) {
 		// loop over the given children of the parent node or the values of the array

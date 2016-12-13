@@ -145,6 +145,10 @@ public class JsonDocument {
 		return rootNode.isArray();
 	}
 	
+	public ObjectNode createEmptyNode() {
+		return objectMapper.createObjectNode();
+	}
+	
 	public ObjectNode createObjectNode(String name) {
 		ObjectNode child = ((ObjectNode) rootNode).objectNode();
 		if (isArray()) {

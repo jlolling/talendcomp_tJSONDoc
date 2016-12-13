@@ -5,11 +5,11 @@
 		AUTHOR="cimt AG" 
 		COMPATIBILITY="ALL"
 		PLATEFORM="ALL" 
-		RELEASE_DATE="20161010"
+		RELEASE_DATE="20161213"
 		SERIAL="" 
 		STARTABLE="true" 
 		STATUS="PROD" 
-		VERSION="5.3">
+		VERSION="5.4">
 		<SIGNATURE />
 	</HEADER>
 
@@ -62,10 +62,29 @@
 		</PARAMETER>
 
 		<PARAMETER 
-			NAME="DIE_IF_PARENT_JSON_PATH_DOES_NOT_EXISTS" 
+			NAME="PROVIDE_EMPTY_OUTPUT_IF_PARENT_DOES_NOT_EXISTS" 
 			FIELD="CHECK" 
 			REQUIRED="true" 
 			NUM_ROW="22"
+		>
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+
+	    <PARAMETER
+	        NAME="NOTE"
+	        FIELD="LABEL"
+	        NUM_ROW="23"
+	    >
+	      <DEFAULT>This option helps in case of you want to provide missing attribute values
+in case of the parent object does not exist.</DEFAULT>
+	    </PARAMETER>
+
+		<PARAMETER 
+			NAME="DIE_IF_PARENT_JSON_PATH_DOES_NOT_EXISTS" 
+			FIELD="CHECK" 
+			REQUIRED="true" 
+			NUM_ROW="24"
+			SHOW_IF="PROVIDE_EMPTY_OUTPUT_IF_PARENT_DOES_NOT_EXISTS == 'false'"
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
@@ -74,7 +93,8 @@
 			NAME="DIE_IF_PARENT_JSON_OBJECT_IS_EMPTY" 
 			FIELD="CHECK" 
 			REQUIRED="true" 
-			NUM_ROW="22"
+			NUM_ROW="24"
+			SHOW_IF="PROVIDE_EMPTY_OUTPUT_IF_PARENT_DOES_NOT_EXISTS == 'false'"
 		>
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
