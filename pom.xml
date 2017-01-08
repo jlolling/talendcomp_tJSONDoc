@@ -16,31 +16,68 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<outputDirectory>talend_component/tJSONDocOpen</outputDirectory>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
+				<groupId>de.cimt.talendcomp</groupId>
+				<artifactId>cimt-talendcomp-maven-plugin</artifactId>
+				<version>1.1</version>
+				<configuration>
+					<componentName>tJSONDocOpen</componentName>
+				</configuration>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
-						<phase>prepare-package</phase>
+						<id>tJSONDocOpen</id>
+						<phase>install</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
+							<goal>component</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.basedir}/talend_component/tJSONDocOpen</outputDirectory>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<includeScope>runtime</includeScope>
+							<componentName>tJSONDocOpen</componentName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>tJSONDocInputStream</id>
+						<phase>install</phase>
+						<goals>
+							<goal>component</goal>
+						</goals>
+						<configuration>
+							<componentName>tJSONDocInputStream</componentName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>tJSONDocInput</id>
+						<phase>install</phase>
+						<goals>
+							<goal>component</goal>
+						</goals>
+						<configuration>
+							<componentName>tJSONDocInput</componentName>
+							<noJars>true</noJars>
+						</configuration>
+					</execution>
+					<execution>
+						<id>tJSONDocOutput</id>
+						<phase>install</phase>
+						<goals>
+							<goal>component</goal>
+						</goals>
+						<configuration>
+							<componentName>tJSONDocOutput</componentName>
+							<noJars>true</noJars>
+						</configuration>
+					</execution>
+					<execution>
+						<id>tJSONDocSave</id>
+						<phase>install</phase>
+						<goals>
+							<goal>component</goal>
+						</goals>
+						<configuration>
+							<componentName>tJSONDocSave</componentName>
+							<noJars>true</noJars>
 						</configuration>
 					</execution>
 				</executions>

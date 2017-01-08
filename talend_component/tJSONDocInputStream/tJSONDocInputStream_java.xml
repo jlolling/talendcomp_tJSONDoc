@@ -1,134 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<COMPONENT>
-	<HEADER 
-		AUTHOR="cimt AG" 
-		COMPATIBILITY="ALL"
-		PLATEFORM="ALL" 
-		RELEASE_DATE="20161213"
-		SERIAL="" 
-		STARTABLE="true" 
-		STATUS="PROD" 
-		HAS_CONDITIONAL_OUTPUTS="true"
-		VERSION="5.4">
-		<SIGNATURE />
-	</HEADER>
-
-	<FAMILIES>
-		<FAMILY>JSON</FAMILY>
-	</FAMILIES>
-
-	<DOCUMENTATION>
-		<URL />
-	</DOCUMENTATION>
-
-	<CONNECTORS>
-		<CONNECTOR CTYPE="FLOW" MIN_INPUT="0" MAX_INPUT="0"
-			MIN_OUTPUT="0" MAX_OUTPUT="1" />
-		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
-		<CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
-		<CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
-		<CONNECTOR CTYPE="COMPONENT_OK" />
-		<CONNECTOR CTYPE="COMPONENT_ERROR" />
-		<CONNECTOR CTYPE="RUN_IF" />
-		<CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0"
-			MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000"/>
-	</CONNECTORS>
-
-	<PARAMETERS>
-
-		<PARAMETER 
-			NAME="FILENAME" 
-			FIELD="FILE" 
-			REQUIRED="true" 
-			NUM_ROW="10"
-		>
-			<DEFAULT>"/path/to/large_input_file.json"</DEFAULT>
-		</PARAMETER>
-
-		<PARAMETER 
-			NAME="LOOP_PATH" 
-			FIELD="TEXT" 
-			REQUIRED="true" 
-			NUM_ROW="20"
-		>
-			<DEFAULT>"$[*]"</DEFAULT>
-		</PARAMETER>
-
-		<PARAMETER 
-			NAME="COLUMN_CONFIG" 
-			FIELD="TABLE" 
-			NUM_ROW="30" 
-			NB_LINES="10" >
-			<ITEMS BASED_ON_SCHEMA="true">
-				<ITEM NAME="JSON_PATH" FIELD="TEXT" />
-				<ITEM NAME="USE" FIELD="CHECK" />
-			</ITEMS>
-		</PARAMETER>
-
-		<PARAMETER 
-			NAME="SCHEMA" 
-			FIELD="SCHEMA_TYPE" 
-			REQUIRED="false" 
-			NUM_ROW="50">
-			<DEFAULT />
-		</PARAMETER>
-
-		<PARAMETER 
-			NAME="DIE_ON_ERROR" 
-			FIELD="CHECK" 
-			REQUIRED="true" 
-			NUM_ROW="90"
-		>
-			<DEFAULT>true</DEFAULT>
-		</PARAMETER>
-
-		<PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE"
-			REQUIRED="true" NUM_ROW="100" CONTEXT="REJECT" SHOW_IF="DIE_ON_ERROR == 'false'">
-			<TABLE READONLY="true">
-				<COLUMN NAME="documentNumber" TYPE="id_Integer" LENGTH="10"
-					READONLY="true" CUSTOM="true" />
-				<COLUMN NAME="json" TYPE="id_String" LENGTH="4000"
-					READONLY="true" CUSTOM="true" />
-				<COLUMN NAME="errorMessage" TYPE="id_String"
-					LENGTH="1024" READONLY="true" CUSTOM="true" />
-			</TABLE>
-		</PARAMETER>
-
-	</PARAMETERS>
-	
-	<ADVANCED_PARAMETERS>
-		<PARAMETER 
-			NAME="PROVIDE_CURRENT_JSON_OBJECT" 
-			FIELD="CHECK" 
-			REQUIRED="true" 
-			NUM_ROW="10"
-		>
-			<DEFAULT>true</DEFAULT>
-		</PARAMETER>
-		
-	</ADVANCED_PARAMETERS>
-
-	<CODEGENERATION>
-		<IMPORTS>
-			<IMPORT NAME="accessors-smart" MODULE="accessors-smart-1.1.jar" REQUIRED="true" />
-			<IMPORT NAME="asm" MODULE="asm-5.0.3.jar" REQUIRED="true" />
-			<IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-5.4.jar" REQUIRED="true" />
-			<IMPORT NAME="commons-lang3" MODULE="commons-lang3-3.4.jar" REQUIRED="true" />
-			<IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.7.0.jar" REQUIRED="true" />
-			<IMPORT NAME="jackson-core" MODULE="jackson-core-2.7.5.jar" REQUIRED="true" />
-			<IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.7.5.jar" REQUIRED="true" />
-			<IMPORT NAME="json-path" MODULE="json-path-2.2.1-SNAPSHOT.jar" REQUIRED="true" />
-			<IMPORT NAME="json-smart" MODULE="json-smart-2.2.1.jar" REQUIRED="true" />
-			<IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.6.1.jar" REQUIRED="true" />
-			<IMPORT NAME="slf4j-simple" MODULE="slf4j-simple-1.6.1.jar" REQUIRED="true" />
-		</IMPORTS>
-	</CODEGENERATION>
-	
-	<RETURNS>
-		<RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer" />
-		<RETURN AVAILABILITY="AFTER" NAME="NB_LINE_REJECTED" TYPE="id_Integer" />
-		<RETURN AVAILABILITY="AFTER" NAME="CURRENT_NODE" TYPE="id_Object" />
-	</RETURNS>
-	
+<COMPONENT> 
+  <HEADER AUTHOR="cimt AG" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20170108" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="5.4"> 
+    <SIGNATURE/> 
+  </HEADER>  
+  <FAMILIES> 
+    <FAMILY>JSON</FAMILY> 
+  </FAMILIES>  
+  <DOCUMENTATION> 
+    <URL/> 
+  </DOCUMENTATION>  
+  <CONNECTORS> 
+    <CONNECTOR CTYPE="FLOW" MIN_INPUT="0" MAX_INPUT="0" MIN_OUTPUT="0" MAX_OUTPUT="1"/>  
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>  
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1"/>  
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1"/>  
+    <CONNECTOR CTYPE="COMPONENT_OK"/>  
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>  
+    <CONNECTOR CTYPE="RUN_IF"/>  
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000"/> 
+  </CONNECTORS>  
+  <PARAMETERS> 
+    <PARAMETER NAME="FILENAME" FIELD="FILE" REQUIRED="true" NUM_ROW="10"> 
+      <DEFAULT>"/path/to/large_input_file.json"</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER NAME="LOOP_PATH" FIELD="TEXT" REQUIRED="true" NUM_ROW="20"> 
+      <DEFAULT>"$[*]"</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER NAME="COLUMN_CONFIG" FIELD="TABLE" NUM_ROW="30" NB_LINES="10"> 
+      <ITEMS BASED_ON_SCHEMA="true"> 
+        <ITEM NAME="JSON_PATH" FIELD="TEXT"/>  
+        <ITEM NAME="USE" FIELD="CHECK"/> 
+      </ITEMS> 
+    </PARAMETER>  
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="false" NUM_ROW="50"> 
+      <DEFAULT/> 
+    </PARAMETER>  
+    <PARAMETER NAME="DIE_ON_ERROR" FIELD="CHECK" REQUIRED="true" NUM_ROW="90"> 
+      <DEFAULT>true</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="100" CONTEXT="REJECT" SHOW_IF="DIE_ON_ERROR == 'false'"> 
+      <TABLE READONLY="true"> 
+        <COLUMN NAME="documentNumber" TYPE="id_Integer" LENGTH="10" READONLY="true" CUSTOM="true"/>  
+        <COLUMN NAME="json" TYPE="id_String" LENGTH="4000" READONLY="true" CUSTOM="true"/>  
+        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="1024" READONLY="true" CUSTOM="true"/> 
+      </TABLE> 
+    </PARAMETER> 
+  </PARAMETERS>  
+  <ADVANCED_PARAMETERS> 
+    <PARAMETER NAME="PROVIDE_CURRENT_JSON_OBJECT" FIELD="CHECK" REQUIRED="true" NUM_ROW="10"> 
+      <DEFAULT>true</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER NAME="RELEASE_LABEL" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 5.4 build at: 20170108</DEFAULT>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>  
+  <CODEGENERATION> 
+    <IMPORTS> 
+      <IMPORT NAME="cimt-talendcomp-json" MODULE="cimt-talendcomp-json-5.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.7.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.7.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.7.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-path-2.2.1" MODULE="json-path-2.2.1-SNAPSHOT.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-smart" MODULE="json-smart-2.2.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="accessors-smart" MODULE="accessors-smart-1.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="asm" MODULE="asm-5.0.3.jar" REQUIRED="true"/>
+      <IMPORT NAME="slf4j-simple" MODULE="slf4j-simple-1.6.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.6.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="commons-lang3" MODULE="commons-lang3-3.4.jar" REQUIRED="true"/>
+    </IMPORTS> 
+  </CODEGENERATION>  
+  <RETURNS> 
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/>  
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE_REJECTED" TYPE="id_Integer"/>  
+    <RETURN AVAILABILITY="AFTER" NAME="CURRENT_NODE" TYPE="id_Object"/> 
+  </RETURNS> 
 </COMPONENT>
