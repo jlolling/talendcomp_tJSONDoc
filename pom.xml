@@ -9,25 +9,25 @@
 	</organization>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifestEntries>
+                          <Implementation-Title>cimt-talendcomp-json</Implementation-Title>
+                          <Implementation-Version>${project.version}</Implementation-Version>
+                          <Implementation-Vendor>cimt-ag</Implementation-Vendor>
+                          <Implementation-Timestamp>${maven.build.timestamp}</Implementation-Timestamp>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>de.cimt.talendcomp</groupId>
 				<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-				<version>1.2</version>
-				<configuration>
-					<componentName>tJSONDocOpen</componentName>
-				</configuration>
+				<version>1.4</version>
 				<executions>
 					<execution>
 						<id>tJSONDocOpen</id>
