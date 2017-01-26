@@ -1,10 +1,8 @@
 package de.cimt.talendcomp.json;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import de.cimt.talendcomp.test.TalendFakeJob;
 
@@ -54,9 +52,9 @@ public class TestAddressArray extends TalendFakeJob {
 		
 	}
 
-	@Test
+/*	@Test
 	public void testJumpOverArray() {
-		System.out.println("testJsonPath...");
+		System.out.println("testJumpOverArray...");
 		de.cimt.talendcomp.json.JsonDocument tJSONDocInput_1 = (de.cimt.talendcomp.json.JsonDocument) globalMap
 				.get("tJSONDocOpen_1");
 		com.fasterxml.jackson.databind.JsonNode bpnode = tJSONDocInput_1
@@ -68,5 +66,5 @@ public class TestAddressArray extends TalendFakeJob {
 		System.out.println(panode);
 		assertNotNull(panode);
 	}
-	
+*/	
 }

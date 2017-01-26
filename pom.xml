@@ -27,11 +27,10 @@
 			<plugin>
 				<groupId>de.cimt.talendcomp</groupId>
 				<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-				<version>1.4</version>
+				<version>1.6</version>
 				<executions>
 					<execution>
 						<id>tJSONDocOpen</id>
-						<phase>install</phase>
 						<goals>
 							<goal>component</goal>
 						</goals>
@@ -41,7 +40,6 @@
 					</execution>
 					<execution>
 						<id>tJSONDocInputStream</id>
-						<phase>install</phase>
 						<goals>
 							<goal>component</goal>
 						</goals>
@@ -51,7 +49,6 @@
 					</execution>
 					<execution>
 						<id>tJSONDocInput</id>
-						<phase>install</phase>
 						<goals>
 							<goal>component</goal>
 						</goals>
@@ -62,7 +59,6 @@
 					</execution>
 					<execution>
 						<id>tJSONDocOutput</id>
-						<phase>install</phase>
 						<goals>
 							<goal>component</goal>
 						</goals>
@@ -73,7 +69,6 @@
 					</execution>
 					<execution>
 						<id>tJSONDocSave</id>
-						<phase>install</phase>
 						<goals>
 							<goal>component</goal>
 						</goals>
