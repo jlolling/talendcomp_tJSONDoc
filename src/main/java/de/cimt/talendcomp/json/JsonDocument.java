@@ -542,7 +542,7 @@ public class JsonDocument {
 		return node;
 	}
 
-	private JsonNode buildNode(Object value) throws Exception {
+	public JsonNode buildNode(Object value) throws Exception {
 		if (value instanceof String) {
 			String jsonString = (String) value;
 			if (jsonString == null || jsonString.trim().isEmpty()) {
