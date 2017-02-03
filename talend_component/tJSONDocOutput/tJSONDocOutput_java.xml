@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="cimt AG" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20170202" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="5.5"> 
+  <HEADER AUTHOR="cimt AG" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20170203" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="5.5"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -31,6 +31,15 @@
         <ITEM NAME="ARRAY_OF_VALUES" VALUE="ARRAY_OF_VALUES"/> 
       </ITEMS> 
     </PARAMETER>  
+    <PARAMETER NAME="LABEL_ARRAY_OF_OBJECTS" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="35" SHOW_IF="OUTPUT_STRUCTURE == 'ARRAY_OF_OBJECTS'"> 
+      <DEFAULT>The field configuration below describes the json attributes of the objects to be added to the parent array.</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER NAME="LABEL_SINGLE_OBJECT" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="35" SHOW_IF="OUTPUT_STRUCTURE == 'SINGLE_OBJECT'"> 
+      <DEFAULT>The field configuration below describes the json attributes of the object to be set to the parent.</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER NAME="LABEL_ARRAY_OF_VALUES" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="35" SHOW_IF="OUTPUT_STRUCTURE == 'ARRAY_OF_VALUES'"> 
+      <DEFAULT>The values from the schema (should only contain one column) will be added as simple values or as json objects to the parent array.Omit empty attributes means in this case, do not add null to the array.</DEFAULT> 
+    </PARAMETER>  
     <PARAMETER NAME="COLUMN_CONFIG" FIELD="TABLE" NUM_ROW="40" NB_LINES="5"> 
       <ITEMS BASED_ON_SCHEMA="true"> 
         <ITEM NAME="ATTRIBUTE_ALIAS" FIELD="TEXT" SHOW_IF="OUTPUT_STRUCTURE != 'ARRAY_OF_VALUES'"/>  
@@ -44,8 +53,8 @@
     </PARAMETER> 
   </PARAMETERS>  
   <ADVANCED_PARAMETERS> 
-    <PARAMETER NAME="RELEASE_LABEL_20170202" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 5.5 build at: 20170202</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20170203" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 5.5 build at: 20170203</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
