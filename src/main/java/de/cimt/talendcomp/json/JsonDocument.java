@@ -37,12 +37,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
+import com.jayway.jsonpath.internal.JsonContext;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
@@ -66,12 +68,12 @@ public class JsonDocument {
 	private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 	private Map<String, SimpleDateFormat> dateFormatMap = new HashMap<String, SimpleDateFormat>();
 	private DocumentContext rootContext = null;
-	private ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 	private static final Configuration JACKSON_JSON_NODE_CONFIGURATION = Configuration
             .builder()
             .mappingProvider(new JacksonMappingProvider())
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
+	private ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 	private Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
 	private String currentPath = "";
 	
@@ -204,49 +206,6 @@ public class JsonDocument {
 		return rootNode.toString();
 	}
 
-	private List<String> getDirectPathTokens(String jsonPath) {
-		List<String> tokens = new ArrayList<String>();
-		fillDirectPathToken(jsonPath, tokens);
-		return tokens;
-	}
-	
-	private void fillDirectPathToken(String jsonPath, List<String> tokens) {
-		int pos = jsonPath.indexOf('.');
-		if (pos != -1) {
-			char pc = ' ';
-			while (true) {
-				if (pos > 0) {
-					pc = jsonPath.charAt(pos - 1);
-				}
-				if (pc == '@' || pc == '\\') {
-					// skip over a filter condition or escaped dot
-					// find next position
-					int nextPos = jsonPath.indexOf('.', pos + 1);
-					if (nextPos > pos) {
-						// take this new position
-						pos = nextPos;
-					} else {
-						pos = -1;
-						break;
-					}
-				} else {
-					break;
-				}
-			}
-			if (pos != -1 && pos < jsonPath.length() - 1) {
-				if (pos > 0) {
-					// only use not empty tokens
-					String token = jsonPath.substring(0, pos);
-					tokens.add(token);
-				}
-				jsonPath = jsonPath.substring(pos + 1);
-				fillDirectPathToken(jsonPath, tokens);
-			}
-		} else {
-			tokens.add(jsonPath);
-		}
-	}
-
 	private JsonPath getCompiledJsonPath(String jsonPathStr) {
 		JsonPath compiledPath = compiledPathMap.get(jsonPathStr);
 		if (compiledPath == null) {
@@ -276,29 +235,39 @@ public class JsonDocument {
 		}
 	}
 	
-	private boolean isArrayToken(String token) {
-		return token.contains("[") && token.contains("]");
-	}
-	
-	private String getArrayTokenAttributeName(String token) {
-		int pos = token.indexOf("[");
-		if (pos > 0) {
-			return token.substring(0, pos);
-		} else {
-			return token;
-		}
-	}
-	
 	/**
 	 * Retrieve a node by direct-path jsonPath
 	 * @param jsonPath must be a path with query parts and starts with root
 	 * @param create if true, missing nodes will be created
 	 * @return node
+	 * @throws Exception 
 	 */
-	public JsonNode getNode(String jsonPath, boolean create) {
+	public JsonNode getNode(String jsonPath, boolean create) throws Exception {
 		return getNode(rootNode, jsonPath, create);
 	}
 	
+	/**
+	 * Retrieves with real JSONPath the nodes starting from the given node
+	 * @param parentNode
+	 * @param jsonPath
+	 * @return an ArrayNode with the search result
+	 */
+	public JsonNode getNode(JsonNode parentNode, String jsonPath) {
+		if (jsonPath == null || jsonPath.trim().isEmpty()) {
+			throw new IllegalArgumentException("jsonPath cannot be null or empty");
+		}
+		if (parentNode == null) {
+			parentNode = rootNode;
+		}
+		if (parentNode == rootNode && jsonPath.startsWith("$")) {
+			return getNode(jsonPath);
+		}
+		DocumentContext context = new JsonContext(JACKSON_JSON_NODE_CONFIGURATION).parse(parentNode);
+		// fake a root path but use a arbitrary node as fake root
+		JsonPath compiledPath = getCompiledJsonPath(jsonPath);
+		return context.read(compiledPath);
+	}
+			
 	/**
 	 * Retrieve a node by direct-path jsonPath
 	 * @param parentNode node to start
@@ -306,57 +275,73 @@ public class JsonDocument {
 	 * @param create if true, missing nodes will be created otherwise it returns null
 	 * @return node
 	 */
-	public JsonNode getNode(JsonNode parentNode, String jsonPath, boolean create) {
+	public JsonNode getNode(JsonNode parentNode, String jsonPath, boolean create) throws Exception {
+		if (jsonPath == null || jsonPath.trim().isEmpty()) {
+			throw new IllegalArgumentException("jsonPath cannot be null or empty");
+		}
 		if (parentNode == null) {
 			parentNode = rootNode;
 		}
-		if (create == false && parentNode == rootNode && jsonPath.startsWith("$")) {
-			return getNode(jsonPath);
-		}
-		JsonNode childNode = null;
-		if (jsonPath == null || jsonPath.trim().isEmpty() || jsonPath.trim().equals(".")) {
-			return parentNode;
-		}
-		List<String> tokenList = getDirectPathTokens(jsonPath);
-		for (String token : tokenList) {
-			if (token.startsWith("$")) {
-				parentNode = rootNode;
-				childNode = parentNode;
-				continue; // skip the root node, parentNode is already the root
+		if (create == false) {
+			if (parentNode == rootNode || jsonPath.startsWith("$")) {
+				return getNode(jsonPath);
+			} else {
+				return getNode(parentNode, jsonPath);
 			}
-			childNode = parentNode.get(token);
-			if (childNode == null) {
-				if (create) {
-					if (parentNode instanceof ArrayNode) {
-						if (isArrayToken(token)) {
-							JsonNode arrayElement = ((ArrayNode) parentNode).get(0);
-							if (arrayElement == null || arrayElement.isNull()) {
-								childNode = ((ArrayNode) parentNode).addObject().withArray(getArrayTokenAttributeName(token));
-							} else {
-								childNode = ((ArrayNode) parentNode).get(0).withArray(getArrayTokenAttributeName(token));
-							}
-						} else {
-							JsonNode arrayElement = ((ArrayNode) parentNode).get(0);
-							if (arrayElement == null || arrayElement.isNull()) {
-								childNode = ((ArrayNode) parentNode).addObject().with(token);
-							} else {
-								childNode = ((ArrayNode) parentNode).get(0).with(token);
-							}
+		} else {
+			JsonNode childNode = null;
+			if (jsonPath == null || jsonPath.trim().isEmpty() || jsonPath.trim().equals(".")) {
+				return parentNode;
+			}
+			// starting from the given parentNode we search the childNode
+			// $.bo.person[1].address[2][3].street[4]
+			List<PathToken> listTokens = PathToken.parse(jsonPath);
+			for (PathToken t : listTokens) {
+				childNode = null;
+				if (parentNode instanceof ObjectNode) {
+					if (t instanceof AttributeToken) {
+						String name = ((AttributeToken) t).getName();
+						// check if there is a NullNode -> withArray does not work in this case
+						childNode = ((ObjectNode) parentNode).get(((AttributeToken) t).getName());
+						if (childNode instanceof NullNode) {
+							((ObjectNode) parentNode).remove(((AttributeToken) t).getName());
 						}
-					} else {
-						if (isArrayToken(token)) {
-							childNode = ((ObjectNode) parentNode).withArray(getArrayTokenAttributeName(token));
+						if (t.isNextTokenArray()) {
+							// setup an array
+							childNode = ((ObjectNode) parentNode).withArray(name);
 						} else {
-							childNode = ((ObjectNode) parentNode).with(token);
+							// setup an object
+							childNode = ((ObjectNode) parentNode).with(name);
 						}
+					} else if (t instanceof ArrayToken) {
+						// we have a ObjectNode and expect to get an node from an array
+						// we are wrong here
+						throw new Exception("The jsonpath expects an array node but found an object node at: "+ t.getPath());
 					}
+				} else if (parentNode instanceof ArrayNode) {
+					if (t instanceof ArrayToken) {
+						childNode = ((ArrayNode) parentNode).get(((ArrayToken) t).getIndex());
+						if (childNode == null || childNode.isNull()) {
+							if (t.isNextTokenArray()) {
+								childNode = ((ArrayNode) parentNode).addArray();
+							} else {
+								childNode = ((ArrayNode) parentNode).addObject();
+							}
+						}
+					} else if (t instanceof AttributeToken) {
+						// we have a ObjectNode and expect to get an node from an array
+						// we are wrong here
+						throw new Exception("The jsonpath expects an object node but found an array node at: "+ t.getPath());
+					}
+				}
+				if (childNode != null) {
+					parentNode = childNode;
 				} else {
-					break; // child is null and we are not allowed to create a node.
+					break;
 				}
 			}
-			parentNode = childNode;
+			return childNode;
 		}
-		return childNode;
 	}
 	
 	public DocumentContext getRootContext() {

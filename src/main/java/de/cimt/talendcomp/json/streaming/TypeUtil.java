@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 
-import de.cimt.talendcomp.TolerantDateParser;
+import de.cimt.talendcomp.GenericDateUtil;
 
 public final class TypeUtil {
 	
@@ -40,7 +40,7 @@ public final class TypeUtil {
 	public TypeUtil() {}
 	
 	public static DecimalFormat getNumberFormat(String localeStr) {
-		DecimalFormat nf = (DecimalFormat) numberformatMap.get(localeStr);
+		DecimalFormat nf = numberformatMap.get(localeStr);
 		if (nf == null) {
 			Locale locale = new Locale(localeStr);
 			nf = (DecimalFormat) NumberFormat.getInstance(locale);
@@ -102,7 +102,7 @@ public final class TypeUtil {
 			try {
 				date = sdf.parse(dateString);
 			} catch (ParseException pe) {
-				date = TolerantDateParser.parseDate(dateString);
+				date = GenericDateUtil.parseDate(dateString);
 			}
 			return date;
 		} catch (Throwable t) {
