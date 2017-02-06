@@ -51,17 +51,21 @@
 			com.fasterxml.jackson.databind.node.ArrayNode parentNode_<%=cid%> = null;
 			if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
 				parentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ArrayNode) node;
+			} else if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
+				throw new Exception(path + ": Actually an ArrayNode is expected, but there is already an ObjectNode at the path: " + jsonPath + ". Check the configuration.");
 			} else {
-				throw new Exception("Actually an ArrayNode is expected, but there is already an ObjectNode at the path: " + jsonPath + ". Check the configuration.");
+				throw new Exception(path + ": Actually an ArrayNode is expected, but there is " + node + " at the path: " + jsonPath + ". Check the configuration.");
 			}
 <% } else { %>
 			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath, true);
 			com.fasterxml.jackson.databind.node.ObjectNode parentNode_<%=cid%> = null;
 			if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
 				parentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ObjectNode) node;
+			} else if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
+				throw new Exception(path + ": Actually an ObjectNode is expected, but there is already an ArrayNode at the path: " + jsonPath + ". Check the configuration.");
 			} else {
-				throw new Exception("Actually an ObjectNode is expected, but there is already an ArrayNode at the path: " + jsonPath + ". Check the configuration.");
-			}			
+				throw new Exception(path + ": Actually an ObjectNode is expected, but there is " + node + " at the path: " + jsonPath + ". Check the configuration.");
+			}
 <% } %>
 			globalMap.put("parent_node_<%=cid%>", parentNode_<%=cid%>);
 			globalMap.put("<%=cid%>_NB_LINE", 0);

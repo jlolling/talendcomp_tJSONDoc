@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -223,7 +224,6 @@ public class JsonDocument {
 	public JsonNode getNode(String jsonPath) {
 		try {
 			JsonPath compiledPath = getCompiledJsonPath(jsonPath);
-			rootContext.read(compiledPath);
 			JsonNode node = rootContext.read(compiledPath);
 			if (node.isMissingNode()) {
 				return null;
@@ -265,7 +265,17 @@ public class JsonDocument {
 		DocumentContext context = new JsonContext(JACKSON_JSON_NODE_CONFIGURATION).parse(parentNode);
 		// fake a root path but use a arbitrary node as fake root
 		JsonPath compiledPath = getCompiledJsonPath(jsonPath);
-		return context.read(compiledPath);
+		JsonNode node = null;
+		try {
+			node = context.read(compiledPath);
+			if (node.isMissingNode()) {
+				return null;
+			} else {
+				return node;
+			}
+		} catch (PathNotFoundException e) {
+			return null;
+		}
 	}
 			
 	/**
@@ -302,36 +312,47 @@ public class JsonDocument {
 					if (t instanceof AttributeToken) {
 						String name = ((AttributeToken) t).getName();
 						// check if there is a NullNode -> withArray does not work in this case
-						childNode = ((ObjectNode) parentNode).get(((AttributeToken) t).getName());
+						childNode = ((ObjectNode) parentNode).get(name);
 						if (childNode instanceof NullNode) {
-							((ObjectNode) parentNode).remove(((AttributeToken) t).getName());
+							((ObjectNode) parentNode).remove(name);
+							childNode = null;
 						}
-						if (t.isNextTokenArray()) {
-							// setup an array
-							childNode = ((ObjectNode) parentNode).withArray(name);
-						} else {
-							// setup an object
-							childNode = ((ObjectNode) parentNode).with(name);
+						if (childNode == null) {
+							if (t.isNextTokenArray()) {
+								// setup an array
+								childNode = ((ObjectNode) parentNode).withArray(name);
+							} else {
+								// setup an object
+								childNode = ((ObjectNode) parentNode).with(name);
+							}
 						}
 					} else if (t instanceof ArrayToken) {
 						// we have a ObjectNode and expect to get an node from an array
 						// we are wrong here
-						throw new Exception("The jsonpath expects an array node but found an object node at: "+ t.getPath());
+						throw new Exception("The jsonpath expects an array node but found an object node at: "+ t.getPath() + " parentNode: " + parentNode);
 					}
 				} else if (parentNode instanceof ArrayNode) {
 					if (t instanceof ArrayToken) {
 						childNode = ((ArrayNode) parentNode).get(((ArrayToken) t).getIndex());
 						if (childNode == null || childNode.isNull()) {
-							if (t.isNextTokenArray()) {
-								childNode = ((ArrayNode) parentNode).addArray();
+							if (t.hasNext()) {
+								if (t.isNextTokenArray()) {
+									childNode = ((ArrayNode) parentNode).addArray();
+								} else {
+									childNode = ((ArrayNode) parentNode).addObject();
+								}
 							} else {
-								childNode = ((ArrayNode) parentNode).addObject();
+								childNode = parentNode;
 							}
 						}
 					} else if (t instanceof AttributeToken) {
 						// we have a ObjectNode and expect to get an node from an array
 						// we are wrong here
-						throw new Exception("The jsonpath expects an object node but found an array node at: "+ t.getPath());
+						throw new Exception("The jsonpath expects an object node but found an array node at: "+ t.getPath() + " parentNode: " + parentNode);
+					}
+				} else if (parentNode instanceof ValueNode) {
+					if (parentNode.isNull() == false) {
+						throw new Exception("The jsonpath expects an object or array node but found an value node at: "+ t.getPath() + " parentNode: " + parentNode);
 					}
 				}
 				if (childNode != null) {
@@ -640,7 +661,7 @@ public class JsonDocument {
 					}
 				}
 				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {
-					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing but mandatory!");
+					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing but mandatory! Node: " + node);
 				}
 			}
 			return valueNode;
@@ -677,6 +698,15 @@ public class JsonDocument {
 		if (node instanceof ArrayNode) {
 			ArrayNode arrayNode = (ArrayNode) node;
 			if (arrayNode != null) {
+				// because the search returns an array within an array
+				// if we have more than one array (with a search over more than one elements) within the loop
+				// we must uncover an additional array
+				if (arrayNode.size() == 1) {
+					JsonNode one = arrayNode.get(0);
+					if (one instanceof ArrayNode) {
+						arrayNode = (ArrayNode) one;
+					}
+				}
 				for (JsonNode childNode : arrayNode) {
 					result.add(childNode);
 				}

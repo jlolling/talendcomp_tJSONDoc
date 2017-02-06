@@ -18,6 +18,7 @@ public abstract class PathToken {
 			try {
 				char c = directJsonPath.charAt(i);
 				if (c == '$') {
+					last_c = c;
 					continue;
 				}
 				if (c == '[') {
@@ -54,7 +55,7 @@ public abstract class PathToken {
 				} else if (c == ']') {
 					throw new Exception("Closing bracket found without opening before");
 				} else if (c == '.') {
-					if (last_c != ']') {
+					if (last_c != ']' && last_c != '$') {
 						// we expect a normal attribute name now
 						PathToken token = new AttributeToken(text.toString());
 						result.add(token);
@@ -120,6 +121,10 @@ public abstract class PathToken {
 		return next;
 	}
 	
+	public boolean hasNext() {
+		return next != null;
+	}
+
 	public boolean isNextTokenArray() {
 		return (next instanceof ArrayToken);
 	}
