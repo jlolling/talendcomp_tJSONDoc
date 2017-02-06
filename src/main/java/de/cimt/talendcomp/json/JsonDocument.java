@@ -693,27 +693,30 @@ public class JsonDocument {
 		return sb.toString();
 	}
 	
-	public List<JsonNode> getArrayValuesAsList(JsonNode node) {
-		List<JsonNode> result = new ArrayList<JsonNode>();
+	private void collectObjectNodes(JsonNode node, List<JsonNode> result) {
 		if (node instanceof ArrayNode) {
 			ArrayNode arrayNode = (ArrayNode) node;
-			if (arrayNode != null) {
-				// because the search returns an array within an array
-				// if we have more than one array (with a search over more than one elements) within the loop
-				// we must uncover an additional array
-				if (arrayNode.size() == 1) {
-					JsonNode one = arrayNode.get(0);
-					if (one instanceof ArrayNode) {
-						arrayNode = (ArrayNode) one;
-					}
-				}
-				for (JsonNode childNode : arrayNode) {
+			// because the search returns an array within an array
+			// if we have more than one array (with a search over more than one elements) within the loop
+			// we must uncover an additional array
+			// check if we have an array made of arrays
+			for (JsonNode childNode : arrayNode) {
+				if (childNode instanceof ArrayNode) {
+					collectObjectNodes(childNode, result);
+				} else {
 					result.add(childNode);
 				}
 			}
-		} else if (node != null) {
+		} else if (node instanceof ObjectNode) {
+			result.add(node);
+		} else if (node instanceof ValueNode) {
 			result.add(node);
 		}
+	}
+	
+	public List<JsonNode> getArrayValuesAsList(JsonNode node) {
+		List<JsonNode> result = new ArrayList<JsonNode>();
+		collectObjectNodes(node, result);
 		return result;
 	}
 	
