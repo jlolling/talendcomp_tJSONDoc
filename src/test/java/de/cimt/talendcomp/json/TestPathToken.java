@@ -113,7 +113,7 @@ public class TestPathToken {
 		// the missing node is mounted at the root object - to check if we accidently find the wrong one
 		JsonDocument doc = new JsonDocument("[{\"bo\":{\"person\":[{\"address\":[]}]},\"missing\":\"value\"}]");
 		String jsonPath = "[0].bo.person[0]";
-		JsonNode node = doc.getNode(jsonPath, false);
+		JsonNode node = doc.getNode(jsonPath, true);
 		assertNotNull(node);
 		System.out.println("node: " + node);
 		// we are searching the missing attribute in first person object
