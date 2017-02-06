@@ -262,6 +262,9 @@ public class JsonDocument {
 		if (parentNode == rootNode && jsonPath.startsWith("$")) {
 			return getNode(jsonPath);
 		}
+		if (jsonPath.equals(".")) {
+			return parentNode;
+		}
 		DocumentContext context = new JsonContext(JACKSON_JSON_NODE_CONFIGURATION).parse(parentNode);
 		// fake a root path but use a arbitrary node as fake root
 		JsonPath compiledPath = getCompiledJsonPath(jsonPath);
@@ -294,6 +297,9 @@ public class JsonDocument {
 		}
 		if (jsonPath.equals("$")) {
 			return rootNode;
+		}
+		if (jsonPath.equals(".")) {
+			return parentNode;
 		}
 		if (create == false) {
 			if (parentNode == rootNode || jsonPath.startsWith("$")) {

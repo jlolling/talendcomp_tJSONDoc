@@ -129,6 +129,8 @@ public class TestPathToken {
 		String jsonPath = "$";
 		JsonNode node = doc.getNode(jsonPath, true);
 		assertNotNull(node);
+		JsonNode node2 = doc.getNode(node, ".", true);
+		assertEquals(node, node2);
 	}
 
 }
