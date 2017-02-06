@@ -121,4 +121,14 @@ public class TestPathToken {
 		assertNull(missingNode);
 	}
 
+	@Test
+	public void testReadWriteRoot() throws Exception {
+		System.out.println("###### testDealWithMissing...");
+		// the missing node is mounted at the root object - to check if we accidently find the wrong one
+		JsonDocument doc = new JsonDocument(false);
+		String jsonPath = "$";
+		JsonNode node = doc.getNode(jsonPath, true);
+		assertNotNull(node);
+	}
+
 }

@@ -292,6 +292,9 @@ public class JsonDocument {
 		if (parentNode == null) {
 			parentNode = rootNode;
 		}
+		if (jsonPath.equals("$")) {
+			return rootNode;
+		}
 		if (create == false) {
 			if (parentNode == rootNode || jsonPath.startsWith("$")) {
 				return getNode(jsonPath);
