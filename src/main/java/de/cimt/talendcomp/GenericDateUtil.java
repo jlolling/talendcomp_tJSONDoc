@@ -157,8 +157,12 @@ public class GenericDateUtil {
 			datePatternList.add("yyyyMM");
 			datePatternList.add("yyyy");
 			timePatternList = new ArrayList<String>();
-			timePatternList.add(" mm'′'ss'″'");
 			timePatternList.add(" mm''ss'\"'");
+			timePatternList.add(" mm''ss'“'");
+			timePatternList.add(" mm''ss'”'");
+			timePatternList.add(" mm'‘'ss'“'");
+			timePatternList.add(" mm'’'ss'”'");
+			timePatternList.add(" mm'′'ss'″'");
 			timePatternList.add(" HH'h'mm'm'ss's'");
 			timePatternList.add(" HH'h'mm'm'");
 			timePatternList.add(" mm'm'ss's'");
