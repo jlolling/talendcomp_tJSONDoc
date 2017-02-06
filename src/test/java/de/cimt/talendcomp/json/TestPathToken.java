@@ -3,6 +3,7 @@ package de.cimt.talendcomp.json;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -99,6 +100,9 @@ public class TestPathToken {
 		List<JsonNode> result = doc.getArrayValuesAsList(node);
 		for (JsonNode n : result) {
 			System.out.println(n);
+			String s = n.toString();
+			// check if we get the correct detail result
+			assertTrue(s.startsWith("{\"street\":\"s"));
 		}
 		assertEquals(2, result.size());
 	}
