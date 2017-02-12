@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-public class TestJSONComparator {
+public class TestJsonComparator {
 	
 	@Test
 	public void testIntersectArray() {
