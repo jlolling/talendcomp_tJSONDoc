@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-public class JSONComparator {
+public class JsonComparator {
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
-	public JSONComparator getInstance() {
-		return new JSONComparator();
+	public JsonComparator getInstance() {
+		return new JsonComparator();
 	}
 
 	/**

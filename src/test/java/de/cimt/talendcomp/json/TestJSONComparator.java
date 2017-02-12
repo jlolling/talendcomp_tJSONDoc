@@ -16,7 +16,7 @@ public class TestJSONComparator {
 		String array2 = "[11,{\"a\":33},31,40,\"x\"]";
 		JsonDocument ad1 = new JsonDocument(array1);
 		JsonDocument ad2 = new JsonDocument(array2);
-		JSONComparator comp = new JSONComparator();
+		JsonComparator comp = new JsonComparator();
 		JsonNode result = comp.intersect((ArrayNode) ad1.getRootNode(), (ArrayNode) ad2.getRootNode());
 		int expected = 2;
 		int actual = result.size();
@@ -31,7 +31,7 @@ public class TestJSONComparator {
 		String array2 = "[11,{\"a\":33},31,40,\"x\"]";
 		JsonDocument ad1 = new JsonDocument(array1);
 		JsonDocument ad2 = new JsonDocument(array2);
-		JSONComparator comp = new JSONComparator();
+		JsonComparator comp = new JsonComparator();
 		JsonNode result = comp.difference((ArrayNode) ad1.getRootNode(), (ArrayNode) ad2.getRootNode());
 		int expected = 5;
 		int actual = result.size();
