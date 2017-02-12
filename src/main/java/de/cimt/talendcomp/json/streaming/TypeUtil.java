@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 
-import de.cimt.talendcomp.GenericDateUtil;
+import de.cimt.talendcomp.json.GenericDateUtil;
 
 public final class TypeUtil {
 	
