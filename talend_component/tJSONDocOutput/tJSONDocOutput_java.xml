@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="cimt AG" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20170206" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="6.0"> 
+  <HEADER AUTHOR="cimt AG" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20170212" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="6.1"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -41,7 +41,7 @@
       <DEFAULT>The field configuration below describes the json attributes of the object to be set to the parent.</DEFAULT> 
     </PARAMETER>  
     <PARAMETER NAME="LABEL_ARRAY_OF_VALUES" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="35" SHOW_IF="OUTPUT_STRUCTURE == 'ARRAY_OF_VALUES'"> 
-      <DEFAULT>The values from the schema (should only contain one column) will be added as simple values or as json objects to the parent array.Omit empty attributes means in this case, do not add null to the array.</DEFAULT> 
+      <DEFAULT>The values from the schema (should only contain one column) will be added as simple values or as json objects to the parent array. Omit empty attributes means in this case, do not add null to the array.</DEFAULT> 
     </PARAMETER>  
     <PARAMETER NAME="COLUMN_CONFIG" FIELD="TABLE" NUM_ROW="40" NB_LINES="5"> 
       <ITEMS BASED_ON_SCHEMA="true"> 
@@ -56,8 +56,8 @@
     </PARAMETER> 
   </PARAMETERS>  
   <ADVANCED_PARAMETERS> 
-    <PARAMETER NAME="RELEASE_LABEL_20170206" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 6.0 build at: 20170206</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20170212" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 6.1 build at: 20170212</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 

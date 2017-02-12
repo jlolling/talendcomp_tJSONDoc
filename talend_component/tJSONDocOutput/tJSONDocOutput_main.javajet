@@ -32,13 +32,13 @@
 	}
 	@SuppressWarnings("unchecked")	
 	List<Map<String, String>> configList = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__COLUMN_CONFIG__");
-   String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
-   String jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
-   if (jsonPath == null || jsonPath.trim().isEmpty()) {
+	String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+	String jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
+	if (jsonPath == null || jsonPath.trim().isEmpty()) {
 		jsonPath = "null";
-   }
-   String outputType = ElementParameterParser.getValue(node, "__OUTPUT_STRUCTURE__");
-   boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+	}
+	String outputType = ElementParameterParser.getValue(node, "__OUTPUT_STRUCTURE__");
+	boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
 	if (globalMap.get("<%=cid%>") == null || (globalMap.get("<%=cid%>") != globalMap.get("<%=docComp%>"))) {
@@ -142,7 +142,8 @@
 		boolean isDateValue = javaClassName.contains("Date");
 		boolean isDoc = "true".equals(config.get("IS_DOC"));
 		boolean ignore = "false".equals(config.get("USE"));
-		boolean omitAttribute = "true".equals(config.get("OMIT_ATTRIBUTE_IF_NULL"));
+		boolean omitAttribute = "true".equals(config.get("OMIT_ATTRIBUTE_IF_NULL")) && mc.isNullable();
+		boolean isNotNullable = !mc.isNullable();
 		if (ignore) {
 			continue; // skip over this column
 		} %>
