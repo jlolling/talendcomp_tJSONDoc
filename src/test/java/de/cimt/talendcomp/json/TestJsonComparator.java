@@ -1,6 +1,7 @@
 package de.cimt.talendcomp.json;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ public class TestJsonComparator {
 	
 	@Test
 	public void testIntersectArray() {
-		System.out.println("testIntersectArray...");
+		System.out.println("#### testIntersectArray...");
 		String array1 = "[10,{\"a\":33},30,40]";
 		String array2 = "[11,{\"a\":33},31,40,\"x\"]";
 		JsonDocument ad1 = new JsonDocument(array1);
@@ -26,7 +27,7 @@ public class TestJsonComparator {
 
 	@Test
 	public void testDifferenceArray() {
-		System.out.println("testDifferenceArray...");
+		System.out.println("#### testDifferenceArray...");
 		String array1 = "[10,{\"a\":33},30,40]";
 		String array2 = "[11,{\"a\":33},31,40,\"x\"]";
 		JsonDocument ad1 = new JsonDocument(array1);
@@ -37,6 +38,35 @@ public class TestJsonComparator {
 		int actual = result.size();
 		System.out.println(result);
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testContains() {
+		System.out.println("#### testDifferenceArray (contains) ...");
+		String value = "{\"a\":33}";
+		String array = "[11,{\"a\":33},31,40,\"x\"]";
+		JsonDocument vndoc = new JsonDocument(value);
+		JsonDocument andoc = new JsonDocument(array);
+		JsonComparator comp = new JsonComparator();
+		boolean actual = comp.contains((ArrayNode) andoc.getRootNode(), vndoc.getRootNode());
+		assertTrue(actual);
+		System.out.println("***** testDifferenceArray (contains not)...");
+		value = "{\"a\":34}";
+		vndoc = new JsonDocument(value);
+		actual = comp.contains((ArrayNode) andoc.getRootNode(), vndoc.getRootNode());
+		assertTrue(actual == false);
+	}
+	
+	@Test
+	public void testContainsWithJsonPath() throws Exception {
+		System.out.println("#### testContainsWithJsonPath (contains) ...");
+		String value = "{\"a\":0, \"b\":{\"key\":2}}";
+		String array = "[{\"a\":11, \"b\":{\"key\":1}},{\"a\":22, \"b\":{\"key\":2}},{\"a\":33, \"b\":{\"key\":3}},{\"a\":44, \"b\":{\"key\":4}},\"x\"]";
+		JsonDocument vndoc = new JsonDocument(value);
+		JsonDocument andoc = new JsonDocument(array);
+		JsonComparator comp = new JsonComparator();
+		boolean actual = comp.contains((ArrayNode) andoc.getRootNode(), vndoc.getRootNode(), "$.b.key");
+		assertTrue(actual);
 	}
 
 }

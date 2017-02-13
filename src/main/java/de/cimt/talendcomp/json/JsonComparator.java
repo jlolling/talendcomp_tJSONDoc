@@ -48,6 +48,46 @@ public class JsonComparator {
 	}
 
 	/**
+	 * Checks if the array contains the given value
+	 * @param array the array which perhaps contains the value
+	 * @param value the value to search for
+	 * @return true or false
+	 */
+	public boolean contains(ArrayNode array, JsonNode value) {
+		for (int i = 0, n = array.size(); i < n; i++) {
+			JsonNode node = array.get(i);
+			if (node.equals(value)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the array contains the given value
+	 * @param array the array which perhaps contains the value
+	 * @param value the value to search for
+	 * @return true or false
+	 * @throws Exception 
+	 */
+	public boolean contains(ArrayNode array, JsonNode value, String jsonPath) throws Exception {
+		if (jsonPath == null || jsonPath.trim().isEmpty()) {
+			return contains(array, value);
+		} else {
+			JsonDocument doc = new JsonDocument(array);
+			for (int i = 0, n = array.size(); i < n; i++) {
+				JsonNode nodeInArray = array.get(i);
+				JsonNode child1 = doc.getNode(nodeInArray, jsonPath);
+				JsonNode child2 = doc.getNode(value, jsonPath);
+				if (child1.equals(child2)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	/**
 	 * Collects the differences between the both arrays 
 	 * @param array1
 	 * @param array2

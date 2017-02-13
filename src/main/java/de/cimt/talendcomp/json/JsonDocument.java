@@ -122,17 +122,13 @@ public class JsonDocument {
 		}
 	}
 
-	public JsonDocument(JsonNode jsonNode, boolean isArray) throws Exception {
-		if (jsonNode != null) {
-			rootContext = parseContext.parse("{}");
-			rootContext.set("$", jsonNode);
-		} else {
-			if (isArray) {
-				rootContext = parseContext.parse("[]");
-			} else {
-				rootContext = parseContext.parse("{}");
-			}
+	public JsonDocument(JsonNode jsonNode) throws Exception {
+		if (jsonNode == null || jsonNode.isNull()) {
+			throw new IllegalArgumentException("jsonNode cannor be null or a NullNode");
 		}
+		JsonContext jsonContext = new JsonContext(JACKSON_JSON_NODE_CONFIGURATION);
+		jsonContext.parse(jsonNode);
+		rootContext = jsonContext;
 		rootNode = jsonNode;
 		JsonNode testNode = rootContext.read("$");
 		if (rootNode != testNode) {
@@ -207,7 +203,7 @@ public class JsonDocument {
 		return rootNode.toString();
 	}
 
-	private JsonPath getCompiledJsonPath(String jsonPathStr) {
+	public JsonPath getCompiledJsonPath(String jsonPathStr) {
 		JsonPath compiledPath = compiledPathMap.get(jsonPathStr);
 		if (compiledPath == null) {
 			compiledPath = JsonPath.compile(jsonPathStr);
