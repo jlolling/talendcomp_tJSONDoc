@@ -28,8 +28,25 @@
 	}
 	boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
+   	boolean unwrap = "true".equals(ElementParameterParser.getValue(node, "__REMOVE_ROOT_ARRAY__"));
+   	boolean dieWhileUnwrap = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_REMOVAL_NOT_POSSIBLE__"));
+   	String unwrapCondition = "false";
+   	if (unwrap) {
+	   	unwrapCondition = ElementParameterParser.getValue(node, "__REMOVE_ROOT_ARRAY_CONDITION__");
+   	}
 %>
 	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+	com.fasterxml.jackson.databind.JsonNode <%=cid%>_outputNode = null;
+	try {
+		<%=cid%>_outputNode = <%=cid%>.getConditionalUnwrappedRootNode((<%=unwrapCondition%>), <%=dieWhileUnwrap%>);
+		globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>_outputNode);
+	} catch (Exception e) {
+<% 		if (log4jEnabled) { %>
+		log.error(currentComponent + ": " + e.getMessage(), e);
+<% 		} %>
+		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+		throw e;
+	}
 <%	if (outputAsfile) { %>
 	String filePath_<%=cid%> = <%=file%>;
 	try {
@@ -45,7 +62,7 @@
 <% } %>
 	String jsonString_<%=cid%> = null;
 	try {
-		jsonString_<%=cid%> = <%=cid%>.getJsonString(<%=prettyPrint%>, <%=ignoreEmpty%>);
+		jsonString_<%=cid%> = <%=cid%>.getJsonString(<%=cid%>_outputNode, <%=prettyPrint%>, <%=ignoreEmpty%>);
 	} catch (Exception e) {
 <% 		if (log4jEnabled) { %>
 		log.error(currentComponent + ": " + e.getMessage(), e);

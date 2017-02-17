@@ -581,7 +581,28 @@ public class JsonDocument {
 		}
 	}
 	
+	public String getJsonString(JsonNode node, boolean prettyPrint, boolean suppressEmpty) throws JsonProcessingException {
+		if (suppressEmpty) {
+			objectMapper.setSerializationInclusion(Include.NON_EMPTY);
+		} else {
+			objectMapper.setSerializationInclusion(Include.ALWAYS);
+		}
+		if (node != null) {
+			if (prettyPrint) {
+				return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+			} else {
+				return objectMapper.writeValueAsString(node);
+			}
+		} else {
+			return "{}";
+		}
+	}
+
 	public void writeToFile(String filePath, boolean prettyPrint, boolean suppressEmpty) throws Exception {
+		writeToFile(rootNode, filePath, prettyPrint, suppressEmpty);
+	}
+	
+	public void writeToFile(JsonNode node, String filePath, boolean prettyPrint, boolean suppressEmpty) throws Exception {
 		if (filePath == null || filePath.trim().isEmpty()) {
 			throw new IllegalArgumentException("Output file path cannot be null or empty!");
 		}
@@ -596,7 +617,7 @@ public class JsonDocument {
 		BufferedWriter br = null;
 		try {
 			br = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
-			br.write(getJsonString(prettyPrint, suppressEmpty));
+			br.write(getJsonString(node, prettyPrint, suppressEmpty));
 			br.flush();
 		} finally {
 			if (br != null) {
@@ -965,6 +986,29 @@ public class JsonDocument {
 				}
 			}
 			return count;
+		}
+	}
+	
+	public JsonNode getConditionalUnwrappedRootNode(Boolean unwrap, boolean die) throws Exception {
+		if (unwrap != null && unwrap) {
+			if (rootNode instanceof ArrayNode) {
+				if (rootNode.size() > 1) {
+					if (die) {
+						throw new Exception("Cannot remove root array because it contains more than one nodes (" + rootNode.size() + ")");
+					} else {
+						return ((ArrayNode) rootNode).get(0);
+					}
+				} else if (rootNode.size() == 1) {
+					// take the first array node
+					return ((ArrayNode) rootNode).get(0);
+				} else {
+					return null;
+				}
+			} else {
+				return rootNode;
+			}
+		} else {
+			return rootNode;
 		}
 	}
 	
