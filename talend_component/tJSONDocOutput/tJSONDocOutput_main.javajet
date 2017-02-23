@@ -41,12 +41,13 @@
 	boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
-	if (globalMap.get("<%=cid%>") == null || (globalMap.get("<%=cid%>") != globalMap.get("<%=docComp%>"))) {
+	if (globalMap.get("entryNode_<%=cid%>") == null || (globalMap.get("entryNode_<%=cid%>") != globalMap.get("<%=docComp%>_CURRENT_NODE"))) {
 		try {
 			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 			globalMap.put("<%=cid%>", <%=cid%>);
 			// get the parent object we have to dock on
 	   		com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
+			globalMap.put("entryNode_<%=cid%>", entryNode_<%=cid%>);
 	   		String jsonPath = <%=jsonPath%>;
 	   		// build path to enhance the error messages
 	   		String path = null;

@@ -989,27 +989,46 @@ public class JsonDocument {
 		}
 	}
 	
+	/**
+	 * Returns a node which does not contains the root array
+	 * @param unwrap if not null and true -> leaf out the root array
+	 * @param die throw an exception if the root array contains more than one nodes
+	 * @return the node unwrapped from an array
+	 * @throws Exception
+	 */
 	public JsonNode getConditionalUnwrappedRootNode(Boolean unwrap, boolean die) throws Exception {
+		return getConditionalUnwrappedNode(rootNode, unwrap, die);
+	}
+	
+	/**
+	 * Returns a node which does not contains the node array
+	 * @param node the node to be returned
+	 * @param unwrap if not null and true -> leaf out the root array
+	 * @param die throw an exception if the node array contains more than one nodes
+	 * @return the node unwrapped from an array
+	 * @throws Exception
+	 */
+	public JsonNode getConditionalUnwrappedNode(JsonNode node, Boolean unwrap, boolean die) throws Exception {
 		if (unwrap != null && unwrap) {
-			if (rootNode instanceof ArrayNode) {
-				if (rootNode.size() > 1) {
+			if (node instanceof ArrayNode) {
+				if (node.size() > 1) {
 					if (die) {
-						throw new Exception("Cannot remove root array because it contains more than one nodes (" + rootNode.size() + ")");
+						throw new Exception("Cannot remove root array because it contains more than one nodes (" + node.size() + ")");
 					} else {
-						return ((ArrayNode) rootNode).get(0);
+						return ((ArrayNode) node).get(0);
 					}
-				} else if (rootNode.size() == 1) {
+				} else if (node.size() == 1) {
 					// take the first array node
-					return ((ArrayNode) rootNode).get(0);
+					return ((ArrayNode) node).get(0);
 				} else {
 					return null;
 				}
 			} else {
-				return rootNode;
+				return node;
 			}
 		} else {
-			return rootNode;
+			return node;
 		}
 	}
-	
+
 }

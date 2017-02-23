@@ -13,7 +13,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode) codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+    String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
 	String file = ElementParameterParser.getValue(node, "__OUTPUT_FILE_PATH__");
 	boolean outputAsfile = "true".equals(ElementParameterParser.getValue(node, "__OUTPUT_AS_FILE__"));
 	boolean prettyPrint = "true".equals(ElementParameterParser.getValue(node, "__PRETTY_PRINT__"));
@@ -35,7 +35,7 @@
 	   	unwrapCondition = ElementParameterParser.getValue(node, "__REMOVE_ROOT_ARRAY_CONDITION__");
    	}
 %>
-	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+	de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE"));
 	com.fasterxml.jackson.databind.JsonNode <%=cid%>_outputNode = null;
 	try {
 		<%=cid%>_outputNode = <%=cid%>.getConditionalUnwrappedRootNode((<%=unwrapCondition%>), <%=dieWhileUnwrap%>);

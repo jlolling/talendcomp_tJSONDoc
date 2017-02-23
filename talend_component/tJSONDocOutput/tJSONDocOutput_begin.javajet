@@ -69,6 +69,7 @@
 			}
 <% } %>
 			globalMap.put("parent_node_<%=cid%>", parentNode_<%=cid%>);
+			globalMap.put("entryNode_<%=cid%>", entryNode_<%=cid%>);
 			globalMap.put("<%=cid%>_NB_LINE", 0);
 		} catch (Exception e) {
 <% if (log4jEnabled) { %>
