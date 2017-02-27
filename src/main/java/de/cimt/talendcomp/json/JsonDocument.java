@@ -719,7 +719,7 @@ public class JsonDocument {
 		return sb.toString();
 	}
 	
-	private void collectObjectNodes(JsonNode node, List<JsonNode> result) {
+	private void collectObjectNodes(JsonNode node, List<JsonNode> result, boolean unique) {
 		if (node instanceof ArrayNode) {
 			ArrayNode arrayNode = (ArrayNode) node;
 			// because the search returns an array within an array
@@ -728,21 +728,31 @@ public class JsonDocument {
 			// check if we have an array made of arrays
 			for (JsonNode childNode : arrayNode) {
 				if (childNode instanceof ArrayNode) {
-					collectObjectNodes(childNode, result);
+					collectObjectNodes(childNode, result, unique);
 				} else {
-					result.add(childNode);
+					if (unique == false || result.contains(childNode) == false) {
+						result.add(childNode);
+					}
 				}
 			}
 		} else if (node instanceof ObjectNode) {
-			result.add(node);
+			if (unique == false || result.contains(node) == false) {
+				result.add(node);
+			}
 		} else if (node instanceof ValueNode) {
-			result.add(node);
+			if (unique == false || result.contains(node) == false) {
+				result.add(node);
+			}
 		}
 	}
 	
 	public List<JsonNode> getArrayValuesAsList(JsonNode node) {
+		return getArrayValuesAsList(node, false);
+	}
+	
+	public List<JsonNode> getArrayValuesAsList(JsonNode node, boolean unique) {
 		List<JsonNode> result = new ArrayList<JsonNode>();
-		collectObjectNodes(node, result);
+		collectObjectNodes(node, result, unique);
 		return result;
 	}
 	
