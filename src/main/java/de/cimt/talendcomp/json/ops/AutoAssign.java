@@ -133,9 +133,6 @@ public class AutoAssign {
 			}
 			boolean foundTarget = false;
 			for (JsonNode targetNode : targetListNodes) {
-				if ((targetNode instanceof ObjectNode) == false) {
-					throw new Exception("Found in target nodes a none-ObjectNode: " + targetNode);
-				}
 				if (match(sourceNode, targetNode)) {
 					// we found 2 nodes with matching keys
 					// now add source to the target
@@ -193,10 +190,14 @@ public class AutoAssign {
 		}
 		JsonNode key1 = sourceDoc.getNode(node1, sourceIdentifier);
 		JsonNode key2 = targetDoc.getNode(node2, targetIdentifier);
-		if (key1 != null && key1.equals(key2)) {
-			return true;
+		if (key2 instanceof ArrayNode) {
+			return contains((ArrayNode) key2, key1);
 		} else {
-			return false;
+			if (key1 != null && key1.equals(key2)) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 

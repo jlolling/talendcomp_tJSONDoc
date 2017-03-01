@@ -40,9 +40,9 @@
 		jsonPath = "\".\"";
     } else {
    		jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
-	   		if (jsonPath == null || jsonPath.trim().isEmpty()) {
+	   	if (jsonPath == null || jsonPath.trim().isEmpty()) {
 			jsonPath = "null";
-   	}
+		}
    	}
    	boolean provideEmptyNode = "true".equals(ElementParameterParser.getValue(node, "__PROVIDE_EMPTY_OUTPUT_IF_PARENT_DOES_NOT_EXISTS__"));
    	boolean dieIfParentNotExists = 	"true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_JSON_PATH_DOES_NOT_EXISTS__"));

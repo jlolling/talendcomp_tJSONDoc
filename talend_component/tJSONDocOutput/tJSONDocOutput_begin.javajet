@@ -6,17 +6,23 @@
 	" 
 %>
 <% 
-   CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-   INode node = (INode)codeGenArgument.getArgument();
-   String cid = node.getUniqueName();
-   String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
-   String jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
-   if (jsonPath == null || jsonPath.trim().isEmpty()) {
-		jsonPath = "null";
-   }
-   boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+    String jsonPath = null;
+    boolean useParentObject = "true".equals(ElementParameterParser.getValue(node, "__USE_PARENT_AS_CURRENT_OBJECT__"));
+    if (useParentObject) {
+		jsonPath = "\".\"";
+    } else {
+   		jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
+	   	if (jsonPath == null || jsonPath.trim().isEmpty()) {
+			jsonPath = "null";
+		}
+   	}
+	boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
-   String outputType = ElementParameterParser.getValue(node, "__OUTPUT_STRUCTURE__");
+	String outputType = ElementParameterParser.getValue(node, "__OUTPUT_STRUCTURE__");
 %>
 	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	if (<%=cid%> != null) {
