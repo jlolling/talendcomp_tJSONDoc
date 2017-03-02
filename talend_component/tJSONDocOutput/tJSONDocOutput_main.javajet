@@ -33,10 +33,16 @@
 	@SuppressWarnings("unchecked")	
 	List<Map<String, String>> configList = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__COLUMN_CONFIG__");
 	String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
-	String jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
-	if (jsonPath == null || jsonPath.trim().isEmpty()) {
-		jsonPath = "null";
-	}
+    String jsonPath = null;
+    boolean useParentObject = "true".equals(ElementParameterParser.getValue(node, "__USE_PARENT_AS_CURRENT_OBJECT__"));
+    if (useParentObject) {
+		jsonPath = "\".\"";
+    } else {
+   		jsonPath = ElementParameterParser.getValue(node, "__PARENT_JSON_PATH__");
+	   	if (jsonPath == null || jsonPath.trim().isEmpty()) {
+			jsonPath = "null";
+		}
+   	}
 	String outputType = ElementParameterParser.getValue(node, "__OUTPUT_STRUCTURE__");
 	boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
