@@ -1,0 +1,87 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	" 
+%>
+<% 
+   	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+   	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String sourceSetup = ElementParameterParser.getValue(node, "__SOURCE_SETUP__");
+	String sourceJsonComp = ElementParameterParser.getValue(node, "__SOURCE_JSON_COMPONENT__");
+	String sourceJsonStringJava = ElementParameterParser.getValue(node, "__SOURCE_JSON_CONTENT__");
+	if (sourceJsonStringJava == null || sourceJsonStringJava.trim().isEmpty()) {
+		sourceJsonStringJava = "null";
+	} 
+	String sourceJsonPath = ElementParameterParser.getValue(node, "__SOURCE_JSON_PATH__");
+	if (sourceJsonPath == null || sourceJsonPath.trim().isEmpty()) {
+		sourceJsonPath = "null";
+	} 
+	String sourceKeyAttribute = ElementParameterParser.getValue(node, "__SOURCE_JSON_KEY_ATTRIBUTE__");
+	if (sourceKeyAttribute == null || sourceKeyAttribute.trim().isEmpty()) {
+		sourceKeyAttribute = "null";
+	} 
+	String targetSetup = ElementParameterParser.getValue(node, "__TARGET_SETUP__");
+	String targetJsonComp = ElementParameterParser.getValue(node, "__TARGET_JSON_COMPONENT__");
+	String targetJsonStringJava = ElementParameterParser.getValue(node, "__TARGET_JSON_CONTENT__");
+	if (targetJsonStringJava == null || targetJsonStringJava.trim().isEmpty()) {
+		targetJsonStringJava = "null";
+	} 
+	String targetJsonPath = ElementParameterParser.getValue(node, "__TARGET_JSON_PATH__");
+	if (targetJsonPath == null || targetJsonPath.trim().isEmpty()) {
+		targetJsonPath = "null";
+	} 
+	String targetKeyAttribute = ElementParameterParser.getValue(node, "__TARGET_JSON_KEY_ATTRIBUTE__");
+	if (targetKeyAttribute == null || targetKeyAttribute.trim().isEmpty()) {
+		targetKeyAttribute = "null";
+	} 
+	String targetMountAttribute = ElementParameterParser.getValue(node, "__TARGET_JSON_MOUNT_ATTRIBUTE__");
+	if (targetMountAttribute == null || targetMountAttribute.trim().isEmpty()) {
+		targetMountAttribute = "null";
+	} 
+	boolean targetMountAttributeIsArray = "true".equals(ElementParameterParser.getValue(node, "__TARGET_JSON_MOUNT_ATTRIBUTE_IS_ARRAY__"));
+	boolean cloneObjects = "true".equals(ElementParameterParser.getValue(node, "__CLONE_OBJECTS__"));
+	boolean dieIfTargetNotFound = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_TARGET_NOT_FOUND__"));
+%>
+	de.cimt.talendcomp.json.ops.Merge <%=cid%> = new de.cimt.talendcomp.json.ops.Merge();
+<%	if ("READ_FROM_INPUT".equals(sourceSetup)) { %>
+	<%=cid%>.setSourceNode(<%=sourceJsonStringJava%>);
+<%	} else if ("READ_FROM_COMPONENTS".equals(sourceSetup)) { %>
+	<%=cid%>.setSourceNode((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=sourceJsonComp%>_CURRENT_NODE"));
+<%  } %>
+	<%=cid%>.setSourceLoopPath(<%=sourceJsonPath%>);
+	<%=cid%>.setSourceIdentifier(<%=sourceKeyAttribute%>); 
+<%	if ("READ_FROM_INPUT".equals(targetSetup)) { %>
+	<%=cid%>.setTargetNode(<%=targetJsonStringJava%>);
+<%	} else if ("READ_FROM_COMPONENTS".equals(targetSetup)) { %>
+	<%=cid%>.setTargetNode((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=targetJsonComp%>_CURRENT_NODE"));
+<%  } %>
+	<%=cid%>.setTargetLoopPath(<%=targetJsonPath%>);
+	<%=cid%>.setTargetIdentifier(<%=targetKeyAttribute%>);
+	<%=cid%>.setTargetMountAttribute(<%=targetMountAttribute%>, <%=targetMountAttributeIsArray%>, <%=cloneObjects%>);
+	try {
+		<%=cid%>.executeMerge();
+		globalMap.put("<%=cid%>_COUNT_SOURCE_NODES", <%=cid%>.getCountSourceNodes());
+		globalMap.put("<%=cid%>_COUNT_TARGET_NODES", <%=cid%>.getCountTargetNodes());
+		globalMap.put("<%=cid%>_COUNT_MERGED_NODES", <%=cid%>.getCountAssigned());
+		globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getTargetNode());
+		if (<%=cid%>.getListSourceNodesNotAssigned().size() > 0) {
+			globalMap.put("<%=cid%>_COUNT_MISSED_MERGES", <%=cid%>.getListSourceNodesNotAssigned().size());
+			StringBuilder message = new StringBuilder();
+			message.append("These source nodes could not be assigned to a target:\n");
+			for (com.fasterxml.jackson.databind.JsonNode node : <%=cid%>.getListSourceNodesNotAssigned()) {
+				message.append(node.toString());
+				message.append("\n");
+			}
+			globalMap.put("<%=cid%>_ERROR_MESSAGE", message.toString());
+<%	if (dieIfTargetNotFound) { %>
+			throw new Exception(message.toString());
+<%	} %>
+		}
+	} catch (Exception e) {
+		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+		throw e;
+	}
+	

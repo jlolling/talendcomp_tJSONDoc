@@ -6,9 +6,9 @@ import java.io.File;
 
 import org.junit.Test;
 
-import de.cimt.talendcomp.json.ops.AutoAssign;
+import de.cimt.talendcomp.json.ops.Merge;
 
-public class TestAutoAssign {
+public class TestMerge {
 	
 	private com.fasterxml.jackson.databind.JsonNode sourceRootNode = null;
 	private com.fasterxml.jackson.databind.JsonNode targetRootNode = null;
@@ -30,12 +30,12 @@ public class TestAutoAssign {
 	@Test
 	public void testObjectToObject() throws Exception {
 		setUpObjectToObject();
-		AutoAssign am = new AutoAssign();
+		Merge am = new Merge();
 		am.setSourceNode(sourceRootNode);
-		am.setTargetNode(targetRootNode);
 		am.setSourceLoopPath("$.products[*].rightsownerships[*]");
-		am.setTargetLoopPath("$.result.conflicts[*].conflict_parties[*]");
 		am.setSourceIdentifier("rights_ownership_id");
+		am.setTargetNode(targetRootNode);
+		am.setTargetLoopPath("$.result.conflicts[*].conflict_parties[*]");
 		am.setTargetIdentifier("rights_ownership_id");
 		am.setTargetMountAttribute("rights_ownership_object", false, true);
 		am.executeMerge();
@@ -50,12 +50,12 @@ public class TestAutoAssign {
 	@Test
 	public void testObjectToArray() throws Exception {
 		setUpObjectToArray();
-		AutoAssign am = new AutoAssign();
+		Merge am = new Merge();
 		am.setSourceNode(sourceRootNode);
-		am.setTargetNode(targetRootNode);
 		am.setSourceLoopPath("$.products[*].rightsownerships[*]");
-		am.setTargetLoopPath("$.result.conflicts[*].conflict_parties");
 		am.setSourceIdentifier("rights_ownership_id");
+		am.setTargetNode(targetRootNode);
+		am.setTargetLoopPath("$.result.conflicts[*].conflict_parties");
 		am.setTargetIdentifier("rights_ownership_ids");
 		am.setTargetMountAttribute("rights_ownership_objects", true, true);
 		am.executeMerge();

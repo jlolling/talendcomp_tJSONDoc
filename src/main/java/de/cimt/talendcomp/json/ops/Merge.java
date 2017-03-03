@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import de.cimt.talendcomp.json.JsonDocument;
 
-public class AutoAssign {
+public class Merge {
 	
 	private String sourceLoopPath = null;
 	private String sourceIdentifier = null;
@@ -33,10 +33,26 @@ public class AutoAssign {
 		return this.sourceRootNode;
 	}
 
+	public JsonNode setSourceNode(String node) throws Exception {
+		this.sourceDoc = new JsonDocument(node);
+		this.sourceRootNode = sourceDoc.getRootNode();
+		return this.sourceRootNode;
+	}
+
 	public JsonNode setTargetNode(JsonNode node) throws Exception {
 		this.targetRootNode = node;
 		this.targetDoc = new JsonDocument(node);
 		return this.targetRootNode;
+	}
+
+	public JsonNode setTargetNode(String node) throws Exception {
+		this.targetDoc = new JsonDocument(node);
+		this.targetRootNode = targetDoc.getRootNode();
+		return this.targetRootNode;
+	}
+	
+	public JsonNode getTargetNode() {
+		return targetRootNode;
 	}
 
 	public void setSourceLoopPath(String path) {
