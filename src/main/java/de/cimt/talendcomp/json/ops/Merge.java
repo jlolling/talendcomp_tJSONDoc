@@ -182,7 +182,7 @@ public class Merge {
 		if (isDebug()) {
 			debug("Source search result: " + sourceSearchResult);
 		}
-		if (dieIfSourceLoopPathNotExists && (sourceSearchResult == null || sourceSearchResult.size() == 0)) {
+		if (dieIfSourceLoopPathNotExists && sourceSearchResult == null) {
 			throw new Exception("Source loop path does not exist. source-document:\n" + sourceDoc + "\nsourceLoopPath: " + sourceLoopPath);
 		}
 		List<JsonNode> sourceListNodes = sourceDoc.getArrayValuesAsList(sourceSearchResult, true);
@@ -199,7 +199,7 @@ public class Merge {
 		if (isDebug()) {
 			debug("Target search result: " + targetSearchResult);
 		}
-		if (targetSearchResult == null && dieIfTargetLoopPathNotExists) {
+		if (dieIfTargetLoopPathNotExists && targetSearchResult == null) {
 			throw new Exception("Target loop path does not exist. target-document:\n" + targetDoc + "\ntargetLoopPath: " + targetLoopPath);
 		}
 		if (isDebug()) {
