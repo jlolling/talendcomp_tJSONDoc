@@ -31,6 +31,9 @@ public class TestMerge {
 	public void testObjectToObject() throws Exception {
 		setUpObjectToObject();
 		Merge am = new Merge();
+		am.setDebug(true);
+		am.setDieIfSourceKeyNotExists(true);
+		am.setDieIfTargetKeyNotExists(true);
 		am.setSourceNode(sourceRootNode);
 		am.setSourceLoopPath("$.products[*].rightsownerships[*]");
 		am.setSourceIdentifier("rights_ownership_id");
@@ -51,6 +54,9 @@ public class TestMerge {
 	public void testObjectToArray() throws Exception {
 		setUpObjectToArray();
 		Merge am = new Merge();
+		am.setDebug(true);
+		am.setDieIfSourceKeyNotExists(true);
+		am.setDieIfTargetKeyNotExists(true);
 		am.setSourceNode(sourceRootNode);
 		am.setSourceLoopPath("$.products[*].rightsownerships[*]");
 		am.setSourceIdentifier("rights_ownership_id");

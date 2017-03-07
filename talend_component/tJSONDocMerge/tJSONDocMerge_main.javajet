@@ -23,6 +23,7 @@
 	if (sourceKeyAttribute == null || sourceKeyAttribute.trim().isEmpty()) {
 		sourceKeyAttribute = "null";
 	} 
+	boolean dieOnSourceKeyAttrIsMissing = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_MISSING_SOURCE_JSON_KEY_ATTRIBUTE__"));
 	String targetSetup = ElementParameterParser.getValue(node, "__TARGET_SETUP__");
 	String targetJsonComp = ElementParameterParser.getValue(node, "__TARGET_JSON_COMPONENT__");
 	String targetJsonStringJava = ElementParameterParser.getValue(node, "__TARGET_JSON_CONTENT__");
@@ -37,6 +38,7 @@
 	if (targetKeyAttribute == null || targetKeyAttribute.trim().isEmpty()) {
 		targetKeyAttribute = "null";
 	} 
+	boolean dieOnTargetKeyAttrIsMissing = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_MISSING_TARGET_JSON_KEY_ATTRIBUTE__"));
 	String targetMountAttribute = ElementParameterParser.getValue(node, "__TARGET_JSON_MOUNT_ATTRIBUTE__");
 	if (targetMountAttribute == null || targetMountAttribute.trim().isEmpty()) {
 		targetMountAttribute = "null";
@@ -44,8 +46,10 @@
 	boolean targetMountAttributeIsArray = "true".equals(ElementParameterParser.getValue(node, "__TARGET_JSON_MOUNT_ATTRIBUTE_IS_ARRAY__"));
 	boolean cloneObjects = "true".equals(ElementParameterParser.getValue(node, "__CLONE_OBJECTS__"));
 	boolean dieIfTargetNotFound = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_TARGET_NOT_FOUND__"));
+	boolean debug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG__"));
 %>
 	de.cimt.talendcomp.json.ops.Merge <%=cid%> = new de.cimt.talendcomp.json.ops.Merge();
+	<%=cid%>.setDebug(<%=debug%>);
 <%	if ("READ_FROM_INPUT".equals(sourceSetup)) { %>
 	<%=cid%>.setSourceNode(<%=sourceJsonStringJava%>);
 <%	} else if ("READ_FROM_COMPONENTS".equals(sourceSetup)) { %>
@@ -61,6 +65,8 @@
 	<%=cid%>.setTargetLoopPath(<%=targetJsonPath%>);
 	<%=cid%>.setTargetIdentifier(<%=targetKeyAttribute%>);
 	<%=cid%>.setTargetMountAttribute(<%=targetMountAttribute%>, <%=targetMountAttributeIsArray%>, <%=cloneObjects%>);
+	<%=cid%>.setDieIfSourceKeyNotExists(<%=dieOnSourceKeyAttrIsMissing%>);
+	<%=cid%>.setDieIfTargetKeyNotExists(<%=dieOnTargetKeyAttrIsMissing%>);
 	try {
 		<%=cid%>.executeMerge();
 		globalMap.put("<%=cid%>_COUNT_SOURCE_NODES", <%=cid%>.getCountSourceNodes());
