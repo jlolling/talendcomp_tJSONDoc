@@ -25,7 +25,7 @@
 	String outputType = ElementParameterParser.getValue(node, "__OUTPUT_STRUCTURE__");
 %>
 	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
-	if (<%=cid%> != null) {
+	if (<%=cid%> != null && globalMap.get("<%=docComp%>_CURRENT_NODE") != null && globalMap.get("<%=cid%>") == null) {
 		try {
 			globalMap.put("<%=cid%>", <%=cid%>);
 			String jsonPath = <%=jsonPath%>;

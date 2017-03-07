@@ -253,7 +253,7 @@ public class JsonDocument {
 			throw new IllegalArgumentException("jsonPath cannot be null or empty");
 		}
 		if (parentNode == null) {
-			parentNode = rootNode;
+			throw new IllegalArgumentException("parentNode cannot be null");
 		}
 		if (parentNode == rootNode && jsonPath.startsWith("$")) {
 			return getNode(jsonPath);
@@ -289,7 +289,7 @@ public class JsonDocument {
 			throw new IllegalArgumentException("jsonPath cannot be null or empty");
 		}
 		if (parentNode == null) {
-			parentNode = rootNode;
+			throw new IllegalArgumentException("parentNode cannot be null");
 		}
 		if (jsonPath.equals("$")) {
 			return rootNode;
