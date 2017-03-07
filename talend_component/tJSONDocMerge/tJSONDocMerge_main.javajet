@@ -24,6 +24,7 @@
 		sourceKeyAttribute = "null";
 	} 
 	boolean dieOnSourceKeyAttrIsMissing = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_MISSING_SOURCE_JSON_KEY_ATTRIBUTE__"));
+	boolean dieOnSourceLoopPathIsMissing = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_SOURCE_JSON_PATH_IS_MISSING__"));
 	String targetSetup = ElementParameterParser.getValue(node, "__TARGET_SETUP__");
 	String targetJsonComp = ElementParameterParser.getValue(node, "__TARGET_JSON_COMPONENT__");
 	String targetJsonStringJava = ElementParameterParser.getValue(node, "__TARGET_JSON_CONTENT__");
@@ -39,6 +40,7 @@
 		targetKeyAttribute = "null";
 	} 
 	boolean dieOnTargetKeyAttrIsMissing = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_MISSING_TARGET_JSON_KEY_ATTRIBUTE__"));
+	boolean dieOnTargetLoopPathIsMissing = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_TARGET_JSON_PATH_IS_MISSING__"));
 	String targetMountAttribute = ElementParameterParser.getValue(node, "__TARGET_JSON_MOUNT_ATTRIBUTE__");
 	if (targetMountAttribute == null || targetMountAttribute.trim().isEmpty()) {
 		targetMountAttribute = "null";
@@ -67,6 +69,8 @@
 	<%=cid%>.setTargetMountAttribute(<%=targetMountAttribute%>, <%=targetMountAttributeIsArray%>, <%=cloneObjects%>);
 	<%=cid%>.setDieIfSourceKeyNotExists(<%=dieOnSourceKeyAttrIsMissing%>);
 	<%=cid%>.setDieIfTargetKeyNotExists(<%=dieOnTargetKeyAttrIsMissing%>);
+	<%=cid%>.setDieIfSourceLoopPathNotExists(<%=dieOnSourceLoopPathIsMissing%>);
+	<%=cid%>.setDieIfTargetLoopPathNotExists(<%=dieOnTargetLoopPathIsMissing%>);
 	try {
 		<%=cid%>.executeMerge();
 		globalMap.put("<%=cid%>_COUNT_SOURCE_NODES", <%=cid%>.getCountSourceNodes());

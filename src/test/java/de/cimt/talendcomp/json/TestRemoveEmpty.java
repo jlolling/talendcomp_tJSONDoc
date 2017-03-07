@@ -1,6 +1,7 @@
 package de.cimt.talendcomp.json;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -96,7 +97,7 @@ public class TestRemoveEmpty extends TalendFakeJob {
 		JsonNode a2 = doc.getNode("$.a2");
 		JsonDocument doc2 = new JsonDocument(jsonResult);
 		JsonNode a21 = doc2.getNode("$.a2");
-		assertNotNull(a2);
+		assertNull(a2);
 		assertNull(a21);
 	}
 

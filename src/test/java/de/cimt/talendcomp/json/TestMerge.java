@@ -1,6 +1,7 @@
 package de.cimt.talendcomp.json;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -22,6 +23,13 @@ public class TestMerge {
 
 	public void setUpObjectToArray() throws Exception {
 		File testFile = new File("/Volumes/Data/Talend/testdata/json/auto_assign_input_object_to_array.json");
+		de.cimt.talendcomp.json.JsonDocument doc1 = new de.cimt.talendcomp.json.JsonDocument(testFile);
+		sourceRootNode = doc1.getRootNode();
+		targetRootNode = sourceRootNode;
+	}
+
+	public void setUpObjectToArrayMissingSourceLoopPath() throws Exception {
+		File testFile = new File("/Volumes/Data/Talend/testdata/json/auto_assign_input_object_to_array_missing_source_loop_path.json");
 		de.cimt.talendcomp.json.JsonDocument doc1 = new de.cimt.talendcomp.json.JsonDocument(testFile);
 		sourceRootNode = doc1.getRootNode();
 		targetRootNode = sourceRootNode;
@@ -71,6 +79,31 @@ public class TestMerge {
 		JsonDocument result = new JsonDocument(targetRootNode);
 		System.out.println(result.getJsonString(true, false));
 		assertEquals(6, am.getCountAssigned());
+	}
+
+	@Test
+	public void testObjectToArrayMissingSourceLoopPath() throws Exception {
+		setUpObjectToArrayMissingSourceLoopPath();
+		Merge am = new Merge();
+		am.setDebug(true);
+		am.setDieIfSourceKeyNotExists(true);
+		am.setDieIfTargetKeyNotExists(true);
+		am.setSourceNode(sourceRootNode);
+		am.setSourceLoopPath("$.products[*].rightsownerships[*]");
+		am.setSourceIdentifier("rights_ownership_id");
+		am.setTargetNode(targetRootNode);
+		am.setTargetLoopPath("$.result.conflicts[*].conflict_parties");
+		am.setTargetIdentifier("rights_ownership_ids");
+		am.setTargetMountAttribute("rights_ownership_objects", true, true);
+		am.setDieIfSourceLoopPathNotExists(true);
+		try {
+			am.executeMerge();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			assertTrue(true);
+			return;
+		}
+		assertTrue(false);
 	}
 
 }

@@ -33,6 +33,8 @@ public class Merge {
 	private boolean debug = false;
 	private boolean dieIfSourceKeyNotExists = false;
 	private boolean dieIfTargetKeyNotExists = false;
+	private boolean dieIfSourceLoopPathNotExists = false;
+	private boolean dieIfTargetLoopPathNotExists = false;
 	
 	public void info(String message) {
 		if (logger != null) {
@@ -177,6 +179,12 @@ public class Merge {
 		}
 		listSourceNodesNotAssigned = new ArrayList<JsonNode>();
 		JsonNode sourceSearchResult = sourceDoc.getNode(sourceLoopPath);
+		if (isDebug()) {
+			debug("Source search result: " + sourceSearchResult);
+		}
+		if (dieIfSourceLoopPathNotExists && (sourceSearchResult == null || sourceSearchResult.size() == 0)) {
+			throw new Exception("Source loop path does not exist. source-document:\n" + sourceDoc + "\nsourceLoopPath: " + sourceLoopPath);
+		}
 		List<JsonNode> sourceListNodes = sourceDoc.getArrayValuesAsList(sourceSearchResult, true);
 		if (isDebug()) {
 			StringBuilder message = new StringBuilder();
@@ -188,6 +196,12 @@ public class Merge {
 		}
 		countSourceNodes = sourceListNodes.size();
 		JsonNode targetSearchResult = targetDoc.getNode(targetLoopPath);
+		if (isDebug()) {
+			debug("Target search result: " + targetSearchResult);
+		}
+		if (targetSearchResult == null && dieIfTargetLoopPathNotExists) {
+			throw new Exception("Target loop path does not exist. target-document:\n" + targetDoc + "\ntargetLoopPath: " + targetLoopPath);
+		}
 		if (isDebug()) {
 			StringBuilder message = new StringBuilder();
 			message.append("List of target nodes:\n");
@@ -349,6 +363,22 @@ public class Merge {
 
 	public void setLogger(Logger logger) {
 		this.logger = logger;
+	}
+
+	public boolean isDieIfSourceLoopPathNotExists() {
+		return dieIfSourceLoopPathNotExists;
+	}
+
+	public void setDieIfSourceLoopPathNotExists(boolean dieIfSourceLoopPathNotExists) {
+		this.dieIfSourceLoopPathNotExists = dieIfSourceLoopPathNotExists;
+	}
+
+	public boolean isDieIfTargetLoopPathNotExists() {
+		return dieIfTargetLoopPathNotExists;
+	}
+
+	public void setDieIfTargetLoopPathNotExists(boolean dieIfTargetLoopPathNotExists) {
+		this.dieIfTargetLoopPathNotExists = dieIfTargetLoopPathNotExists;
 	}
 
 }

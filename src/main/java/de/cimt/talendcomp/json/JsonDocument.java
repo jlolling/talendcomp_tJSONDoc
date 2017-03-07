@@ -221,7 +221,7 @@ public class JsonDocument {
 		try {
 			JsonPath compiledPath = getCompiledJsonPath(jsonPath);
 			JsonNode node = rootContext.read(compiledPath);
-			if (node.isMissingNode()) {
+			if (node.isMissingNode() || node.isNull()) {
 				return null;
 			} else {
 				return node;
@@ -267,7 +267,7 @@ public class JsonDocument {
 		JsonNode node = null;
 		try {
 			node = context.read(compiledPath);
-			if (node.isMissingNode()) {
+			if (node.isMissingNode() || node.isNull()) {
 				return null;
 			} else {
 				return node;

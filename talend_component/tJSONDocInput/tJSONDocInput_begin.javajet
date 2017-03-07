@@ -84,7 +84,7 @@
 			parentNode_<%=cid%> = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath, false);
 			if (parentNode_<%=cid%> == null) {
 <% if (dieIfParentNotExists) { %>
-				throw new Exception("Path: " + path + " does not exists!");
+				throw new Exception("Path: " + path + " does not exist or is null!");
 <%	} else { %>
 				globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
 <%	} %>
