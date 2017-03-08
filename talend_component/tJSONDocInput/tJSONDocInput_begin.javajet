@@ -53,8 +53,9 @@
    	if (provideEmptyNode) {
    		dieIfParentIsEmpty = false;
    	}
-    boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+    boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
+   	boolean provideValuesAsList = "true".equals(ElementParameterParser.getValue(node, "__PROVIDE_VALUES_AS_COMMA_SEP_LIST__"));
 %>
 	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
@@ -111,6 +112,10 @@
 		listNodes_<%=cid%>.add(<%=cid%>.createEmptyNode());
 <% } %>
 	}
+<%	if (provideValuesAsList) { %>
+	java.util.List<Object> <%=cid%>_valueList = new java.util.ArrayList<Object>();
+	globalMap.put("valueList_<%=cid%>", <%=cid%>_valueList);
+<%	} %>
 	globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", 0);
 	for (com.fasterxml.jackson.databind.JsonNode currentNode_<%=cid%> : listNodes_<%=cid%>) {
 		// loop over the given children of the parent node or the values of the array
@@ -149,12 +154,22 @@
 <%		if (isDateValue) { %>
 				<%=javaPackageClassName%> var = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, <%=missingAttributeValue%>, <%=pattern%>);
 				globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
+<%			if (provideValuesAsList) { %>
+				if (var != null) {
+					<%=cid%>_valueList.add(var);
+				}
+<%			} %>
 <%      	if (conn != null) { %>
 				<%=conn.getName()%>.<%=mc.getLabel()%> = var;
 <%       	} %>
 <%		} else { %>
 				<%=javaPackageClassName%> var = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, (<%=javaClassName%>) <%=missingAttributeValue%>);
 				globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
+<%			if (provideValuesAsList) { %>
+				if (var != null) {
+					<%=cid%>_valueList.add(var);
+				}
+<%			} %>
 <%      	if (conn != null) { %>
 				<%=conn.getName()%>.<%=mc.getLabel()%> = var;
 <%       	} %>

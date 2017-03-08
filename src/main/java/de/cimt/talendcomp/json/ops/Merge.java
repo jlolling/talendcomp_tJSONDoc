@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 
 import de.cimt.talendcomp.json.JsonDocument;
 
@@ -308,14 +309,29 @@ public class Merge {
 			}
 			return found;
 		} else {
-			if (key1 != null && key1.equals(key2)) {
-				if (isDebug()) {
-					debug("\tSource key: " + key1 + " and target key: " + key2 + " are equal -> matching OK");
+			boolean found = false;
+			if (key1 != null && key2 != null) {
+				if (key1 instanceof ValueNode && key2 instanceof ValueNode) {
+					String key1Str = key1.asText().trim();
+					String key2Str = key1.asText().trim();
+					found = key1Str.equals(key2Str);
+				} else if (key1.equals(key2)) {
+					found = true;
 				}
-				return true;
+				if (found) {
+					if (isDebug()) {
+						debug("\tSource key: " + key1 + " and target key: " + key2 + " are equal -> matching OK");
+					}
+					return true;
+				} else {
+					if (isDebug()) {
+						debug("\tSource key: " + key1 + " and target key: " + key2 + " are NOT equal -> matching FAIL");
+					}
+					return false;
+				}
 			} else {
 				if (isDebug()) {
-					debug("\tSource key: " + key1 + " and target key: " + key2 + " are NOT equal -> matching FAIL");
+					debug("\tSource key: " + key1 + " or target key: " + key2 + " are null -> matching FAIL");
 				}
 				return false;
 			}
