@@ -313,7 +313,7 @@ public class Merge {
 			if (key1 != null && key2 != null) {
 				if (key1 instanceof ValueNode && key2 instanceof ValueNode) {
 					String key1Str = key1.asText().trim();
-					String key2Str = key1.asText().trim();
+					String key2Str = key2.asText().trim();
 					found = key1Str.equals(key2Str);
 				} else if (key1.equals(key2)) {
 					found = true;
