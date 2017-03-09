@@ -214,8 +214,11 @@ public class Merge {
 		List<JsonNode> targetListNodes = targetDoc.getArrayValuesAsList(targetSearchResult, false);
 		countTargetNodes = targetListNodes.size();
 		for (JsonNode sourceNode : sourceListNodes) {
+			if (sourceNode.isNull()) {
+				throw new Exception("Found null as source node in the search result: " + sourceSearchResult);
+			}
 			if ((sourceNode instanceof ObjectNode) == false) {
-				throw new Exception("Found in source nodes a none-ObjectNode: " + sourceNode);
+				throw new Exception("Found in source nodes a none-ObjectNode: " + sourceNode + " in the search result: " + sourceSearchResult);
 			}
 			boolean foundTarget = false;
 			for (JsonNode targetNode : targetListNodes) {
