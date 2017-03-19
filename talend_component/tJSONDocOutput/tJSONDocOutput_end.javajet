@@ -10,3 +10,4 @@
 	String cid = node.getUniqueName();
 %>
 	globalMap.remove("entryNode_<%=cid%>");
+    globalMap.put("<%=cid%>_KEYS_AS_SQL_IN_CLAUSE", de.cimt.talendcomp.json.Util.buildSQLInClause(keyMap_<%=cid%>.keySet()));

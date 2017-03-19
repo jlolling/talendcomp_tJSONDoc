@@ -719,7 +719,7 @@ public class JsonDocument {
 		return sb.toString();
 	}
 	
-	private void collectObjectNodes(JsonNode node, List<JsonNode> result, boolean unique) {
+	private void collectNodes(JsonNode node, List<JsonNode> result, boolean unique) {
 		if (node instanceof ArrayNode) {
 			ArrayNode arrayNode = (ArrayNode) node;
 			// because the search returns an array within an array
@@ -728,7 +728,7 @@ public class JsonDocument {
 			// check if we have an array made of arrays
 			for (JsonNode childNode : arrayNode) {
 				if (childNode instanceof ArrayNode) {
-					collectObjectNodes(childNode, result, unique);
+					collectNodes(childNode, result, unique);
 				} else {
 					if (unique == false || result.contains(childNode) == false) {
 						result.add(childNode);
@@ -752,7 +752,7 @@ public class JsonDocument {
 	
 	public List<JsonNode> getArrayValuesAsList(JsonNode node, boolean unique) {
 		List<JsonNode> result = new ArrayList<JsonNode>();
-		collectObjectNodes(node, result, unique);
+		collectNodes(node, result, unique);
 		return result;
 	}
 	
@@ -767,7 +767,17 @@ public class JsonDocument {
 				}
 			}
 			if (valueNode.isArray()) {
-				return getArrayValuesAsChain((ArrayNode) valueNode);
+				int columnIndex = Integer.getInteger(fieldName);
+				if (columnIndex == -1) {
+					return getArrayValuesAsChain((ArrayNode) valueNode);
+				} else {
+					JsonNode element = ((ArrayNode) valueNode).get(columnIndex);
+					if (element.isValueNode()) {
+						return element.asText();
+					} else {
+						return element.toString();
+					}
+				}
 			} else {
 				if (valueNode.isValueNode()) {
 					return valueNode.asText();

@@ -56,10 +56,15 @@
     boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
    	boolean provideValuesAsList = "true".equals(ElementParameterParser.getValue(node, "__PROVIDE_VALUES_AS_COMMA_SEP_LIST__"));
+   	String inputType = ElementParameterParser.getValue(node, "__INPUT_STRUCTURE__");
 %>
+	globalMap.remove("<%=cid%>_CURRENT_NODE");
+	globalMap.remove("<%=cid%>_CURRENT_PATH");
+	globalMap.put("<%=cid%>_NB_LINE", 0);
+	globalMap.remove("<%=cid%>_NB_NOT_NULL_ATTRIBUTES");
+	globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
 	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
-	globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
 	if (<%=cid%> != null) {
 		try {
 			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");

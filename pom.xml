@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.cimt.talendcomp</groupId>
 	<artifactId>cimt-talendcomp-json</artifactId>
-	<version>7.5</version>
+	<version>8.0</version>
 	<organization>
 		<name>cimt AG</name>
 	</organization>
