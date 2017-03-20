@@ -27,10 +27,10 @@
 %>
 	globalMap.remove("<%=cid%>_CURRENT_NODE");
 	globalMap.remove("<%=cid%>_CURRENT_PATH");
-	globalMap.remove("<%=cid%>_NB_LINE");
+	globalMap.put("<%=cid%>_NB_LINE", 0);
 	java.util.Map<Object, com.fasterxml.jackson.databind.JsonNode> keyMap_<%=cid%> = new java.util.HashMap<Object, com.fasterxml.jackson.databind.JsonNode>();
 	globalMap.put("keyMap_<%=cid%>", keyMap_<%=cid%>);
-	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+	de.jlo.talendcomp.json.JsonDocument <%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	if (<%=cid%> != null && globalMap.get("<%=docComp%>_CURRENT_NODE") != null && globalMap.get("entryNode_<%=cid%>") == null && <%=autoParentChildReleation%> == false) {
 		try {
 			globalMap.put("<%=cid%>", <%=cid%>);

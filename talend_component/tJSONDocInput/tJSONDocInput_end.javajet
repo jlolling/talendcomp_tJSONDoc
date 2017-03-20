@@ -14,6 +14,6 @@
 %>	
 	} // close loop for <%=cid%>
 <%	if (provideValuesAsList) { %>
-	globalMap.put("<%=cid%>_VALUES_AS_COMMA_SEP_LIST", de.cimt.talendcomp.json.Util.buildListAsString((java.util.List<Object>) globalMap.get("valueList_<%=cid%>"), <%=asSQLList%>));
+	globalMap.put("<%=cid%>_VALUES_AS_COMMA_SEP_LIST", de.jlo.talendcomp.json.Util.buildListAsString((java.util.List<Object>) globalMap.get("valueList_<%=cid%>"), <%=asSQLList%>));
 <%	} %>
 	

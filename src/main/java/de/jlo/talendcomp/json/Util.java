@@ -1,4 +1,4 @@
-package de.cimt.talendcomp.json;
+package de.jlo.talendcomp.json;
 
 import java.util.Collection;
 import java.util.Set;

@@ -60,9 +60,9 @@
 %>
    try {
 <%  if ("EMPTY_OBJECT".equals(setup)) { %>   
-		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(false); 
+		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(false); 
 <%  } else if ("EMPTY_ARRAY".equals(setup)) { %>
-		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(true); 
+		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(true); 
 <%  } else if ("READ_FROM_INPUT".equals(setup) || "READ_FROM_INPUT_PLAIN_TEXT".equals(setup)) { %>
 <%		if ("READ_FROM_INPUT_PLAIN_TEXT".equals(setup)) { %>
 <%			if (usePlainTextForTest) { %>
@@ -80,10 +80,10 @@
 <%		} else { %>
 		String jsonContent = <%=jsonStringJava%>;
 <%		} %>	
-		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(jsonContent); 
+		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(jsonContent); 
 <%  } else if ("READ_FROM_FLOW".equals(setup)) { 
         if (inputColumnName != null) { %>
-		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(<%=conn.getName()%>.<%=inputColumnName%>);
+		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(<%=conn.getName()%>.<%=inputColumnName%>);
 <%  	}
 	} else { %>
 		String filePath = <%=file%>;
@@ -91,7 +91,7 @@
 		if (filePath != null && filePath.trim().isEmpty() == false) {
 			jsonFile = new java.io.File(filePath);
 		}
-		de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument(jsonFile); 
+		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(jsonFile); 
 <%  } %>
 		globalMap.put("<%=cid%>", <%=cid%>);
 		globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getRootNode());

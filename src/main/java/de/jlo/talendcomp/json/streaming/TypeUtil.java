@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cimt.talendcomp.json.streaming;
+package de.jlo.talendcomp.json.streaming;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 
-import de.cimt.talendcomp.json.GenericDateUtil;
+import de.jlo.talendcomp.json.GenericDateUtil;
 
 public final class TypeUtil {
 	

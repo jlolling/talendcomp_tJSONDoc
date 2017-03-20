@@ -63,11 +63,11 @@
 	globalMap.put("<%=cid%>_NB_LINE", 0);
 	globalMap.remove("<%=cid%>_NB_NOT_NULL_ATTRIBUTES");
 	globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
-	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+	de.jlo.talendcomp.json.JsonDocument <%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
 	if (<%=cid%> != null) {
 		try {
-			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+			<%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 			globalMap.put("<%=cid%>", <%=cid%>);
 	   		String jsonPath = <%=jsonPath%>;
 	   		// build path to enhance the error messages

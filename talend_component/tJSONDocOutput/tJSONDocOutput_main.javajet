@@ -66,7 +66,7 @@
 	if (entryNode_<%=cid%> != null) {
 	if (globalMap.get("entryNode_<%=cid%>") == null || (globalMap.get("entryNode_<%=cid%>") != entryNode_<%=cid%>)) {
 		try {
-			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+			<%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 			globalMap.put("<%=cid%>", <%=cid%>);
 			// get the parent object we have to dock on
 			globalMap.put("entryNode_<%=cid%>", entryNode_<%=cid%>);
