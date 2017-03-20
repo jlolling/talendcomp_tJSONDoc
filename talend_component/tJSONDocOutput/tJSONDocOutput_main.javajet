@@ -259,8 +259,12 @@
 		throw e;
 	}
 	} else {
-<%	if (dieIfParentDoesNotExist) { %>
+<%	if (autoParentChildReleation) {
+		if (dieIfParentDoesNotExist) { %>
 		throw new Exception("Foreign key not found: <%=foreignKeyColumn%>=" + <%=conn.getName()%>.<%=foreignKeyColumn%>);
-<%	} %>		
+<%		} 	
+	} else { %>
+		throw new Exception("The referenced current document from component: <%=docComp%> is null. Please check the job structur!");
+<%	} %> 		
 	} 
 <%	} // if (conn != null) %>
