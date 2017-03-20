@@ -1,14 +1,15 @@
 package de.jlo.talendcomp.json;
 
-import de.cimt.talendcomp.test.TalendFakeJob;
-import de.jlo.talendcomp.json.JsonDocument;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import de.cimt.talendcomp.test.TalendFakeJob;
 
 public class TestInput extends TalendFakeJob {
 	

@@ -11,9 +11,6 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import de.jlo.talendcomp.json.JsonDocument;
-import de.jlo.talendcomp.json.PathToken;
-
 public class TestPathToken {
 
 	@Test
