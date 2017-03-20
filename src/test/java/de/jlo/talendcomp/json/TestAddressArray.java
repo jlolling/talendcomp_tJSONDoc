@@ -1,4 +1,4 @@
-package de.cimt.talendcomp.json;
+package de.jlo.talendcomp.json;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -138,7 +138,7 @@ public class TestAddressArray extends TalendFakeJob {
 				    + "   ]\n"
 				    + " }\n"
 				    + "}";
-			de.cimt.talendcomp.json.JsonDocument tJSONDocOpen_1 = new de.cimt.talendcomp.json.JsonDocument(
+			de.jlo.talendcomp.json.JsonDocument tJSONDocOpen_1 = new de.jlo.talendcomp.json.JsonDocument(
 					json);
 			globalMap.put("tJSONDocOpen_1", tJSONDocOpen_1);
 			globalMap.put("tJSONDocOpen_1_CURRENT_NODE",
@@ -156,7 +156,7 @@ public class TestAddressArray extends TalendFakeJob {
 	@Test
 	public void testUseJsonPathStartingWithAnObject() {
 		System.out.println("testUseJsonPathStartingWithAnObject...");
-		de.cimt.talendcomp.json.JsonDocument tJSONDocInput_1 = (de.cimt.talendcomp.json.JsonDocument) globalMap
+		de.jlo.talendcomp.json.JsonDocument tJSONDocInput_1 = (de.jlo.talendcomp.json.JsonDocument) globalMap
 				.get("tJSONDocOpen_1");
 		com.fasterxml.jackson.databind.JsonNode bpnode = tJSONDocInput_1
 				.getNode("$.businesspartner");
@@ -175,7 +175,7 @@ public class TestAddressArray extends TalendFakeJob {
 	@Test
 	public void testJumpOverArray() throws Exception {
 		System.out.println("testJumpOverArray...");
-		de.cimt.talendcomp.json.JsonDocument tJSONDocInput_1 = (de.cimt.talendcomp.json.JsonDocument) globalMap
+		de.jlo.talendcomp.json.JsonDocument tJSONDocInput_1 = (de.jlo.talendcomp.json.JsonDocument) globalMap
 				.get("tJSONDocOpen_1");
 		com.fasterxml.jackson.databind.JsonNode bpnode = tJSONDocInput_1
 				.getNode("$.businesspartner");

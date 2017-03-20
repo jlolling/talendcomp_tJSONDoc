@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.cimt.talendcomp</groupId>
-	<artifactId>cimt-talendcomp-json</artifactId>
-	<version>7.6</version>
+	<groupId>de.jlo.talendcomp</groupId>
+	<artifactId>jlo-talendcomp-json</artifactId>
+	<version>8.1</version>
 	<organization>
-		<name>cimt AG</name>
+		<name>Jan Lolling</name>
 	</organization>
 	<build>
 		<plugins>
@@ -91,7 +91,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	<name>JSON Builder</name>
+	<name>JSON Talend Components</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

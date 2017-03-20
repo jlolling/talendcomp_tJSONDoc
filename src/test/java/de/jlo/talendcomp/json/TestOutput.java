@@ -1,4 +1,4 @@
-package de.cimt.talendcomp.json;
+package de.jlo.talendcomp.json;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -10,6 +10,8 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import de.jlo.talendcomp.json.JsonDocument;
 
 public class TestOutput {
 

@@ -13,7 +13,7 @@ import com.jayway.jsonpath.internal.path.PathCompiler;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
-import de.cimt.talendcomp.json.JsonDocument;
+import de.jlo.talendcomp.json.JsonDocument;
 
 public class Test2 {
 

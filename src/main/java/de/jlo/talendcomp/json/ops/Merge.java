@@ -1,4 +1,4 @@
-package de.cimt.talendcomp.json.ops;
+package de.jlo.talendcomp.json.ops;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 
-import de.cimt.talendcomp.json.JsonDocument;
+import de.jlo.talendcomp.json.JsonDocument;
 
 public class Merge {
 	

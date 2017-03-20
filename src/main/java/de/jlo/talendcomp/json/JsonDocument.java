@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cimt.talendcomp.json;
+package de.jlo.talendcomp.json;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -719,7 +719,7 @@ public class JsonDocument {
 		return sb.toString();
 	}
 	
-	private void collectObjectNodes(JsonNode node, List<JsonNode> result, boolean unique) {
+	private void collectNodes(JsonNode node, List<JsonNode> result, boolean unique) {
 		if (node instanceof ArrayNode) {
 			ArrayNode arrayNode = (ArrayNode) node;
 			// because the search returns an array within an array
@@ -728,7 +728,7 @@ public class JsonDocument {
 			// check if we have an array made of arrays
 			for (JsonNode childNode : arrayNode) {
 				if (childNode instanceof ArrayNode) {
-					collectObjectNodes(childNode, result, unique);
+					collectNodes(childNode, result, unique);
 				} else {
 					if (unique == false || result.contains(childNode) == false) {
 						result.add(childNode);
@@ -746,14 +746,61 @@ public class JsonDocument {
 		}
 	}
 	
+	public List<JsonNode> getArrayValuesAsList(JsonNode node, boolean unique, boolean deep) {
+		if (deep) {
+			return getArrayValuesAsList(node, unique);
+		}
+		List<JsonNode> result = new ArrayList<JsonNode>();
+		if (node instanceof ArrayNode) {
+			ArrayNode arrayNode = (ArrayNode) node;
+			// because the search returns an array within an array
+			// if we have more than one array (with a search over more than one elements) within the loop
+			// we must uncover an additional array
+			// check if we have an array made of arrays
+			for (JsonNode childNode : arrayNode) {
+				if (unique == false || result.contains(childNode) == false) {
+					result.add(childNode);
+				}
+			}
+		} else if (node instanceof ObjectNode) {
+			if (unique == false || result.contains(node) == false) {
+				result.add(node);
+			}
+		} else if (node instanceof ValueNode) {
+			if (unique == false || result.contains(node) == false) {
+				result.add(node);
+			}
+		}
+		return result;
+	}
+
 	public List<JsonNode> getArrayValuesAsList(JsonNode node) {
 		return getArrayValuesAsList(node, false);
 	}
 	
 	public List<JsonNode> getArrayValuesAsList(JsonNode node, boolean unique) {
 		List<JsonNode> result = new ArrayList<JsonNode>();
-		collectObjectNodes(node, result, unique);
+		collectNodes(node, result, unique);
 		return result;
+	}
+	
+	private JsonNode getNodeFromArray(JsonNode node, int arrayIndex, boolean allowMissing) throws Exception {
+		if (node instanceof ArrayNode) {
+			ArrayNode arrayNode = (ArrayNode) node;
+			if (arrayIndex < arrayNode.size()) {
+				return arrayNode.get(arrayIndex);
+			} else if (allowMissing) {
+				return null;
+			} else {
+				throw new Exception("Node: " + node + " has less elements than expected array index: " + arrayIndex);
+			}
+		}
+		return node;
+	}
+	
+	public String getValueAsString(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, String missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsString(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
 	public String getValueAsString(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, String missingNodeValue) throws Exception {
@@ -780,6 +827,11 @@ public class JsonDocument {
 		}
 	}
 
+	public Boolean getValueAsBoolean(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Boolean missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsBoolean(oneNode, ".", isNullable, allowMissing, missingNodeValue);
+	}
+	
 	public Boolean getValueAsBoolean(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Boolean missingNodeValue) throws Exception {
 		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
@@ -796,6 +848,11 @@ public class JsonDocument {
 		}
 	}
 
+	public Integer getValueAsInteger(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Integer missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsInteger(oneNode, ".", isNullable, allowMissing, missingNodeValue);
+	}
+	
 	public Integer getValueAsInteger(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Integer missingNodeValue) throws Exception {
 		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
@@ -810,6 +867,11 @@ public class JsonDocument {
 		} else {
 			return null;
 		}
+	}
+	
+	public Long getValueAsLong(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Long missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsLong(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
 	public Long getValueAsLong(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Long missingNodeValue) throws Exception {
@@ -828,6 +890,11 @@ public class JsonDocument {
 		}
 	}
 
+	public Double getValueAsDouble(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Double missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsDouble(oneNode, ".", isNullable, allowMissing, missingNodeValue);
+	}
+	
 	public Double getValueAsDouble(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Double missingNodeValue) throws Exception {
 		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
@@ -844,6 +911,11 @@ public class JsonDocument {
 		}
 	}
 
+	public Float getValueAsFloat(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Float missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsFloat(oneNode, ".", isNullable, allowMissing, missingNodeValue);
+	}
+	
 	public Float getValueAsFloat(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Float missingNodeValue) throws Exception {
 		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
@@ -860,6 +932,11 @@ public class JsonDocument {
 		}
 	}
 
+	public Short getValueAsShort(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Short missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsShort(oneNode, ".", isNullable, allowMissing, missingNodeValue);
+	}
+	
 	public Short getValueAsShort(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Short missingNodeValue) throws Exception {
 		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
@@ -876,6 +953,11 @@ public class JsonDocument {
 		}
 	}
 
+	public BigDecimal getValueAsBigDecimal(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, BigDecimal missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsBigDecimal(oneNode, ".", isNullable, allowMissing, missingNodeValue);
+	}
+	
 	public BigDecimal getValueAsBigDecimal(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, BigDecimal missingNodeValue) throws Exception {
 		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
@@ -892,6 +974,11 @@ public class JsonDocument {
 		}
 	}
 
+	public BigDecimal getValueAsBigDecimal(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, String missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsBigDecimal(oneNode, ".", isNullable, allowMissing, missingNodeValue);
+	}
+	
 	public BigDecimal getValueAsBigDecimal(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, String missingNodeValue) throws Exception {
 		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
@@ -912,6 +999,11 @@ public class JsonDocument {
 		}
 	}
 
+	public BigInteger getValueAsBigInteger(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, BigInteger missingNodeValue) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsBigInteger(oneNode, ".", isNullable, allowMissing, missingNodeValue);
+	}
+	
 	public BigInteger getValueAsBigInteger(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, BigInteger missingNodeValue) throws Exception {
 		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {
@@ -928,6 +1020,11 @@ public class JsonDocument {
 		}
 	}
 
+	public Date getValueAsDate(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Date missingNodeValue, String pattern) throws Exception {
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		return getValueAsDate(oneNode, ".", isNullable, allowMissing, missingNodeValue, pattern);
+	}
+	
 	public Date getValueAsDate(JsonNode node, String fieldName, boolean isNullable, boolean allowMissing, Date missingNodeValue, String pattern) throws Exception {
 		JsonNode valueNode = getValueNode(node, fieldName, isNullable, allowMissing);
 		if (valueNode != null) {

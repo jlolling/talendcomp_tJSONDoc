@@ -1,4 +1,4 @@
-package de.cimt.talendcomp.json.streaming;
+package de.jlo.talendcomp.json.streaming;
 
 import java.io.File;
 import java.io.InputStream;

@@ -35,7 +35,7 @@
 	   	unwrapCondition = ElementParameterParser.getValue(node, "__REMOVE_ROOT_ARRAY_CONDITION__");
    	}
 %>
-	de.cimt.talendcomp.json.JsonDocument <%=cid%> = new de.cimt.talendcomp.json.JsonDocument((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE"));
+	de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE"));
 	com.fasterxml.jackson.databind.JsonNode <%=cid%>_outputNode = null;
 	try {
 		<%=cid%>_outputNode = <%=cid%>.getConditionalUnwrappedRootNode((<%=unwrapCondition%>), <%=dieWhileUnwrap%>);

@@ -56,13 +56,18 @@
     boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
    	boolean provideValuesAsList = "true".equals(ElementParameterParser.getValue(node, "__PROVIDE_VALUES_AS_COMMA_SEP_LIST__"));
+   	boolean arrayOfArrays = "ARRAY_OF_ARRAYS".equals(ElementParameterParser.getValue(node, "__INPUT_STRUCTURE__"));
 %>
-	de.cimt.talendcomp.json.JsonDocument <%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
-	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
+	globalMap.remove("<%=cid%>_CURRENT_NODE");
+	globalMap.remove("<%=cid%>_CURRENT_PATH");
+	globalMap.put("<%=cid%>_NB_LINE", 0);
+	globalMap.remove("<%=cid%>_NB_NOT_NULL_ATTRIBUTES");
 	globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
+	de.jlo.talendcomp.json.JsonDocument <%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
 	if (<%=cid%> != null) {
 		try {
-			<%=cid%> = (de.cimt.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+			<%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 			globalMap.put("<%=cid%>", <%=cid%>);
 	   		String jsonPath = <%=jsonPath%>;
 	   		// build path to enhance the error messages
@@ -104,7 +109,7 @@
 	} else {
    		throw new Exception("No JSON document received from the parent component: <%=docComp%>. This is a misconfiguration within the job!");
 	}
-	java.util.List<com.fasterxml.jackson.databind.JsonNode> listNodes_<%=cid%> = <%=cid%>.getArrayValuesAsList(parentNode_<%=cid%>);
+	java.util.List<com.fasterxml.jackson.databind.JsonNode> listNodes_<%=cid%> = <%=cid%>.getArrayValuesAsList(parentNode_<%=cid%>, false, <%=(arrayOfArrays == false)%>);
 	if (listNodes_<%=cid%>.isEmpty()) {
 <% if (dieIfParentIsEmpty) { %>
 		throw new Exception("The referenced object: " + <%=jsonPath%> + " is empty!");
@@ -129,6 +134,10 @@
 			fieldName = "null";
 		}
 		String fieldLabel = "\"" + mc.getLabel()  + "\"";
+		String arrayIndex = config.get("ARRAY_INDEX");
+		if (arrayIndex == null || arrayIndex.trim().isEmpty()) {
+			arrayIndex = String.valueOf(i);
+		}
 		String pattern = mc.getPattern();
 		if (pattern == null || pattern.trim().isEmpty()) {
 			pattern = "null";
@@ -147,12 +156,16 @@
 			continue; // skip over this column
 		} %>
 			{
-				String fieldName = <%=fieldName%>;
-				if (fieldName == null || fieldName.trim().isEmpty()) {
-					fieldName = <%=fieldLabel%>;
+<%		if (arrayOfArrays) { %>
+				Integer position = <%=arrayIndex%>;
+<%		} else { %>
+				String position = <%=fieldName%>;
+				if (position == null || position.trim().isEmpty()) {
+					position = <%=fieldLabel%>;
 				}
+<%		} %>
 <%		if (isDateValue) { %>
-				<%=javaPackageClassName%> var = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, <%=missingAttributeValue%>, <%=pattern%>);
+				<%=javaPackageClassName%> var = <%=cid%>.getValueAsDate(currentNode_<%=cid%>, position, <%=isNullable%>, <%=allowMissing%>, <%=missingAttributeValue%>, <%=pattern%>);
 				globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
 <%			if (provideValuesAsList) { %>
 				if (var != null) {
@@ -163,7 +176,7 @@
 				<%=conn.getName()%>.<%=mc.getLabel()%> = var;
 <%       	} %>
 <%		} else { %>
-				<%=javaPackageClassName%> var = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, fieldName, <%=isNullable%>, <%=allowMissing%>, (<%=javaClassName%>) <%=missingAttributeValue%>);
+				<%=javaPackageClassName%> var = <%=cid%>.getValueAs<%=javaClassName%>(currentNode_<%=cid%>, position, <%=isNullable%>, <%=allowMissing%>, (<%=javaClassName%>) <%=missingAttributeValue%>);
 				globalMap.put("<%=cid%>.<%=mc.getLabel()%>", var);
 <%			if (provideValuesAsList) { %>
 				if (var != null) {

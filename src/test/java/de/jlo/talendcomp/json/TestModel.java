@@ -1,6 +1,9 @@
-package de.cimt.talendcomp.json;
+package de.jlo.talendcomp.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import de.jlo.talendcomp.json.JsonDocument;
+
 import static org.junit.Assert.*;
 
 import org.junit.Test;

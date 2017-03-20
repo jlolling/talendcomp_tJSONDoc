@@ -1,4 +1,4 @@
-package de.cimt.talendcomp.json;
+package de.jlo.talendcomp.json;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -7,8 +7,8 @@ import org.apache.log4j.BasicConfigurator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.cimt.talendcomp.json.streaming.JsonStreamParser;
-import de.cimt.talendcomp.json.streaming.TypeUtil;
+import de.jlo.talendcomp.json.streaming.JsonStreamParser;
+import de.jlo.talendcomp.json.streaming.TypeUtil;
 
 public class TestJsonStreamer {
 

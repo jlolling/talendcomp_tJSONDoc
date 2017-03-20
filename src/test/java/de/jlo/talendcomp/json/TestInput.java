@@ -1,12 +1,15 @@
-package de.cimt.talendcomp.json;
+package de.jlo.talendcomp.json;
 
-import de.cimt.talendcomp.test.TalendFakeJob;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import de.cimt.talendcomp.test.TalendFakeJob;
 
 public class TestInput extends TalendFakeJob {
 	
@@ -29,7 +32,7 @@ public class TestInput extends TalendFakeJob {
 			if (filePath != null && filePath.trim().isEmpty() == false) {
 				jsonFile = new java.io.File(filePath);
 			}
-			de.cimt.talendcomp.json.JsonDocument tJSONDocOpen_1 = new de.cimt.talendcomp.json.JsonDocument(
+			de.jlo.talendcomp.json.JsonDocument tJSONDocOpen_1 = new de.jlo.talendcomp.json.JsonDocument(
 					jsonFile);
 			globalMap.put("tJSONDocOpen_1", tJSONDocOpen_1);
 			globalMap.put("tJSONDocOpen_1_CURRENT_NODE",
@@ -47,7 +50,7 @@ public class TestInput extends TalendFakeJob {
 	@Test
 	public void testJsonPath() throws Exception {
 		System.out.println("testJsonPath...");
-		de.cimt.talendcomp.json.JsonDocument tJSONDocInput_1 = (de.cimt.talendcomp.json.JsonDocument) globalMap
+		de.jlo.talendcomp.json.JsonDocument tJSONDocInput_1 = (de.jlo.talendcomp.json.JsonDocument) globalMap
 				.get("tJSONDocOpen_1");
 		com.fasterxml.jackson.databind.JsonNode node = tJSONDocInput_1
 				.getNode("$.test.object[*].demo[*]");
@@ -61,11 +64,11 @@ public class TestInput extends TalendFakeJob {
 		row1Struct row1 = null;
 		row1 = new row1Struct();
 
-		de.cimt.talendcomp.json.JsonDocument tJSONDocInput_1 = (de.cimt.talendcomp.json.JsonDocument) globalMap
+		de.jlo.talendcomp.json.JsonDocument tJSONDocInput_1 = (de.jlo.talendcomp.json.JsonDocument) globalMap
 				.get("tJSONDocOpen_1");
 		if (tJSONDocInput_1 != null) {
 			try {
-				tJSONDocInput_1 = (de.cimt.talendcomp.json.JsonDocument) globalMap
+				tJSONDocInput_1 = (de.jlo.talendcomp.json.JsonDocument) globalMap
 						.get("tJSONDocOpen_1");
 				globalMap.put("tJSONDocInput_1", tJSONDocInput_1);
 				// get the parent object we have to dock on
