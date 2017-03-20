@@ -230,10 +230,10 @@
 <%			} else if (isDateValue) { 
             	if (omitAttribute) { %>
 			if (<%=conn.getName()%>.<%=mc.getLabel()%> != null) {
-				currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
+				currentNode_<%=cid%>.add(<%=cid%>.formatDate(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
 			}
 <%          	} else { %>
-			currentNode_<%=cid%>.add(<%=cid%>.getDateString(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
+			currentNode_<%=cid%>.add(<%=cid%>.formatDate(<%=conn.getName()%>.<%=mc.getLabel()%>, <%=pattern%>));
 <%          	} %>              
 <%			} else { 
             	if (omitAttribute) { %>
