@@ -54,11 +54,13 @@
 			com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
 <%	if (outputType.startsWith("ARRAY_")) { %>
 			// take care the path will be created as array
-			if (jsonPath == null) {
-				jsonPath = "[" + Integer.MAX_VALUE + "]";
-			} else if (jsonPath.endsWith("]") == false) {
-				jsonPath = jsonPath + "[" + Integer.MAX_VALUE + "]"; // take care we never hit an existing array element
-				// this way we get the array itself as result of getNode(...)
+			if (".".equals(jsonPath) == false) {
+				if (jsonPath == null) {
+					jsonPath = "[" + Integer.MAX_VALUE + "]";
+				} else if (jsonPath.endsWith("]") == false) {
+					jsonPath = jsonPath + "[" + Integer.MAX_VALUE + "]"; // take care we never hit an existing array element
+					// this way we get the array itself as result of getNode(...)
+				}
 			}
 			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath, true);
 			com.fasterxml.jackson.databind.node.ArrayNode parentNode_<%=cid%> = null;
