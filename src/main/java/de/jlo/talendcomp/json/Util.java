@@ -38,7 +38,7 @@ public class Util {
         return sb.toString();
     }
 
-    public static String buildSQLInClause(Set<? extends Object> keys) {
+    public static String buildSQLInClause(Set<? extends Object> keys, String noKeysReplacement) {
         StringBuilder sb = new StringBuilder();
         boolean firstLoop = true;
         for (Object key : keys) {
@@ -64,9 +64,11 @@ public class Util {
         }
         if (firstLoop == false) {
             sb.append(") ");
+        } else if (noKeysReplacement != null) {
+        	sb.append(noKeysReplacement);
         } else {
-            sb.append(" is not null "); // a dummy condition to enforce a
-            // reasonable filter
+            sb.append(" is not null and 1=0 "); // a dummy condition to enforce a
+            // no-selection filter
         }
         return sb.toString();
     }

@@ -1,6 +1,7 @@
 <%@ jet 
 	imports="
 		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 %>
@@ -8,6 +9,10 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	String replacement = ElementParameterParser.getValue(node, "__KEYS_AS_SQL_IN_CLAUSE_REPLACEMENT__");
+	if (replacement == null || replacement.trim().isEmpty()) {
+		replacement = "null";
+	}
 %>
 	globalMap.remove("entryNode_<%=cid%>");
-    globalMap.put("<%=cid%>_KEYS_AS_SQL_IN_CLAUSE", de.jlo.talendcomp.json.Util.buildSQLInClause(keyMap_<%=cid%>.keySet()));
+    globalMap.put("<%=cid%>_KEYS_AS_SQL_IN_CLAUSE", de.jlo.talendcomp.json.Util.buildSQLInClause(keyMap_<%=cid%>.keySet(), <%=replacement%>));
