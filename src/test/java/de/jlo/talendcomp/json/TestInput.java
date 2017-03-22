@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -256,6 +258,26 @@ public class TestInput extends TalendFakeJob {
 			String expected = "[1,2,3,4]";
 			String actual = doc.getValueAsString(node, "attr_array", true, true, null);
 			System.out.println("attr_array=" + actual);
+			assertEquals(expected, actual);
+		}
+		assertTrue(true);
+	}
+
+	@Test
+	public void testReturnDateAsString() throws Exception {
+		String json = "{\n"
+			    + "	\"attr_date\" : \"Mar 01, 2017 11:12:58 PM\"\n"
+			    + "}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode(doc.getRootNode(), "$", false);
+		List<JsonNode> result = doc.getArrayValuesAsList(parent, false, true);
+		for (JsonNode node : result) {
+			System.out.println(node);
+			String expectedStr = "2017-03-01 23:12:58";
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date expected = sdf.parse(expectedStr);
+			Date actual = doc.getValueAsDate(node, "attr_date", true, true, null, null);
+			System.out.println("attr_date=" + actual);
 			assertEquals(expected, actual);
 		}
 		assertTrue(true);

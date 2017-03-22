@@ -146,6 +146,7 @@ public class GenericDateUtil {
 			datePatternList.add("dd. MMM yyyy");
 			datePatternList.add("MMMM dd'th' yyyy");
 			datePatternList.add("MMM dd'th' yyyy");
+			datePatternList.add("MMM dd, yyyy");
 			datePatternList.add("dd'th' MMMM yyyy");
 			datePatternList.add("dd'th' MMM yyyy");
 			datePatternList.add("'KW' w/yyyy");
