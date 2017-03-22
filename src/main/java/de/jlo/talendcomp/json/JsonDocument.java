@@ -702,7 +702,7 @@ public class JsonDocument {
 		StringBuilder sb = new StringBuilder();
 		if (arrayNode != null) {
 			boolean firstLoop = true;
-			for (JsonNode valueNode : arrayNode.elements().next()) {
+			for (JsonNode valueNode : arrayNode) {
 				if (valueNode.isValueNode()) {
 					String value = valueNode.asText();
 					if (value != null && value.isEmpty() == false) {
@@ -813,14 +813,10 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			if (valueNode.isArray()) {
-				return getArrayValuesAsChain((ArrayNode) valueNode);
+			if (valueNode.isValueNode()) {
+				return valueNode.asText();
 			} else {
-				if (valueNode.isValueNode()) {
-					return valueNode.asText();
-				} else {
-					return valueNode.toString();
-				}
+				return valueNode.toString();
 			}
 		} else {
 			return null;

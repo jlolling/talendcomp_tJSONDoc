@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -238,6 +240,22 @@ public class TestInput extends TalendFakeJob {
 		if (parent == null) {
 			assertTrue(true);
 		}
+	}
+
+	@Test
+	public void testNodeWithArray() throws Exception {
+		String json = "{\n"
+			    + "	\"attr1\" : \"test\",\n"
+			    + "	\"attr_array\" : [1,2,3,4]\n"
+			    + "}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode(doc.getRootNode(), "$", false);
+		List<JsonNode> result = doc.getArrayValuesAsList(parent, false, true);
+		for (JsonNode node : result) {
+			System.out.println(node);
+			System.out.println("attr_array=" + doc.getValueAsString(node, "attr_array", true, true, null));
+		}
+		assertTrue(true);
 	}
 
 }

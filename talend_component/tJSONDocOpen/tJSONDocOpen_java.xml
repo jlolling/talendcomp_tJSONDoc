@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="cimt AG" COMPATIBILITY="ALL" SCHEMA_AUTO_PROPAGATE="true" PLATEFORM="ALL" RELEASE_DATE="20170321" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="8.1"> 
+  <HEADER AUTHOR="cimt AG" COMPATIBILITY="ALL" SCHEMA_AUTO_PROPAGATE="true" PLATEFORM="ALL" RELEASE_DATE="20170322" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="8.2"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -48,13 +48,13 @@
     <PARAMETER NAME="JSON_INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW="40" SHOW_IF="SETUP == 'READ_FROM_FLOW'"/> 
   </PARAMETERS>  
   <ADVANCED_PARAMETERS> 
-    <PARAMETER NAME="RELEASE_LABEL_20170321" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 8.1 build at: 20170321</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20170322" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 8.2 build at: 20170322</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-8.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-8.2.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.7.5.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.7.0.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-core" MODULE="jackson-core-2.7.5.jar" REQUIRED="true"/>
