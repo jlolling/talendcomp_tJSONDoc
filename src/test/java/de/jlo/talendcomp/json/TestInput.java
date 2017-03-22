@@ -243,7 +243,7 @@ public class TestInput extends TalendFakeJob {
 	}
 
 	@Test
-	public void testNodeWithArray() throws Exception {
+	public void testReturnArrayAsString() throws Exception {
 		String json = "{\n"
 			    + "	\"attr1\" : \"test\",\n"
 			    + "	\"attr_array\" : [1,2,3,4]\n"
@@ -253,7 +253,10 @@ public class TestInput extends TalendFakeJob {
 		List<JsonNode> result = doc.getArrayValuesAsList(parent, false, true);
 		for (JsonNode node : result) {
 			System.out.println(node);
-			System.out.println("attr_array=" + doc.getValueAsString(node, "attr_array", true, true, null));
+			String expected = "[1,2,3,4]";
+			String actual = doc.getValueAsString(node, "attr_array", true, true, null);
+			System.out.println("attr_array=" + actual);
+			assertEquals(expected, actual);
 		}
 		assertTrue(true);
 	}
