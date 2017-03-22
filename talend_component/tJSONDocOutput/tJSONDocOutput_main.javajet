@@ -263,10 +263,13 @@
 	} else {
 <%	if (autoParentChildReleation) {
 		if (dieIfParentDoesNotExist) { %>
-		throw new Exception("Foreign key not found: <%=foreignKeyColumn%>=" + <%=conn.getName()%>.<%=foreignKeyColumn%>);
+		if (globalMap.get("<%=docComp%>_NB_LINE") != null && ((Integer) globalMap.get("<%=docComp%>_NB_LINE")) > 0) {
+			// we had records for parents but did not found the right one... sorry
+			throw new Exception("Foreign key not found: <%=foreignKeyColumn%>=" + <%=conn.getName()%>.<%=foreignKeyColumn%>);
+		}
 <%		} 	
 	} else { %>
 		throw new Exception("The referenced current document from component: <%=docComp%> is null. Please check the job structur!");
-<%	} %> 		
+<%	} %>
 	} 
 <%	} // if (conn != null) %>
