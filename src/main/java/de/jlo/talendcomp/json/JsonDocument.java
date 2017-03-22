@@ -78,7 +78,7 @@ public class JsonDocument {
 	private ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 	private Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
 	private String currentPath = "";
-	private Locale defaultLocale = null;
+	private Locale defaultLocale = Locale.getDefault();
 	
 	public JsonDocument(boolean isArray) {
 		if (isArray) {
@@ -1129,7 +1129,9 @@ public class JsonDocument {
 	}
 	
 	public void setDefaultLocale(String localeStr) {
-		this.defaultLocale = Util.createLocale(localeStr);
+		if (localeStr != null && localeStr.trim().isEmpty() == false) {
+			this.defaultLocale = Util.createLocale(localeStr);
+		}
 	}
 
 }

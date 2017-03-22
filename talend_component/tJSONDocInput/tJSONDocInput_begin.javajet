@@ -57,11 +57,14 @@
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
    	boolean provideValuesAsList = "true".equals(ElementParameterParser.getValue(node, "__PROVIDE_VALUES_AS_COMMA_SEP_LIST__"));
    	boolean arrayOfArrays = "ARRAY_OF_ARRAYS".equals(ElementParameterParser.getValue(node, "__INPUT_STRUCTURE__"));
+   	String defaultLocale = ElementParameterParser.getValue(node, "__DEFAULT_LOCALE__");
+   	if (defaultLocale == null || defaultLocale.trim().isEmpty()) {
+   		defaultLocale = "null";
+   	}
 %>
 	globalMap.remove("<%=cid%>_CURRENT_NODE");
 	globalMap.remove("<%=cid%>_CURRENT_PATH");
 	globalMap.put("<%=cid%>_NB_LINE", 0);
-	globalMap.remove("<%=cid%>_NB_NOT_NULL_ATTRIBUTES");
 	globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
 	de.jlo.talendcomp.json.JsonDocument <%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
@@ -122,6 +125,7 @@
 	globalMap.put("valueList_<%=cid%>", <%=cid%>_valueList);
 <%	} %>
 	globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", 0);
+	<%=cid%>.setDefaultLocale(<%=defaultLocale%>);
 	for (com.fasterxml.jackson.databind.JsonNode currentNode_<%=cid%> : listNodes_<%=cid%>) {
 		// loop over the given children of the parent node or the values of the array
 		int countNotNullAttributes_<%=cid%> = 0;
