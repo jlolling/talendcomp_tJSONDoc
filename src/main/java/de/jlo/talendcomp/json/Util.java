@@ -1,6 +1,7 @@
 package de.jlo.talendcomp.json;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Set;
 
 public class Util {
@@ -72,5 +73,16 @@ public class Util {
         }
         return sb.toString();
     }
+
+	public static Locale createLocale(String locale) {
+		int p = locale.indexOf('_');
+		String language = locale;
+		String country = "";
+		if (p > 0) {
+			language = locale.substring(0, p);
+			country = locale.substring(p);
+		}
+		return new Locale(language, country);
+	}
 
 }

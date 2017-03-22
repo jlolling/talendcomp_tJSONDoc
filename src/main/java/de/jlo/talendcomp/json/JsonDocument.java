@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -77,6 +78,7 @@ public class JsonDocument {
 	private ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 	private Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
 	private String currentPath = "";
+	private Locale defaultLocale = null;
 	
 	public JsonDocument(boolean isArray) {
 		if (isArray) {
@@ -397,15 +399,7 @@ public class JsonDocument {
 		if (value == null) {
 			return null;
 		}
-		if (pattern == null || pattern.trim().isEmpty()) {
-			pattern = DEFAULT_DATE_PATTERN;
-		}
-		SimpleDateFormat sdf = dateFormatMap.get(pattern);
-		if (sdf == null) {
-			sdf = new SimpleDateFormat(pattern);
-			dateFormatMap.put(pattern, sdf);
-		}
-		return sdf.parse(value);
+		return GenericDateUtil.parseDate(value, defaultLocale, pattern);
 	}
 
 	public JsonNode setJsonObject(ObjectNode node, String fieldName, String json) throws Exception {
@@ -1132,6 +1126,10 @@ public class JsonDocument {
 		} else {
 			return node;
 		}
+	}
+	
+	public void setDefaultLocale(String localeStr) {
+		this.defaultLocale = Util.createLocale(localeStr);
 	}
 
 }
