@@ -59,6 +59,7 @@
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
 	globalMap.remove("<%=cid%>_CURRENT_NODE");
+	globalMap.put("<%=cid%>_COUNT_ROOT_OBJECTS", 0);
    	try {
 <%  if ("EMPTY_OBJECT".equals(setup)) { %>
 		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(false); 
@@ -96,8 +97,8 @@
 <%  } %>
 		globalMap.put("<%=cid%>", <%=cid%>);
 		globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getRootNode());
-		globalMap.put("<%=cid%>_ROOT_NODE", <%=cid%>.getRootNode());
 		globalMap.put("<%=cid%>_CURRENT_PATH", "$");
+		globalMap.put("<%=cid%>_COUNT_ROOT_OBJECTS", <%=cid%>.countRootObjects());
    } catch (Exception e) {
 <% if (log4jEnabled) { %>
 		log.error(currentComponent + ": " + e.getMessage(), e);

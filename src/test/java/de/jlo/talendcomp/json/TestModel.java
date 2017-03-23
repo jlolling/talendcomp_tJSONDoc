@@ -1,12 +1,10 @@
 package de.jlo.talendcomp.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import de.jlo.talendcomp.json.JsonDocument;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 public class TestModel {
@@ -125,6 +123,7 @@ public class TestModel {
 		JsonNode r1 = doc1.getRootNode();
 		JsonNode r2 = doc2.getRootNode();
 		assertEquals(r1, r2);
+		assertEquals(1, doc1.getCountRootObjects());
 	}
 
 }
