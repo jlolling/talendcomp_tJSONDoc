@@ -58,8 +58,9 @@
     boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
-   try {
-<%  if ("EMPTY_OBJECT".equals(setup)) { %>   
+	globalMap.remove("<%=cid%>_CURRENT_NODE");
+   	try {
+<%  if ("EMPTY_OBJECT".equals(setup)) { %>
 		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(false); 
 <%  } else if ("EMPTY_ARRAY".equals(setup)) { %>
 		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(true); 
