@@ -149,6 +149,20 @@ public class JsonDocument {
 	public int getCountRootObjects() {
 		return getCountObjects(rootNode);
 	}
+	
+	public boolean isEmpty() {
+		if (rootNode instanceof ArrayNode || rootNode instanceof ObjectNode) {
+			return rootNode.size() == 0;
+		} else if (rootNode != null) {
+			if (rootNode.isNull()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 
 	public int getCountObjects(JsonNode node) {
 		if (node instanceof ArrayNode) {

@@ -65,6 +65,7 @@
 	globalMap.remove("<%=cid%>_CURRENT_NODE");
 	globalMap.remove("<%=cid%>_CURRENT_PATH");
 	globalMap.put("<%=cid%>_NB_LINE", 0);
+	globalMap.put("<%=cid%>_COUNT_OBJECTS", 0);
 	globalMap.put("<%=cid%>_PARENT_ATTRIBUTE_EXISTS", false);
 	de.jlo.talendcomp.json.JsonDocument <%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
 	com.fasterxml.jackson.databind.JsonNode parentNode_<%=cid%> = null;
@@ -113,6 +114,7 @@
    		throw new Exception("No JSON document received from the parent component: <%=docComp%>. This is a misconfiguration within the job!");
 	}
 	java.util.List<com.fasterxml.jackson.databind.JsonNode> listNodes_<%=cid%> = <%=cid%>.getArrayValuesAsList(parentNode_<%=cid%>, false, <%=(arrayOfArrays == false)%>);
+	globalMap.put("<%=cid%>_COUNT_OBJECTS", listNodes_<%=cid%>.size());
 	if (listNodes_<%=cid%>.isEmpty()) {
 <% if (dieIfParentIsEmpty) { %>
 		throw new Exception("The referenced object: " + <%=jsonPath%> + " is empty!");
