@@ -15,9 +15,17 @@
  */
 package de.jlo.talendcomp.json;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 
 public class JsonComparator {
 	
@@ -130,4 +138,139 @@ public class JsonComparator {
 		return result;
 	}
 
+	public static class Difference {
+		
+		private String jsonPath = null;
+		private JsonNode refValue = null;
+		private JsonNode testValue = null;
+		private boolean typeMismatch = false;
+		
+		public String getJsonPath() {
+			return jsonPath;
+		}
+		public void setJsonPath(String jsonPath) {
+			this.jsonPath = jsonPath;
+		}
+		public JsonNode getRefValue() {
+			return refValue;
+		}
+		public void setRefValue(JsonNode value) {
+			this.refValue = value;
+		}
+		public JsonNode getTestValue() {
+			return testValue;
+		}
+		public void setTestValue(JsonNode value) {
+			this.testValue = value;
+		}
+		public boolean isTypeMismatch() {
+			return typeMismatch;
+		}
+		public void setTypeMismatch(boolean typeMismatch) {
+			this.typeMismatch = typeMismatch;
+		}
+		
+		@Override
+		public String toString() {
+			return jsonPath + ": ref=" + refValue + ", test=" + testValue;
+		}
+		
+	}
+	
+	public List<Difference> findDifferenceTo(String parentPath, JsonNode reference, JsonNode test, List<Difference> listDiffs) {
+		if (parentPath == null) {
+			parentPath = "$";
+		}
+		if (listDiffs == null) {
+			listDiffs = new ArrayList<JsonComparator.Difference>();
+		}
+		if (reference instanceof ObjectNode) {
+			if (test instanceof ObjectNode) {
+				ObjectNode rn = (ObjectNode) reference;
+				ObjectNode tn = (ObjectNode) test;
+				Iterator<Map.Entry<String, JsonNode>> fi = rn.fields(); 
+				while (fi.hasNext()) {
+					Map.Entry<String, JsonNode> entry = fi.next();
+					// check if field exists in test node
+					if (tn.has(entry.getKey())) {
+						JsonNode tnValue = tn.get(entry.getKey());
+						if (entry.getValue() != null && tnValue != null) {
+							findDifferenceTo(parentPath + "." + entry.getKey(), entry.getValue(), tnValue, listDiffs);
+						} else if (entry.getValue() == null && tnValue != null) {
+							Difference diff = new Difference();
+							diff.setJsonPath(parentPath + "." + entry.getKey());
+							diff.setRefValue(NullNode.getInstance());
+							diff.setTestValue(tnValue);
+							listDiffs.add(diff);
+						} else if (entry.getValue() != null && tnValue == null) {
+							Difference diff = new Difference();
+							diff.setJsonPath(parentPath + "." + entry.getKey());
+							diff.setRefValue(entry.getValue());
+							diff.setTestValue(NullNode.getInstance());
+							listDiffs.add(diff);
+						}
+					} else {
+						Difference diff = new Difference();
+						diff.setJsonPath(parentPath + "." + entry.getKey());
+						diff.setRefValue(entry.getValue());
+						listDiffs.add(diff);
+					}
+				}
+			} else {
+				Difference diff = new Difference();
+				diff.setJsonPath(parentPath);
+				diff.setTypeMismatch(true);
+				diff.setRefValue(reference);
+				diff.setTestValue(test);
+				listDiffs.add(diff);
+			}
+		} else if (reference instanceof ArrayNode) {
+			if (test instanceof ArrayNode) {
+				ArrayNode rn = (ArrayNode) reference;
+				ArrayNode tn = (ArrayNode) test;
+				for (int i = 0; i < rn.size(); i++) {
+					String newParentPath = parentPath + "[" + i + "]";
+					JsonNode rvn = rn.get(i);
+					if (i < tn.size()) {
+						JsonNode tvn = tn.get(i);
+						findDifferenceTo(newParentPath, rvn, tvn, listDiffs);
+					} else {
+						Difference diff = new Difference();
+						diff.setJsonPath(newParentPath);
+						diff.setRefValue(rvn);
+						diff.setTestValue(NullNode.getInstance());
+						listDiffs.add(diff);
+					}
+				}
+			} else {
+				Difference diff = new Difference();
+				diff.setJsonPath(parentPath);
+				diff.setTypeMismatch(true);
+				diff.setRefValue(reference);
+				diff.setTestValue(test);
+				listDiffs.add(diff);
+			}
+		} else if (reference instanceof ValueNode) {
+			if (test instanceof ValueNode) {
+				ValueNode rv = (ValueNode) reference;
+				ValueNode tv = (ValueNode) test;
+				if (tv.equals(rv) == false) {
+					Difference diff = new Difference();
+					diff.setJsonPath(parentPath);
+					diff.setRefValue(rv);
+					diff.setTestValue(tv);
+					listDiffs.add(diff);
+				}
+			} else {
+				Difference diff = new Difference();
+				diff.setJsonPath(parentPath);
+				diff.setTypeMismatch(true);
+				diff.setRefValue(reference);
+				diff.setTestValue(test);
+				listDiffs.add(diff);
+			}
+		}
+		return listDiffs;
+	}
+	
 }
