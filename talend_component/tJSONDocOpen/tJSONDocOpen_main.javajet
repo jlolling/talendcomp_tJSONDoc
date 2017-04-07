@@ -98,7 +98,7 @@
 		globalMap.put("<%=cid%>", <%=cid%>);
 		globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getRootNode());
 		globalMap.put("<%=cid%>_CURRENT_PATH", "$");
-		globalMap.put("<%=cid%>_COUNT_ROOT_OBJECTS", <%=cid%>.countRootObjects());
+		globalMap.put("<%=cid%>_COUNT_ROOT_OBJECTS", <%=cid%>.getCountRootObjects());
    } catch (Exception e) {
 <% if (log4jEnabled) { %>
 		log.error(currentComponent + ": " + e.getMessage(), e);

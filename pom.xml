@@ -86,6 +86,16 @@
 							<noJars>true</noJars>
 						</configuration>
 					</execution>
+					<execution>
+						<id>tJSONDocDiff</id>
+						<goals>
+							<goal>component</goal>
+						</goals>
+						<configuration>
+							<componentName>tJSONDocDiff</componentName>
+							<noJars>true</noJars>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

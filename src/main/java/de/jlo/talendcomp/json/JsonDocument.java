@@ -308,6 +308,41 @@ public class JsonDocument {
 	}
 			
 	/**
+	 * Retrieves with real JSONPath the nodes starting from the given node
+	 * @param parentNode
+	 * @param jsonPath
+	 * @return an ArrayNode with the search result
+	 */
+	public JsonNode getNodeIncludeMissing(JsonNode parentNode, String jsonPath) {
+		if (jsonPath == null || jsonPath.trim().isEmpty()) {
+			throw new IllegalArgumentException("jsonPath cannot be null or empty");
+		}
+		if (parentNode == null) {
+			throw new IllegalArgumentException("parentNode cannot be null");
+		}
+		if (parentNode == rootNode && jsonPath.startsWith("$")) {
+			return getNode(jsonPath);
+		}
+		if (jsonPath.equals(".")) {
+			return parentNode;
+		}
+		DocumentContext context = new JsonContext(JACKSON_JSON_NODE_CONFIGURATION).parse(parentNode);
+		// fake a root path but use a arbitrary node as fake root
+		JsonPath compiledPath = getCompiledJsonPath(jsonPath);
+		JsonNode node = null;
+		try {
+			node = context.read(compiledPath);
+			if (node.isNull()) {
+				return null;
+			} else {
+				return node;
+			}
+		} catch (PathNotFoundException e) {
+			return null;
+		}
+	}
+
+	/**
 	 * Retrieve a node by direct-path jsonPath
 	 * @param parentNode node to start
 	 * @param jsonPath must be a path with query parts and starts with the given parent node
@@ -700,7 +735,11 @@ public class JsonDocument {
 					}
 				}
 			} else {
-				valueNode = node.path(fieldName);
+				if (fieldName.contains(".") || fieldName.contains("[")) {
+					valueNode = getNodeIncludeMissing(node, fieldName);
+				} else {
+					valueNode = node.path(fieldName);
+				}
 				if (valueNode != null && valueNode.isNull()) {
 					if (isNullable == false) {
 						throw new Exception(currentPath + ": Attribute: " + fieldName + ": value is null but configured as not-nullable!");

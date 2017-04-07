@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import de.jlo.talendcomp.json.JsonDiff;
 import de.jlo.talendcomp.json.JsonDocument;
+import de.jlo.talendcomp.json.ops.Diff;
 
 public class ExampleJsonCompDiff {
 
@@ -15,9 +15,11 @@ public class ExampleJsonCompDiff {
 		File f2 = new File("/Volumes/Data/projects/gvl/testdata/result_new.json");
 		JsonNode refNode = new JsonDocument(f1).getRootNode();
 		JsonNode testNode = new JsonDocument(f2).getRootNode();
-		JsonDiff comp = new JsonDiff();
-		List<JsonDiff.Difference> result = comp.findDifference(refNode, testNode);
-		for (JsonDiff.Difference diff : result) {
+		Diff comp = new Diff();
+		comp.setTakeEmptyLikeNull(true);
+		comp.setIgnoreArrayIndex(true);
+		List<Diff.Difference> result = comp.findDifference(refNode, testNode);
+		for (Diff.Difference diff : result) {
 			System.out.println(diff);
 		}
 	}

@@ -175,6 +175,19 @@ public class TestInput extends TalendFakeJob {
 	}
 
 	@Test
+	public void testReadJsonPath() throws Exception {
+		String json = "{\"a\" : \"v1\", \"b\" : {\"c\": \"x\"}}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode("$");
+		String jsonResult = doc.getJsonString(false, true);
+		System.out.println(jsonResult);
+		String actual = null;
+		String expected = "x";
+		actual = doc.getValueAsString(parent, "b.c", false, false, null);
+		assertEquals("Not correct return value", actual, expected);
+	}
+
+	@Test
 	public void testCheckMultiLineText() throws Exception {
 		String expected = "line1\"line2\\nline3 \\ \\\" ";
 		System.out.println("expected=" + expected);
@@ -197,7 +210,7 @@ public class TestInput extends TalendFakeJob {
 		JsonNode parent = doc.getNode("$");
 		String jsonResult = doc.getJsonString(false, true);
 		System.out.println(jsonResult);
-		String missingAttrString = doc.getValueAsString(parent, "$.missingAttr", false, true, "xxx");
+		String missingAttrString = doc.getValueAsString(parent, "missingAttr", false, true, "xxx");
 		System.out.println("missingAttr replacement: " + missingAttrString);
 		assertEquals("Missing node value failed", "xxx", missingAttrString);
 		boolean checkMissingWorked = false;
