@@ -188,6 +188,19 @@ public class TestInput extends TalendFakeJob {
 	}
 
 	@Test
+	public void testReadJsonPathWithAbsolutBackRef() throws Exception {
+		String json = "{\"a\" : \"v1\", \"b\" : {\"c\": \"x\"}}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode("$.b");
+		String jsonResult = doc.getJsonString(parent, false, true);
+		System.out.println(jsonResult);
+		String actual = null;
+		String expected = "v1";
+		actual = doc.getValueAsString(parent, "$.a", false, false, null);
+		assertEquals("Not correct return value", actual, expected);
+	}
+
+	@Test
 	public void testReadJsonPathUseMissing() throws Exception {
 		String json = "{\"a\" : \"v1\", \"b\" : {\"c\": \"x\"}}";
 		JsonDocument doc = new JsonDocument(json);

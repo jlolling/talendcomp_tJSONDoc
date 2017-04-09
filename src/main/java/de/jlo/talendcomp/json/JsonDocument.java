@@ -263,6 +263,25 @@ public class JsonDocument {
 	}
 	
 	/**
+	 * returns the node start from the root
+	 * @param jsonPath
+	 * @return node or null if nothing found or a MissingNode was found
+	 */
+	public JsonNode getNodeIncludeMissing(String jsonPath) {
+		try {
+			JsonPath compiledPath = getCompiledJsonPath(jsonPath);
+			JsonNode node = rootContext.read(compiledPath);
+			if (node.isNull()) {
+				return null;
+			} else {
+				return node;
+			}
+		} catch (PathNotFoundException e) {
+			return MissingNode.getInstance();
+		}
+	}
+
+	/**
 	 * Retrieve a node by direct-path jsonPath
 	 * @param jsonPath must be a path with query parts and starts with root
 	 * @param create if true, missing nodes will be created
@@ -321,8 +340,8 @@ public class JsonDocument {
 		if (parentNode == null) {
 			throw new IllegalArgumentException("parentNode cannot be null");
 		}
-		if (parentNode == rootNode && jsonPath.startsWith("$")) {
-			return getNode(jsonPath);
+		if (parentNode == rootNode || jsonPath.startsWith("$")) {
+			return getNodeIncludeMissing(jsonPath);
 		}
 		if (jsonPath.equals(".")) {
 			return parentNode;
