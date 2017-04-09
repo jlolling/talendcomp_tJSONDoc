@@ -175,6 +175,44 @@ public class TestInput extends TalendFakeJob {
 	}
 
 	@Test
+	public void testReadJsonPath() throws Exception {
+		String json = "{\"a\" : \"v1\", \"b\" : {\"c\": \"x\"}}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode("$");
+		String jsonResult = doc.getJsonString(false, true);
+		System.out.println(jsonResult);
+		String actual = null;
+		String expected = "x";
+		actual = doc.getValueAsString(parent, "b.c", false, false, null);
+		assertEquals("Not correct return value", actual, expected);
+	}
+
+	@Test
+	public void testReadJsonPathWithAbsolutBackRef() throws Exception {
+		String json = "{\"a\" : \"v1\", \"b\" : {\"c\": \"x\"}}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode("$.b");
+		String jsonResult = doc.getJsonString(parent, false, true);
+		System.out.println(jsonResult);
+		String actual = null;
+		String expected = "v1";
+		actual = doc.getValueAsString(parent, "$.a", false, false, null);
+		assertEquals("Not correct return value", actual, expected);
+	}
+
+	@Test
+	public void testReadJsonPathUseMissing() throws Exception {
+		String json = "{\"a\" : \"v1\", \"b\" : {\"c\": \"x\"}}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode("$");
+		String jsonResult = doc.getJsonString(false, true);
+		System.out.println(jsonResult);
+		String expected = "replacement";
+		String actual = doc.getValueAsString(parent, "b.missing", false, true, "replacement");
+		assertEquals("Not correct return value", expected, actual);
+	}
+
+	@Test
 	public void testCheckMultiLineText() throws Exception {
 		String expected = "line1\"line2\\nline3 \\ \\\" ";
 		System.out.println("expected=" + expected);
@@ -197,7 +235,7 @@ public class TestInput extends TalendFakeJob {
 		JsonNode parent = doc.getNode("$");
 		String jsonResult = doc.getJsonString(false, true);
 		System.out.println(jsonResult);
-		String missingAttrString = doc.getValueAsString(parent, "$.missingAttr", false, true, "xxx");
+		String missingAttrString = doc.getValueAsString(parent, "missingAttr", false, true, "xxx");
 		System.out.println("missingAttr replacement: " + missingAttrString);
 		assertEquals("Missing node value failed", "xxx", missingAttrString);
 		boolean checkMissingWorked = false;
@@ -217,20 +255,7 @@ public class TestInput extends TalendFakeJob {
 		}
 		assertTrue("Missing check: not null check for replacement does not work", checkMissingWorked);
 	}
-	
-	public void testNullArray() throws Exception {
-		String json = "{\n"
-			    + "	\"array1\" : null,\n"
-			    + "	\"array2\" : [1,2,3,4]\n"
-			    + "}";
-		JsonDocument doc = new JsonDocument(json);
-		JsonNode parent = doc.getNode("$.array1");
 		
-		Integer value = doc.getValueAsInteger(parent, ".", true, true, null);
-		
-		
-	}
-	
 	@Test
 	public void testGetNodeNullSave() throws Exception {
 		String json = "{\n"

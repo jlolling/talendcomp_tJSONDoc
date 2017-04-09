@@ -1,0 +1,84 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
+		java.util.List 
+	" 
+%>
+<% 
+   	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+   	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String referenceSetup = ElementParameterParser.getValue(node, "__REF_SETUP__");
+	String referenceJsonComp = ElementParameterParser.getValue(node, "__REF_JSON_COMPONENT__");
+	String referenceJsonStringJava = ElementParameterParser.getValue(node, "__REF_JSON_CONTENT__");
+	if (referenceJsonStringJava == null || referenceJsonStringJava.trim().isEmpty()) {
+		referenceJsonStringJava = "null";
+	}
+	String referenceJsonPath = ElementParameterParser.getValue(node, "__REF_JSON_PATH__");
+	if (referenceJsonPath == null || referenceJsonPath.trim().isEmpty()) {
+		referenceJsonPath = "null";
+	} 
+	String testSetup = ElementParameterParser.getValue(node, "__TEST_SETUP__");
+	String testJsonComp = ElementParameterParser.getValue(node, "__TEST_JSON_COMPONENT__");
+	String testJsonStringJava = ElementParameterParser.getValue(node, "__TEST_JSON_CONTENT__");
+	if (testJsonStringJava == null || testJsonStringJava.trim().isEmpty()) {
+		testJsonStringJava = "null";
+	} 
+	String testJsonPath = ElementParameterParser.getValue(node, "__TEST_JSON_PATH__");
+	if (testJsonPath == null || testJsonPath.trim().isEmpty()) {
+		testJsonPath = "null";
+	} 
+	IConnection conn = null;
+	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
+	if (outConns.size() > 0) {
+		conn = outConns.get(0);
+	}
+	boolean takeEmptyLikeNull = "true".equals(ElementParameterParser.getValue(node, "__TAKE_EMPTY_LIKE_NULL__"));
+	boolean ignoreArrayIndex = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_ARRAY_INDEX__"));
+%>
+	de.jlo.talendcomp.json.ops.Diff <%=cid%> = new de.jlo.talendcomp.json.ops.Diff();
+	<%=cid%>.setTakeEmptyLikeNull(<%=takeEmptyLikeNull%>);
+	<%=cid%>.setIgnoreArrayIndex(<%=ignoreArrayIndex%>);
+<%	if ("READ_FROM_INPUT".equals(referenceSetup)) { %>
+	<%=cid%>.setReferenceNode(<%=referenceJsonStringJava%>);
+<%	} else if ("READ_FROM_COMPONENTS".equals(referenceSetup)) { %>
+	<%=cid%>.setReferenceNode((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=referenceJsonComp%>_CURRENT_NODE"));
+<%  } %>
+	<%=cid%>.setRefJsonPath(<%=referenceJsonPath%>);
+<%	if ("READ_FROM_INPUT".equals(testSetup)) { %>
+	<%=cid%>.setTestNode(<%=testJsonStringJava%>);
+<%	} else if ("READ_FROM_COMPONENTS".equals(testSetup)) { %>
+	<%=cid%>.setTestNode((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=testJsonComp%>_CURRENT_NODE"));
+<%  } %>
+	<%=cid%>.setTestJsonPath(<%=testJsonPath%>);
+	try {
+		<%=cid%>.executeDiff();
+		globalMap.put("<%=cid%>_COUNT_DIFFERENCES", <%=cid%>.getCountDifferences());
+	} catch (Exception e) {
+		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+		throw e;
+	}
+	for (de.jlo.talendcomp.json.ops.Diff.Difference diff : <%=cid%>.getResult()) {
+		globalMap.put("<%=cid%>_CURRENT_NODE", diff.getRefValue());
+		globalMap.put("<%=cid%>_CURRENT_PATH", diff.getJsonPath());
+		globalMap.put("<%=cid%>_REF_VALUE_NODE", diff.getRefValue());
+		globalMap.put("<%=cid%>_TEST_VALUE_NODE", diff.getTestValue());
+<%	if (conn != null) { %>
+		<%=conn.getName()%>.JSON_PATH = diff.getJsonPath();
+		<%=conn.getName()%>.REF_VALUE_NODE = diff.getRefValue();
+		if (<%=conn.getName()%>.REF_VALUE_NODE != null) {
+			<%=conn.getName()%>.REF_VALUE_STRING = <%=conn.getName()%>.REF_VALUE_NODE.toString();
+		}
+		<%=conn.getName()%>.TEST_VALUE_NODE = diff.getTestValue();
+		if (<%=conn.getName()%>.TEST_VALUE_NODE != null) {
+			<%=conn.getName()%>.TEST_VALUE_STRING = <%=conn.getName()%>.TEST_VALUE_NODE.toString();
+		}
+		<%=conn.getName()%>.TYPE_MISMATCH = diff.isTypeMismatch();
+<%	} %>
+		
+	

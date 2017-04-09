@@ -8,9 +8,6 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import de.jlo.talendcomp.json.JsonComparator;
-import de.jlo.talendcomp.json.JsonDocument;
-
 public class TestJsonComparator {
 	
 	@Test
@@ -71,5 +68,5 @@ public class TestJsonComparator {
 		boolean actual = comp.contains((ArrayNode) andoc.getRootNode(), vndoc.getRootNode(), "$.b.key");
 		assertTrue(actual);
 	}
-
+	
 }
