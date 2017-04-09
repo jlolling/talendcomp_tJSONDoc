@@ -255,20 +255,7 @@ public class TestInput extends TalendFakeJob {
 		}
 		assertTrue("Missing check: not null check for replacement does not work", checkMissingWorked);
 	}
-	
-	public void testNullArray() throws Exception {
-		String json = "{\n"
-			    + "	\"array1\" : null,\n"
-			    + "	\"array2\" : [1,2,3,4]\n"
-			    + "}";
-		JsonDocument doc = new JsonDocument(json);
-		JsonNode parent = doc.getNode("$.array1");
 		
-		Integer value = doc.getValueAsInteger(parent, ".", true, true, null);
-		
-		
-	}
-	
 	@Test
 	public void testGetNodeNullSave() throws Exception {
 		String json = "{\n"
