@@ -188,6 +188,18 @@ public class TestInput extends TalendFakeJob {
 	}
 
 	@Test
+	public void testReadJsonPathUseMissing() throws Exception {
+		String json = "{\"a\" : \"v1\", \"b\" : {\"c\": \"x\"}}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode("$");
+		String jsonResult = doc.getJsonString(false, true);
+		System.out.println(jsonResult);
+		String expected = "replacement";
+		String actual = doc.getValueAsString(parent, "b.missing", false, true, "replacement");
+		assertEquals("Not correct return value", expected, actual);
+	}
+
+	@Test
 	public void testCheckMultiLineText() throws Exception {
 		String expected = "line1\"line2\\nline3 \\ \\\" ";
 		System.out.println("expected=" + expected);
