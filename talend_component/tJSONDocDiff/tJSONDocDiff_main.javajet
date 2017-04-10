@@ -73,10 +73,14 @@
 		<%=conn.getName()%>.REF_VALUE_NODE = diff.getRefValue();
 		if (<%=conn.getName()%>.REF_VALUE_NODE != null) {
 			<%=conn.getName()%>.REF_VALUE_STRING = <%=conn.getName()%>.REF_VALUE_NODE.toString();
+		} else {
+			<%=conn.getName()%>.REF_VALUE_STRING = null; 
 		}
 		<%=conn.getName()%>.TEST_VALUE_NODE = diff.getTestValue();
 		if (<%=conn.getName()%>.TEST_VALUE_NODE != null) {
 			<%=conn.getName()%>.TEST_VALUE_STRING = <%=conn.getName()%>.TEST_VALUE_NODE.toString();
+		} else {
+			<%=conn.getName()%>.TEST_VALUE_STRING = null;
 		}
 		<%=conn.getName()%>.TYPE_MISMATCH = diff.isTypeMismatch();
 <%	} %>

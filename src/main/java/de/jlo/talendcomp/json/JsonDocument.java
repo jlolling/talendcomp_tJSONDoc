@@ -755,7 +755,7 @@ public class JsonDocument {
 					}
 				}
 			} else {
-				if (fieldName.contains(".") || fieldName.contains("[")) {
+				if (fieldName.contains(".") || fieldName.contains("[") || fieldName.contains("$")) {
 					valueNode = getNodeIncludeMissing(node, fieldName);
 				} else {
 					valueNode = node.path(fieldName);
