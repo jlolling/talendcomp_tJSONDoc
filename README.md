@@ -6,5 +6,6 @@ This project consists of 5 components to work with JSON in a fine grained way.
 * tJSONDocInputStream - reads a large JSON file and use the streaming API to extract values or objects
 * tJSONDocSave - write the JSON document as file or provide the content as flow
 * tJSONDocDiff - compares 2 JSON documents and returns a detailed list of the differences
+* tJSONDocMerge - merges 2 JSON documents by the help of key attributes
 
 These components will be published on Talend Exchange: http://exchange.talend.com
