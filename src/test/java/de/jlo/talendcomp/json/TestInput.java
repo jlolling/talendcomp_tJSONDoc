@@ -155,6 +155,7 @@ public class TestInput extends TalendFakeJob {
 				throw e;
 			}
 		}
+		assertTrue(true);
 	}
 
 	@Test

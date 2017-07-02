@@ -4,20 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import de.jlo.talendcomp.json.JsonDocument;
-
 public class TestOutput {
-
-	@Before
-	public void setUp() throws Exception {
-	}
 
 	@Test
 	public void testEscape() throws Exception {

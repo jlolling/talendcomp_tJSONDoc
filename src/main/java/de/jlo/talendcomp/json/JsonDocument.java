@@ -47,7 +47,6 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
-import com.jayway.jsonpath.internal.JsonContext;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
@@ -129,9 +128,8 @@ public class JsonDocument {
 		if (jsonNode == null || jsonNode.isNull()) {
 			throw new IllegalArgumentException("jsonNode cannor be null or a NullNode");
 		}
-		JsonContext jsonContext = new JsonContext(JACKSON_JSON_NODE_CONFIGURATION);
-		jsonContext.parse(jsonNode);
-		rootContext = jsonContext;
+		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+		rootContext = parseContext.parse(jsonNode);
 		rootNode = jsonNode;
 		JsonNode testNode = rootContext.read("$");
 		if (rootNode != testNode) {
@@ -311,7 +309,8 @@ public class JsonDocument {
 		if (jsonPath.equals(".")) {
 			return parentNode;
 		}
-		DocumentContext context = new JsonContext(JACKSON_JSON_NODE_CONFIGURATION).parse(parentNode);
+		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+		DocumentContext context = parseContext.parse(parentNode);
 		// fake a root path but use a arbitrary node as fake root
 		JsonPath compiledPath = getCompiledJsonPath(jsonPath);
 		JsonNode node = null;
@@ -346,7 +345,8 @@ public class JsonDocument {
 		if (jsonPath.equals(".")) {
 			return parentNode;
 		}
-		DocumentContext context = new JsonContext(JACKSON_JSON_NODE_CONFIGURATION).parse(parentNode);
+		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+		DocumentContext context = parseContext.parse(parentNode);
 		// fake a root path but use a arbitrary node as fake root
 		JsonPath compiledPath = getCompiledJsonPath(jsonPath);
 		JsonNode node = null;

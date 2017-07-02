@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20170613" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="10.0"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20170702" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="10.0"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -51,22 +51,19 @@
     <PARAMETER NAME="PROVIDE_CURRENT_JSON_OBJECT" FIELD="CHECK" REQUIRED="true" NUM_ROW="10"> 
       <DEFAULT>true</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20170613" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 10.0 build at: 20170613</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20170702" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 10.0 build at: 20170702</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
       <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-10.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.7.5.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.7.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.7.5.jar" REQUIRED="true"/>
-      <IMPORT NAME="json-path" MODULE="json-path-2.2.1-SNAPSHOT.jar" REQUIRED="true"/>
-      <IMPORT NAME="json-smart" MODULE="json-smart-2.2.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="accessors-smart" MODULE="accessors-smart-1.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="asm" MODULE="asm-5.0.3.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.8.6.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.8.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.8.6.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-path" MODULE="json-path-2.3.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.7.25.jar" REQUIRED="true"/>
       <IMPORT NAME="slf4j-simple" MODULE="slf4j-simple-1.6.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.6.1.jar" REQUIRED="true"/>
       <IMPORT NAME="commons-lang3" MODULE="commons-lang3-3.4.jar" REQUIRED="true"/>
     </IMPORTS> 
   </CODEGENERATION>  
