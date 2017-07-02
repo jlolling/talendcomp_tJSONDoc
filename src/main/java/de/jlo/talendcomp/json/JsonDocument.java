@@ -1220,5 +1220,17 @@ public class JsonDocument {
 			this.defaultLocale = Util.createLocale(localeStr);
 		}
 	}
+	
+	public List<JsonNode> getAttributeNodes(ObjectNode objectNode) {
+		List<JsonNode> listASttributes = new ArrayList<JsonNode>();
+		Iterator<String> it = objectNode.fieldNames();
+		while (it.hasNext()) {
+			ObjectNode node = objectMapper.createObjectNode();
+			String attrName = it.next();
+			node.set(attrName, objectNode.get(attrName));
+			listASttributes.add(node);
+		}
+		return listASttributes;
+	}
 
 }

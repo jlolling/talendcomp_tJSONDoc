@@ -119,19 +119,6 @@ public class JsonStreamParser {
 			currentPathContentMap.remove(key);
 		}
 		keysToDel.clear();
-//		Set<String> keys = new HashSet<String>(currentPathContentMap.keySet());
-//		for (String key : keys) {
-//			int keyLevel = getKeyLevel(key);
-//			if (logger.isTraceEnabled()) {
-//				logger.trace("clearPathContentMap: key=" + key + ", keyLevel=" + keyLevel + ", jsonLevel=" + jsonLevel);
-//			}
-//			if (keyLevel > jsonLevel) {
-//				if (logger.isTraceEnabled()) {
-//					logger.trace("clearPathContentMap: key=" + key + " -> remove");
-//				}
-//				currentPathContentMap.remove(key);
-//			}
-//		}
 	}
 	
 	private void collectKeysToDelete() {
