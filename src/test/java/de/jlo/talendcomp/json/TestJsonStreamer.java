@@ -28,7 +28,7 @@ public class TestJsonStreamer {
 		p.addColumnAttrPath("id", "id");
 		p.addColumnAttrPath("name", "name");
 		p.addColumnAttrPath("city", "city");
-		p.setInputFile("/Volumes/Data/Talend/testdata/json/small_simple_array.json");
+		p.setInputFile("/Data/Talend/testdata/json/small_simple_array.json");
 		int index = 0;
 		while (p.next()) {
 			System.out.println("index=" + p.getCurrentLoopIndex());
@@ -51,7 +51,7 @@ public class TestJsonStreamer {
 		p.setLoopPath("$.test.object[*].demo[*]");
 		p.addColumnAttrPath("integer-value", "$.test.object[*].demo[*].integer-value");
 		p.addColumnAttrPath("json", "$.test.object[*].demo[*]");
-		p.setInputFile("/Volumes/Data/Talend/testdata/json/test_1.json");
+		p.setInputFile("/Data/Talend/testdata/json/test_1.json");
 		int index = 0;
 		while (p.next()) {
 			System.out.println("integer-value=" + p.getValue("integer-value"));
@@ -69,7 +69,7 @@ public class TestJsonStreamer {
 		JsonStreamParser p = new JsonStreamParser();
 		p.setLoopPath("$.test.object[*]");
 		p.addColumnAttrPath("integer-value", "$.test.object[*].demo[*].integer-value");
-		p.setInputFile("/Volumes/Data/Talend/testdata/json/test_1.json");
+		p.setInputFile("/Data/Talend/testdata/json/test_1.json");
 		int index = 0;
 		while (p.next()) {
 //			System.out.println("json=" + p.getLoopJsonNode());
@@ -87,7 +87,7 @@ public class TestJsonStreamer {
 		p.setLoopPath("$.products[*]");
 		p.addColumnAttrPath("title", "titel");
 		p.addColumnAttrPath("json", "$.products[*]");
-		p.setInputFile("/Volumes/Data/Talend/testdata/json/products_small.json");
+		p.setInputFile("/Data/Talend/testdata/json/products_small.json");
 		int index = 0;
 		while (p.next()) {
 			System.out.println("json=" + p.getValue("json"));
@@ -143,7 +143,7 @@ public class TestJsonStreamer {
 		p.addColumnAttrPath("header", "$[*].header");
 		p.addColumnAttrPath("key", "item-key");
 		p.addColumnAttrPath("value", "item-value");
-		p.setInputFile("/Volumes/Data/Talend/testdata/json/multi_level_arrays.json");
+		p.setInputFile("/Data/Talend/testdata/json/multi_level_arrays.json");
 		int index = 0;
 		int sumValue = 0;
 		Integer key = 0;

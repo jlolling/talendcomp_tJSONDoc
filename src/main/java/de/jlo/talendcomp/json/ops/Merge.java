@@ -223,7 +223,7 @@ public class Merge {
 			boolean foundTarget = false;
 			for (JsonNode targetNode : targetListNodes) {
 				if (match(sourceNode, targetNode)) {
-					// we found 2 nodes with matching keys
+					// we found source and target nodes with matching keys
 					// now add source to the target
 					if (targetMountNodeIsArray) {
 						ArrayNode targetArray = ((ObjectNode) targetNode).withArray(targetMountAttribute);

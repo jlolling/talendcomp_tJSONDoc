@@ -31,7 +31,7 @@ public class TestInput extends TalendFakeJob {
 	public void setupDocument() {
 		System.out.println("Setup document...");
 		try {
-			String filePath = "/Volumes/Data/Talend/testdata/json/test_1.json";
+			String filePath = "/Data/Talend/testdata/json/test_1.json";
 			java.io.File jsonFile = null;
 			if (filePath != null && filePath.trim().isEmpty() == false) {
 				jsonFile = new java.io.File(filePath);

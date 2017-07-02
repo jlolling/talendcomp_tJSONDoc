@@ -10,7 +10,6 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import de.jlo.talendcomp.json.JsonDocument;
 import de.jlo.talendcomp.json.ops.Merge;
 
 public class TestMerge {
@@ -19,21 +18,21 @@ public class TestMerge {
 	private com.fasterxml.jackson.databind.JsonNode targetRootNode = null;
 
 	public void setUpObjectToObject() throws Exception {
-		File testFile = new File("/Volumes/Data/Talend/testdata/json/auto_assign_input_object_to_object.json");
+		File testFile = new File("/Data/Talend/testdata/json/auto_assign_input_object_to_object.json");
 		de.jlo.talendcomp.json.JsonDocument doc1 = new de.jlo.talendcomp.json.JsonDocument(testFile);
 		sourceRootNode = doc1.getRootNode();
 		targetRootNode = sourceRootNode;
 	}
 
 	public void setUpObjectToArray() throws Exception {
-		File testFile = new File("/Volumes/Data/Talend/testdata/json/auto_assign_input_object_to_array.json");
+		File testFile = new File("/Data/Talend/testdata/json/auto_assign_input_object_to_array.json");
 		de.jlo.talendcomp.json.JsonDocument doc1 = new de.jlo.talendcomp.json.JsonDocument(testFile);
 		sourceRootNode = doc1.getRootNode();
 		targetRootNode = sourceRootNode;
 	}
 
 	public void setUpObjectToArrayMissingSourceLoopPath() throws Exception {
-		File testFile = new File("/Volumes/Data/Talend/testdata/json/auto_assign_input_object_to_array_missing_source_loop_path.json");
+		File testFile = new File("/Data/Talend/testdata/json/auto_assign_input_object_to_array_missing_source_loop_path.json");
 		de.jlo.talendcomp.json.JsonDocument doc1 = new de.jlo.talendcomp.json.JsonDocument(testFile);
 		sourceRootNode = doc1.getRootNode();
 		targetRootNode = sourceRootNode;
