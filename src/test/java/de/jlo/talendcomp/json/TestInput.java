@@ -309,4 +309,62 @@ public class TestInput extends TalendFakeJob {
 		assertTrue(true);
 	}
 
+	@Test
+	public void testReturnStringAsLong() throws Exception {
+		String json = "{\n"
+			    + "	\"long_var\" : \"123456789\""
+			    + "}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode(doc.getRootNode(), "$", false);
+		List<JsonNode> result = doc.getArrayValuesAsList(parent, false, true);
+		for (JsonNode node : result) {
+			System.out.println(node);
+			long expected = 123456789l;
+			long actual = doc.getValueAsLong(node, "long_var", true, true, null);
+			System.out.println("long_var=" + actual);
+			assertEquals(expected, actual);
+		}
+		assertTrue(true);
+	}
+
+	@Test
+	public void testReturnStringAsLongFail() throws Exception {
+		String json = "{\n"
+			    + "	\"long_var\" : \"12345AB6789\""
+			    + "}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode(doc.getRootNode(), "$", false);
+		List<JsonNode> result = doc.getArrayValuesAsList(parent, false, true);
+		boolean fail = false;
+		for (JsonNode node : result) {
+			System.out.println(node);
+			try {
+				Long l = doc.getValueAsLong(node, "long_var", true, true, null);
+				System.out.println(l);
+			} catch (Exception e) {
+				fail = true;
+				System.out.println(e.getMessage());
+			}
+		}
+		assertTrue(fail);
+	}
+
+	@Test
+	public void testReturnLongAsLong() throws Exception {
+		String json = "{\n"
+			    + "	\"long_var\" : 123456789"
+			    + "}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode(doc.getRootNode(), "$", false);
+		List<JsonNode> result = doc.getArrayValuesAsList(parent, false, true);
+		for (JsonNode node : result) {
+			System.out.println(node);
+			long expected = 123456789l;
+			long actual = doc.getValueAsLong(node, "long_var", true, true, null);
+			System.out.println("long_var=" + actual);
+			assertEquals(expected, actual);
+		}
+		assertTrue(true);
+	}
+
 }

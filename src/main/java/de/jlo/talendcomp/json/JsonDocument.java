@@ -919,7 +919,11 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			return valueNode.asBoolean();
+			try {
+				return TypeUtil.convertToBoolean(valueNode);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}
@@ -940,7 +944,11 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			return valueNode.asInt();
+			try {
+				return TypeUtil.convertToInteger(valueNode);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}
@@ -961,7 +969,11 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			return valueNode.asLong();
+			try {
+				return TypeUtil.convertToLong(valueNode);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}
@@ -982,7 +994,11 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			return valueNode.asDouble();
+			try {
+				return TypeUtil.convertToDouble(valueNode);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}
@@ -1003,7 +1019,11 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			return (float) valueNode.asDouble();
+			try {
+				return TypeUtil.convertToFloat(valueNode);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}
@@ -1024,7 +1044,11 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			return (short) valueNode.asInt();
+			try {
+				return TypeUtil.convertToShort(valueNode);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}
@@ -1045,7 +1069,11 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			return new BigDecimal(valueNode.asText());
+			try {
+				return TypeUtil.convertToBigDecimal(valueNode);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}
@@ -1067,10 +1095,14 @@ public class JsonDocument {
 						return null;
 					}
 				} else {
-					return new BigDecimal(missingNodeValue);
+					return TypeUtil.convertToBigDecimal(missingNodeValue);
 				}
 			}
-			return new BigDecimal(valueNode.asText());
+			try {
+				return TypeUtil.convertToBigDecimal(valueNode);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}
@@ -1091,7 +1123,11 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			return valueNode.bigIntegerValue();
+			try {
+				return TypeUtil.convertToBigInteger(valueNode);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}
@@ -1112,7 +1148,11 @@ public class JsonDocument {
 					return missingNodeValue;
 				}
 			}
-			return parseDate(valueNode.asText(), pattern);
+			try {
+				return parseDate(valueNode.asText(), pattern);
+			} catch (Exception e) {
+				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+			}
 		} else {
 			return null;
 		}

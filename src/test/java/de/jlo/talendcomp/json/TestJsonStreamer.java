@@ -8,7 +8,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.jlo.talendcomp.json.streaming.JsonStreamParser;
-import de.jlo.talendcomp.json.streaming.TypeUtil;
 
 public class TestJsonStreamer {
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.jlo.talendcomp.json.streaming;
+package de.jlo.talendcomp.json;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 
-import de.jlo.talendcomp.json.GenericDateUtil;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public final class TypeUtil {
 	
@@ -47,41 +47,7 @@ public final class TypeUtil {
 			numberformatMap.put(localeStr, nf);
 		}
 		return nf;
-	}
-	
-	public static Object convertToDatatype(String value, String dataType, String options) throws Exception {
-		if ("String".equals(dataType)) {
-			if (value == null || value.isEmpty()) {
-				return null;
-			} else {
-				return value;
-			}
-		} else if ("Integer".equals(dataType)) {
-			return convertToInteger(value);
-		} else if ("Boolean".equals(dataType)) {
-			return convertToBoolean(value);
-		} else if ("Date".equals(dataType)) {
-			return convertToDate(value, options);
-		} else if ("Timestamp".equals(dataType)) {
-			return convertToTimestamp(value, options);
-		} else if ("BigDecimal".equals(dataType)) {
-			return convertToBigDecimal(value);
-		} else if ("BigInteger".equals(dataType)) {
-			return convertToBigDecimal(value);
-		} else if ("Double".equals(dataType)) {
-			return convertToDouble(value);
-		} else if ("Float".equals(dataType)) {
-			return convertToFloat(value);
-		} else if ("Long".equals(dataType)) {
-			return convertToLong(value);
-		} else if ("Short".equals(dataType)) {
-			return convertToShort(value);
-		} else if ("Character".equals(dataType)) {
-			return convertToChar(value);
-		} else {
-			throw new Exception("Unsupported dataType:" + dataType);
-		}
-	}
+	} 
 	
 	/**
 	 * concerts the string format into a Date
@@ -161,9 +127,19 @@ public final class TypeUtil {
 		} else if ("x".equals(value)) {
 			return Boolean.TRUE;
 		} else if (value != null) {
-			return Boolean.FALSE;
+			throw new Exception("Value: " + value + " cannot be parsed to a boolean");
 		} else {
 			return null;
+		}
+	}
+
+	public static Boolean convertToBoolean(JsonNode node) throws Exception {
+		if (node.isBoolean()) {
+			return node.asBoolean();
+		} else if (node.isTextual()) {
+			return convertToBoolean(node.asText());
+		} else {
+			throw new Exception("Node: " + node + " cannot be converted to Boolean");
 		}
 	}
 
@@ -176,6 +152,16 @@ public final class TypeUtil {
 		return decfrm.parse(value).doubleValue();
 	}
 
+	public static Double convertToDouble(JsonNode node) throws Exception {
+		if (node.isNumber()) {
+			return node.asDouble();
+		} else if (node.isTextual()) {
+			return convertToDouble(node.asText());
+		} else {
+			throw new Exception("Node: " + node + " cannot be converted to Double");
+		}
+	}
+
 	public static Integer convertToInteger(String value) throws Exception {
 		if (value == null || value.isEmpty()) {
 			return null;
@@ -185,13 +171,35 @@ public final class TypeUtil {
 		return decfrm.parse(value).intValue();
 	}
 	
+	public static Integer convertToInteger(JsonNode node) throws Exception {
+		if (node.isNumber()) {
+			return node.asInt();
+		} else if (node.isTextual()) {
+			return convertToInteger(node.asText());
+		} else if (node.isNull()) {
+			return null;
+		} else {
+			throw new Exception("Node: " + node + " cannot be converted to Integer");
+		}
+	}
+
 	public static Short convertToShort(String value) throws Exception {
 		if (value == null || value.isEmpty()) {
 			return null;
 		}
-		DecimalFormat decfrm = getNumberFormat(DEFAULT_LOCALE);
-		decfrm.setParseBigDecimal(false);
-		return decfrm.parse(value).shortValue();
+		return Short.parseShort(value);
+	}
+
+	public static Short convertToShort(JsonNode node) throws Exception {
+		if (node.isNumber()) {
+			return (short) node.asInt();
+		} else if (node.isTextual()) {
+			return convertToShort(node.asText());
+		} else if (node.isNull()) {
+			return null;
+		} else {
+			throw new Exception("Node: " + node + " cannot be converted to Short");
+		}
 	}
 
 	public static Character convertToChar(String value) throws Exception {
@@ -213,18 +221,38 @@ public final class TypeUtil {
 		if (value == null || value.isEmpty()) {
 			return null;
 		}
-		DecimalFormat decfrm = getNumberFormat(DEFAULT_LOCALE);
-		decfrm.setParseBigDecimal(false);
-		return decfrm.parse(value).floatValue();
+		return Float.parseFloat(value);
+	}
+
+	public static Float convertToFloat(JsonNode node) throws Exception {
+		if (node.isNumber()) {
+			return (float) node.asDouble();
+		} else if (node.isTextual()) {
+			return convertToFloat(node.asText());
+		} else if (node.isNull()) {
+			return null;
+		} else {
+			throw new Exception("Node: " + node + " cannot be converted to Float");
+		}
 	}
 
 	public static Long convertToLong(String value) throws Exception {
 		if (value == null || value.isEmpty()) {
 			return null;
 		}
-		DecimalFormat decfrm = getNumberFormat(DEFAULT_LOCALE);
-		decfrm.setParseBigDecimal(false);
-		return decfrm.parse(value).longValue();
+		return Long.parseLong(value);
+	}
+
+	public static Long convertToLong(JsonNode node) throws Exception {
+		if (node.isNumber()) {
+			return node.asLong();
+		} else if (node.isTextual()) {
+			return convertToLong(node.asText());
+		} else if (node.isNull()) {
+			return null;
+		} else {
+			throw new Exception("Node: " + node + " cannot be converted to Long");
+		}
 	}
 
 	public static BigDecimal convertToBigDecimal(String value) throws Exception {
@@ -241,6 +269,18 @@ public final class TypeUtil {
 		}
 	}
 
+	public static BigDecimal convertToBigDecimal(JsonNode node) throws Exception {
+		if (node.isNumber()) {
+			return new BigDecimal(node.asText());
+		} else if (node.isTextual()) {
+			return convertToBigDecimal(node.asText());
+		} else if (node.isNull()) {
+			return null;
+		} else {
+			throw new Exception("Node: " + node + " cannot be converted to BigDecimal");
+		}
+	}
+
 	public static BigInteger convertToBigInteger(String value) throws Exception {
 		if (value == null || value.isEmpty()) {
 			return null;
@@ -249,6 +289,18 @@ public final class TypeUtil {
 			return new BigInteger(value);
 		} catch (RuntimeException e) {
 			throw new Exception("convertToBigDecimal:" + value + " failed:" + e.getMessage(), e);
+		}
+	}
+
+	public static BigInteger convertToBigInteger(JsonNode node) throws Exception {
+		if (node.isNumber()) {
+			return node.bigIntegerValue();
+		} else if (node.isTextual()) {
+			return convertToBigInteger(node.asText());
+		} else if (node.isNull()) {
+			return null;
+		} else {
+			throw new Exception("Node: " + node + " cannot be converted to BigInteger");
 		}
 	}
 
