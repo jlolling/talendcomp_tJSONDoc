@@ -16,6 +16,7 @@
 	String setup = ElementParameterParser.getValue(node, "__SETUP__");
 	String jsonStringJava = "null";
 	String jsonStringPlain = "null";
+	boolean validate = "true".equals(ElementParameterParser.getValue(node, "__VALIDATE_INPUT__"));
 	boolean usePlainTextForTest = "true".equals(ElementParameterParser.getValue(node, "__USE_PLAIN_TEXT_ONLY_AS_TEST__"));
 	if ("READ_FROM_INPUT".equals(setup) || ("READ_FROM_INPUT_PLAIN_TEXT".equals(setup) && usePlainTextForTest)) {
     	boolean simplifiedLineBreaks = "true".equals(ElementParameterParser.getValue(node, "__SIMPLIFIED_LINE_BREAKS__"));
@@ -29,8 +30,7 @@
     	} else {
     		jsonStringJava = "null";
     	}
-	}
-	if ("READ_FROM_INPUT_PLAIN_TEXT".equals(setup)) {
+	} else if ("READ_FROM_INPUT_PLAIN_TEXT".equals(setup)) {
 		jsonStringPlain = ElementParameterParser.getValue(node, "__JSON_CONTENT_PLAIN_TEXT__");
     	if (jsonStringPlain  != null && jsonStringPlain.trim().isEmpty() == false) {
 	    	jsonStringPlain = "\"" + jsonStringPlain.trim()
@@ -99,10 +99,16 @@
 		globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getRootNode());
 		globalMap.put("<%=cid%>_CURRENT_PATH", "$");
 		globalMap.put("<%=cid%>_COUNT_ROOT_OBJECTS", <%=cid%>.getCountRootObjects());
-   } catch (Exception e) {
-<% if (log4jEnabled) { %>
+<%	if (validate) { %>
+		String <%=cid%>_validationErrors = <%=cid%>.validate(jobName + ".<%=cid%>");
+		if (<%=cid%>_validationErrors != null) {
+			throw new Exception(<%=cid%>_validationErrors);
+		}
+<%	} %>	
+	} catch (Exception e) {
+<%	if (log4jEnabled) { %>
 		log.error(currentComponent + ": " + e.getMessage(), e);
-<% } %>
+<%	} %>
    		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
    		throw e;
-   }
+	}

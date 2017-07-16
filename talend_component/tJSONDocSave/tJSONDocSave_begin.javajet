@@ -19,6 +19,7 @@
 	boolean prettyPrint = "true".equals(ElementParameterParser.getValue(node, "__PRETTY_PRINT__"));
 	boolean ignoreEmpty = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY__"));
 	boolean debugOutput = "true".equals(ElementParameterParser.getValue(node, "__STD_OUTPUT__"));
+	boolean validate = "true".equals(ElementParameterParser.getValue(node, "__VALIDATE_OUTPUT__"));
 	String outputColumn = ElementParameterParser.getValue(node, "__JSON_OUTPUT_COLUMN__"); 
 	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
 	String outgoingConnName = null;
@@ -36,6 +37,13 @@
    	}
 %>
 	de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE"));
+<%	if (validate) { %>
+	String <%=cid%>_validationErrors = <%=cid%>.validate(jobName + ".<%=docComp%>");
+	if (<%=cid%>_validationErrors != null) {
+		globalMap.put("<%=cid%>_ERROR_MESSAGE", <%=cid%>_validationErrors);
+		throw new Exception(<%=cid%>_validationErrors);
+	}
+<%	} %>	
 	com.fasterxml.jackson.databind.JsonNode <%=cid%>_outputNode = null;
 	try {
 		<%=cid%>_outputNode = <%=cid%>.getConditionalUnwrappedRootNode((<%=unwrapCondition%>), <%=dieWhileUnwrap%>);

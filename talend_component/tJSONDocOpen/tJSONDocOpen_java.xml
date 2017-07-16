@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" SCHEMA_AUTO_PROPAGATE="true" PLATEFORM="ALL" RELEASE_DATE="20170706" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="10.1"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" SCHEMA_AUTO_PROPAGATE="true" PLATEFORM="ALL" RELEASE_DATE="20170716" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="10.2"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -45,19 +45,49 @@
     <PARAMETER NUM_ROW="40" FIELD="FILE" NAME="FILENAME" REQUIRED="true" REPOSITORY_VALUE="FILE_PATH" SHOW_IF="SETUP == 'READ_FROM_FILE'"> 
       <DEFAULT>"/path/to/input_file.json"</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="JSON_INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW="40" SHOW_IF="SETUP == 'READ_FROM_FLOW'"/> 
+    <PARAMETER NAME="JSON_INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW="40" SHOW_IF="SETUP == 'READ_FROM_FLOW'"/>  
+    <PARAMETER NAME="VALIDATE_INPUT" FIELD="CHECK" NUM_ROW="50" REQUIRED="true" SHOW_IF="SETUP_JSON_SCHEMA != 'NO_JSON_SCHEMA'"> 
+      <DEFAULT>false</DEFAULT> 
+    </PARAMETER> 
   </PARAMETERS>  
   <ADVANCED_PARAMETERS> 
-    <PARAMETER NAME="RELEASE_LABEL_20170706" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 10.1 build at: 20170706</DEFAULT>
+    <PARAMETER FIELD="CLOSED_LIST" NAME="SETUP_JSON_SCHEMA" NUM_ROW="10" REQUIRED="true"> 
+      <ITEMS DEFAULT="NO_JSON_SCHEMA"> 
+        <ITEM NAME="NO_JSON_SCHEMA" VALUE="NO_JSON_SCHEMA"/>  
+        <ITEM NAME="READ_SCHEMA_FROM_PLAIN_TEXT" VALUE="READ_SCHEMA_FROM_PLAIN_TEXT"/>  
+        <ITEM NAME="READ_SCHEMA_FROM_JAVA" VALUE="READ_SCHEMA_FROM_JAVA"/> 
+      </ITEMS> 
+    </PARAMETER>  
+    <PARAMETER NAME="JSON_SCHEMA_CONTENT_PLAIN_TEXT" FIELD="MEMO_JAVA" NUM_ROW="40" REQUIRED="true" SHOW_IF="SETUP_JSON_SCHEMA == 'READ_SCHEMA_FROM_PLAIN_TEXT'"> 
+      <DEFAULT/> 
+    </PARAMETER>  
+    <PARAMETER NAME="JSON_SCHEMA_CONTENT_JAVA" FIELD="MEMO_JAVA" NUM_ROW="40" REQUIRED="true" SHOW_IF="SETUP_JSON_SCHEMA == 'READ_SCHEMA_FROM_JAVA'"> 
+      <DEFAULT/> 
+    </PARAMETER>  
+    <PARAMETER NAME="RELEASE_LABEL_20170716" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 10.2 build at: 20170716</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-10.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-10.2.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.8.6.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.8.0.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-core" MODULE="jackson-core-2.8.6.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-schema-validator" MODULE="json-schema-validator-2.2.8.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-schema-core" MODULE="json-schema-core-1.2.8.jar" REQUIRED="true"/>
+      <IMPORT NAME="rhino" MODULE="rhino-1.7R4.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-coreutils" MODULE="jackson-coreutils-1.8.jar" REQUIRED="true"/>
+      <IMPORT NAME="msg-simple" MODULE="msg-simple-1.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="btf" MODULE="btf-1.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="guava" MODULE="guava-16.0.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="uri-template" MODULE="uri-template-0.9.jar" REQUIRED="true"/>
+      <IMPORT NAME="mailapi" MODULE="mailapi-1.4.3.jar" REQUIRED="true"/>
+      <IMPORT NAME="activation" MODULE="activation-1.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="joda-time" MODULE="joda-time-2.9.7.jar" REQUIRED="true"/>
+      <IMPORT NAME="libphonenumber" MODULE="libphonenumber-8.0.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="jsr305" MODULE="jsr305-3.0.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="jopt-simple" MODULE="jopt-simple-5.0.3.jar" REQUIRED="true"/>
       <IMPORT NAME="json-path" MODULE="json-path-2.3.0.jar" REQUIRED="true"/>
       <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.7.25.jar" REQUIRED="true"/>
       <IMPORT NAME="slf4j-simple" MODULE="slf4j-simple-1.6.1.jar" REQUIRED="true"/>

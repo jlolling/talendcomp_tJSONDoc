@@ -42,6 +42,11 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.core.report.ProcessingMessage;
+import com.github.fge.jsonschema.core.report.ProcessingReport;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import com.github.fge.jsonschema.main.JsonValidator;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -66,19 +71,22 @@ public class JsonDocument {
 	public static final Date NULL_DATE = new Date(Long.MAX_VALUE);
 	
 	private JsonNode rootNode = null;
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-	private Map<String, SimpleDateFormat> dateFormatMap = new HashMap<String, SimpleDateFormat>();
+	private final Map<String, SimpleDateFormat> dateFormatMap = new HashMap<String, SimpleDateFormat>();
 	private DocumentContext rootContext = null;
 	private static final Configuration JACKSON_JSON_NODE_CONFIGURATION = Configuration
             .builder()
             .mappingProvider(new JacksonMappingProvider())
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
-	private ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
-	private Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
+	private final ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+	private static final ParseContext staticParseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+	private final Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
 	private String currentPath = "";
 	private Locale defaultLocale = Locale.getDefault();
+	private static final Map<String, JsonNode> schemaMap = new HashMap<String, JsonNode>();
+	private static final JsonSchemaFactory schemaFactory = JsonSchemaFactory.byDefault();
 	
 	public JsonDocument(boolean isArray) {
 		if (isArray) {
@@ -89,7 +97,7 @@ public class JsonDocument {
 		rootNode = rootContext.read("$");
 		JsonNode testNode = rootContext.read("$");
 		if (rootNode != testNode) {
-			throw new IllegalStateException("Clones objects detected! Use the latest Jayway library 2.2.1+");
+			throw new IllegalStateException("Cloned objects detected! Use the latest Jayway library 2.2.1+");
 		}
 	}
 
@@ -102,7 +110,7 @@ public class JsonDocument {
 		rootNode = rootContext.read("$");
 		JsonNode testNode = rootContext.read("$");
 		if (rootNode != testNode) {
-			throw new IllegalStateException("Clones objects detected! Use the latest Jayway library 2.2.1+");
+			throw new IllegalStateException("Cloned objects detected! Use the latest Jayway library 2.2.1+");
 		}
 	}
 	
@@ -136,7 +144,7 @@ public class JsonDocument {
 			throw new IllegalStateException("Clones objects detected! Use the latest Jayway library 2.2.1+");
 		}
 	}
-
+	
 	public DocumentContext getDocumentContext() {
 		return rootContext;
 	}
@@ -1271,6 +1279,77 @@ public class JsonDocument {
 			listASttributes.add(node);
 		}
 		return listASttributes;
+	}
+	
+	public static JsonNode parse(String jsonContent) throws Exception {
+		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
+			DocumentContext docContext = staticParseContext.parse(jsonContent);
+			JsonNode node = docContext.json();
+			return node;
+		} else {
+			throw new IllegalArgumentException("Json input content cannot be empty or null");
+		}
+	}
+	
+	/**
+	 * Set the schema
+	 * @param schemaId - typically the job name + component name
+	 * @param schemaString the schema as string
+	 * @throws Exception
+	 */
+	public static void setJsonSchema(String schemaId, String schemaString) throws Exception {
+		if (schemaId == null || schemaId.trim().isEmpty()) {
+			throw new IllegalArgumentException("schemaId cannot be null or empty");
+		}
+		if (schemaId != null && schemaId.trim().isEmpty() == false) {
+			System.out.println("Prepare json schema for id: " + schemaId);
+			JsonNode schemaNode = parse(schemaString);
+			schemaMap.put(schemaId, schemaNode);
+		}
+	}
+	
+	/**
+	 * Set the schema
+	 * @param schemaId - typically the job name + component name
+	 * @param schemaNode the schema as JsonNode
+	 * @throws Exception
+	 */
+	public static void setJsonSchema(String schemaId, JsonNode schemaNode) throws Exception {
+		if (schemaId == null || schemaId.trim().isEmpty()) {
+			throw new IllegalArgumentException("schemaId cannot be null or empty");
+		}
+		if (schemaNode != null) {
+			System.out.println("Prepare json schema for id: " + schemaId);
+			schemaMap.put(schemaId, schemaNode);
+		}
+	}
+
+	/**
+	 * validates the current document against a schema
+	 * @param schemaId
+	 * @return null if ok, otherwise a String containing the error messages 
+	 * @throws ProcessingException in case of the validation technical fails
+	 */
+	public String validate(String schemaId) throws Exception {
+		JsonNode schemaNode = schemaMap.get(schemaId);
+		if (schemaNode != null) {
+			JsonValidator v = schemaFactory.getValidator();
+	        ProcessingReport report = v.validate(schemaNode, rootNode, true);
+	        if (report.isSuccess()) {
+	        	return null;
+	        } else {
+	        	StringBuilder sb = new StringBuilder();
+	            for (ProcessingMessage message : report) {
+	            	sb.append(message.getLogLevel());
+	            	sb.append(": ");
+	            	sb.append(message.getMessage());
+	            	sb.append("\n");
+	            }
+	            return sb.toString();
+	        }
+		} else {
+			throw new Exception("No json schema defined for the component: " + schemaId);
+		}
 	}
 
 }
