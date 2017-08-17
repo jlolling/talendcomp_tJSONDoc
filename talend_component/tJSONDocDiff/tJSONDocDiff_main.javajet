@@ -40,10 +40,15 @@
 	}
 	boolean takeEmptyLikeNull = "true".equals(ElementParameterParser.getValue(node, "__TAKE_EMPTY_LIKE_NULL__"));
 	boolean ignoreArrayIndex = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_ARRAY_INDEX__"));
+	String sortKey = ElementParameterParser.getValue(node, "__ROOT_ARRAY_SORT_KEY__");
+	if (sortKey == null || sortKey.trim().isEmpty()) {
+		sortKey = "null";
+	}
 %>
 	de.jlo.talendcomp.json.ops.Diff <%=cid%> = new de.jlo.talendcomp.json.ops.Diff();
 	<%=cid%>.setTakeEmptyLikeNull(<%=takeEmptyLikeNull%>);
 	<%=cid%>.setIgnoreArrayIndex(<%=ignoreArrayIndex%>);
+	<%=cid%>.setSortKeyAttribute(<%=sortKey%>);
 <%	if ("READ_FROM_INPUT".equals(referenceSetup)) { %>
 	<%=cid%>.setReferenceNode(<%=referenceJsonStringJava%>);
 <%	} else if ("READ_FROM_COMPONENTS".equals(referenceSetup)) { %>

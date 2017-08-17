@@ -1,6 +1,8 @@
 package de.jlo.talendcomp.json.ops;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +10,9 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 
 import de.jlo.talendcomp.json.JsonDocument;
@@ -23,6 +27,7 @@ public class Diff {
 	private String testJsonPath = null;
 	private List<Difference> result = null;
 	private int countDifferences = 0;
+	private String rootArraySortAttribute = null;
 
 	/**
 	 * A class describing one difference between 2 JsonNodes
@@ -153,7 +158,9 @@ public class Diff {
 	/**
 	 * Find the differences between to JsonNodes in the deep
 	 * @param reference node which is the reference
+	 * @param refJsonPath the path to the actual node use as reference node
 	 * @param test node is the test object
+	 * @param testJsonPath the path the actual test node
 	 * @return List of Differences
 	 * @throws Exception 
 	 */
@@ -193,7 +200,7 @@ public class Diff {
 						Map.Entry<String, JsonNode> entry = fi.next();
 						// check if field exists in test node
 						String newParentPath = parentPath + "." + entry.getKey();
-						if (contains(listDiffs, newParentPath) == false) {
+						if (containsDiff(listDiffs, newParentPath) == false) {
 							if (tn.has(entry.getKey())) {
 								JsonNode tnValue = tn.get(entry.getKey());
 								if (isNull(entry.getValue()) == false && isNull(tnValue) == false) {
@@ -236,7 +243,7 @@ public class Diff {
 						Map.Entry<String, JsonNode> entry = fi.next();
 						// check if field exists in test node
 						String newParentPath = parentPath + "." + entry.getKey();
-						if (contains(listDiffs, newParentPath) == false) {
+						if (containsDiff(listDiffs, newParentPath) == false) {
 							if (rn.has(entry.getKey())) {
 								JsonNode rnValue = rn.get(entry.getKey());
 								if (isNull(entry.getValue()) == false && isNull(rnValue) == false) {
@@ -275,7 +282,7 @@ public class Diff {
 					}
 				}
 			} else {
-				if (contains(listDiffs, parentPath) == false) {
+				if (containsDiff(listDiffs, parentPath) == false) {
 					if (takeEmptyLikeNull) {
 						if (isNull(reference) == false || isNull(test) == false) {
 							Difference diff = new Difference();
@@ -297,17 +304,19 @@ public class Diff {
 			}
 		} else if (reference instanceof ArrayNode) {
 			ArrayNode rn = (ArrayNode) reference;
+			List<JsonNode> refNodeList = arrayToList(rn);
 			if (test instanceof ArrayNode) {
 				ArrayNode tn = (ArrayNode) test;
-				if (rn.size() >= tn.size()) {
-					for (int i = 0; i < rn.size(); i++) {
+				List<JsonNode> testNodeList = arrayToList(tn);
+				if (refNodeList.size() >= testNodeList.size()) {
+					for (int i = 0; i < refNodeList.size(); i++) {
 						String newParentPath = parentPath + "[" + i + "]";
-						if (contains(listDiffs, newParentPath) == false) {
-							JsonNode rvn = rn.get(i);
-							if (i < tn.size()) {
-								JsonNode tvn = tn.get(i);
+						if (containsDiff(listDiffs, newParentPath) == false) {
+							JsonNode rvn = refNodeList.get(i);
+							if (i < testNodeList.size()) {
+								JsonNode tvn = testNodeList.get(i);
 								if (ignoreArrayIndex && tvn instanceof ValueNode) {
-									if (contains(rn, tvn) == false) {
+									if (containsNode(refNodeList, tvn) == false) {
 										findDifference(newParentPath, rvn, tvn, listDiffs);
 									}
 								} else {
@@ -323,14 +332,14 @@ public class Diff {
 						}
 					}
 				} else {
-					for (int i = 0; i < tn.size(); i++) {
+					for (int i = 0; i < testNodeList.size(); i++) {
 						String newParentPath = parentPath + "[" + i + "]";
-						if (contains(listDiffs, newParentPath) == false) {
-							JsonNode tvn = tn.get(i);
-							if (i < rn.size()) {
-								JsonNode rvn = tn.get(i);
+						if (containsDiff(listDiffs, newParentPath) == false) {
+							JsonNode tvn = testNodeList.get(i);
+							if (i < refNodeList.size()) {
+								JsonNode rvn = testNodeList.get(i);
 								if (ignoreArrayIndex && rvn instanceof ValueNode) {
-									if (contains(tn, rvn) == false) {
+									if (containsNode(testNodeList, rvn) == false) {
 										findDifference(newParentPath, rvn, tvn, listDiffs);
 									}
 								} else {
@@ -347,7 +356,7 @@ public class Diff {
 					}
 				}
 			} else {
-				if (contains(listDiffs, parentPath) == false) {
+				if (containsDiff(listDiffs, parentPath) == false) {
 					if (isNull(test) == false || isNull(rn) == false) {
 						Difference diff = new Difference();
 						diff.setJsonPath(parentPath);
@@ -360,7 +369,7 @@ public class Diff {
 			}
 		} else if (reference instanceof ValueNode) {
 			ValueNode rv = (ValueNode) reference;
-			if (contains(listDiffs, parentPath) == false) {
+			if (containsDiff(listDiffs, parentPath) == false) {
 				if (test instanceof ValueNode) {
 					ValueNode tv = (ValueNode) test;
 					if (equals(tv, rv) == false) {
@@ -383,7 +392,7 @@ public class Diff {
 		return listDiffs;
 	}
 	
-	private boolean contains(List<Difference> listDiff, Object test) {
+	private boolean containsDiff(List<Difference> listDiff, Object test) {
 		if (test instanceof String) {
 			for (Difference diff : listDiff) {
 				if (((String) test).equals(diff.jsonPath)) {
@@ -426,7 +435,7 @@ public class Diff {
 		return false;
 	}
 
-	private boolean contains(ArrayNode arrayNode, JsonNode node) {
+	private boolean containsNode(List<JsonNode> arrayNode, JsonNode node) {
 		for (JsonNode element : arrayNode) {
 			if (equals(element, node)) {
 				return true;
@@ -513,6 +522,37 @@ public class Diff {
 
 	public int getCountDifferences() {
 		return countDifferences;
+	}
+	
+	public void setSortKeyAttribute(String keypath) {
+		if (keypath != null && keypath.trim().isEmpty() == false) {
+			rootArraySortAttribute = keypath;
+		}
+	}
+	
+	private List<JsonNode> arrayToList(ArrayNode arrayNode) {
+		List<JsonNode> list = new ArrayList<JsonNode>();
+		for (JsonNode node : arrayNode) {
+			list.add(node);
+		}
+		if (rootArraySortAttribute != null) {
+			Collections.sort(list, new Comparator<JsonNode>() {
+
+				public int compare(JsonNode n1, JsonNode n2) {
+					JsonNode vn1 = n1.get(rootArraySortAttribute);
+					JsonNode vn2 = n2.get(rootArraySortAttribute);
+					if (vn1 instanceof TextNode && vn2 instanceof TextNode) {
+						return vn1.asText().compareTo(vn2.asText());
+					} else if (vn1 instanceof NumericNode && vn2 instanceof NumericNode) {
+						return Double.valueOf(vn1.doubleValue()).compareTo(Double.valueOf(vn2.doubleValue()));
+					} else {
+						return 0;
+					}
+				}
+
+			});
+		}
+		return list;
 	}
 	
 }

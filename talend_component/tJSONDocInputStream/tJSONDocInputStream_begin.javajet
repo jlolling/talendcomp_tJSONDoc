@@ -91,9 +91,9 @@
 			{
 				String valueStr = <%=cid%>.getValue("<%=mc.getLabel()%>");
 <%      if (isDateValue) { %>				
-				<%=javaPackageClassName%> var = de.jlo.talendcomp.json.streaming.TypeUtil.convertTo<%=javaClassName%>(valueStr, <%=pattern%>);
+				<%=javaPackageClassName%> var = de.jlo.talendcomp.json.TypeUtil.convertTo<%=javaClassName%>(valueStr, <%=pattern%>);
 <%      } else { %>
-				<%=javaPackageClassName%> var = de.jlo.talendcomp.json.streaming.TypeUtil.convertTo<%=javaClassName%>(valueStr);
+				<%=javaPackageClassName%> var = de.jlo.talendcomp.json.TypeUtil.convertTo<%=javaClassName%>(valueStr);
 <%      } 
 		if (conn != null) {
 			if (mc.isNullable() == false) { %>

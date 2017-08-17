@@ -32,47 +32,47 @@ public class Traverse {
 	
 	/**
 	 * traverse through a JSON object (binary representation) and extracts all fields
-	 * @param bson BSON object
+	 * @param node JsonNode object
 	 * @param parentPath parent path in form of parent1.parent2 ...
 	 * @return list of JSONValue objects containing path, key and value as strings
 	 */
-	public List<JSONValue> traverse(JsonNode bson) {
+	public List<JSONValue> traverse(JsonNode node) {
 		for (String parent : pathArray) {
 			Object child = null;
 			if (parent.equals("$")) {
-				child = bson;
+				child = node;
 			} else {
-				child = bson.get(parent);
+				child = node.get(parent);
 			}
 			if (child instanceof ObjectNode) {
-				bson = (ObjectNode) child;
+				node = (ObjectNode) child;
 			} else {
 				break;
 			}
 		}
-		return traverse(bson, null, null);
+		return traverse(node, null, null);
 	}
 	
 	/**
 	 * traverse through a JSON object (binary representation) and extracts all fields
-	 * @param bson BSON object
+	 * @param node JsonNode object
 	 * @param valueList
 	 * @param keyPath
 	 * @return list of JSONValue objects containing path, key and value as strings
 	 */
-	private List<JSONValue> traverse(JsonNode bson, List<de.jlo.talendcomp.json.ops.JSONValue> valueList, List<String> keyPath) {
+	private List<JSONValue> traverse(JsonNode node, List<de.jlo.talendcomp.json.ops.JSONValue> valueList, List<String> keyPath) {
 		if (keyPath == null) {
 			keyPath = new ArrayList<String>();
 		}
 		if (valueList == null) {
 			valueList = new ArrayList<JSONValue>();
 		}
-		Iterator<String> keys = bson.fieldNames();
+		Iterator<String> keys = node.fieldNames();
 		Object child = null;
 		while (keys.hasNext()) {
 			String key = keys.next();
 			if (excludeFieldSet.contains(key) == false) {
-				child = bson.get(key);
+				child = node.get(key);
 				if (child instanceof ObjectNode) {
 					List<String> childPath = clone(keyPath);
 					childPath.add(key);

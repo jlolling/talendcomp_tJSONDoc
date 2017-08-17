@@ -69,21 +69,33 @@
 <%  } else if ("READ_FROM_INPUT".equals(setup) || "READ_FROM_INPUT_PLAIN_TEXT".equals(setup)) { %>
 <%		if ("READ_FROM_INPUT_PLAIN_TEXT".equals(setup)) { %>
 <%			if (usePlainTextForTest) { %>
-		String jsonContentJava = <%=jsonStringJava%>;
+		Object jsonContentJava = <%=jsonStringJava%>;
 		String jsonContentPlain = <%=jsonStringPlain%>;
-		String jsonContent = null;
-		if (jsonContentJava != null && jsonContentJava.trim().isEmpty() == false) {
+		Object jsonContent = null;
+		if (jsonContentJava != null) {
 			jsonContent = jsonContentJava;
 		} else {
 			jsonContent = jsonContentPlain;
 		}
 <%			} else { %>
-		String jsonContent = <%=jsonStringPlain%>;
-<%			} %>	
+		Object jsonContent = <%=jsonStringPlain%>;
+<%			} %>
 <%		} else { %>
-		String jsonContent = <%=jsonStringJava%>;
-<%		} %>	
-		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(jsonContent); 
+		Object jsonContent = <%=jsonStringJava%>;
+<%		} %>
+		if (jsonContent == null) {
+			throw new Exception("Content to setup the JSON document cannot be null!");
+		}
+		de.jlo.talendcomp.json.JsonDocument <%=cid%> = null;
+		if (jsonContent instanceof String) {
+			<%=cid%> = new de.jlo.talendcomp.json.JsonDocument((String) jsonContent); 
+		} else if (jsonContent instanceof com.fasterxml.jackson.databind.JsonNode) {
+			<%=cid%> = new de.jlo.talendcomp.json.JsonDocument((com.fasterxml.jackson.databind.JsonNode) jsonContent);
+		} else if (jsonContent instanceof java.io.File) {
+			<%=cid%> = new de.jlo.talendcomp.json.JsonDocument((java.io.File) jsonContent);
+		} else {
+			throw new Exception("Content to setup the JSON document can only be a File, String or JsonNode. We got: " + jsonContent.getClass().getName());
+		}
 <%  } else if ("READ_FROM_FLOW".equals(setup)) { 
         if (inputColumnName != null) { %>
 		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(<%=conn.getName()%>.<%=inputColumnName%>);
