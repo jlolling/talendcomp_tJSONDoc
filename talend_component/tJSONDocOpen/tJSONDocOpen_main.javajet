@@ -98,7 +98,22 @@
 		}
 <%  } else if ("READ_FROM_FLOW".equals(setup)) { 
         if (inputColumnName != null) { %>
-		de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument(<%=conn.getName()%>.<%=inputColumnName%>);
+		de.jlo.talendcomp.json.JsonDocument <%=cid%> = null;
+		if (<%=conn.getName()%>.<%=inputColumnName%> == null) {
+			throw new Exception("Input <%=conn.getName()%>.<%=inputColumnName%> cannot be null!");
+		}
+		Object <%=cid%>_input_flow = <%=conn.getName()%>.<%=inputColumnName%>;
+        if (<%=cid%>_input_flow instanceof String) {
+			<%=cid%> = new de.jlo.talendcomp.json.JsonDocument((String) <%=cid%>_input_flow);
+        } else if (<%=cid%>_input_flow instanceof com.fasterxml.jackson.databind.JsonNode) {
+        	<%=cid%> = new de.jlo.talendcomp.json.JsonDocument((com.fasterxml.jackson.databind.JsonNode) <%=cid%>_input_flow);
+        } else if (<%=cid%>_input_flow instanceof java.io.File) {
+        	<%=cid%> = new de.jlo.talendcomp.json.JsonDocument((java.io.File) <%=cid%>_input_flow);
+        } else if (<%=conn.getName()%>.<%=inputColumnName%> != null) {
+        	throw new Exception("Invalid input type: " + <%=conn.getName()%>.<%=inputColumnName%>.getClass().getName());
+        } else {
+        	throw new Exception("Null input not allowed!");
+        }
 <%  	}
 	} else { %>
 		String filePath = <%=file%>;

@@ -1,7 +1,5 @@
 package examples;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -18,15 +16,12 @@ import de.jlo.talendcomp.json.JsonDocument;
 public class Test2 {
 
 	public static void main(String[] args) {
-		try {
-//			testJsonPathNew();
-//			testGetDirectPathTokens();
-			//testCompile();
-			testBuildJson();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String s = "x";
+		Long l = 0l;
+		Number n = new Long(1l);
+		System.out.println(s.getClass().isAssignableFrom(l.getClass()));
+		System.out.println(l.getClass().isAssignableFrom(n.getClass()));
+		System.out.println(Long.class.isAssignableFrom(n.getClass()));
 	}
 	
 	public static final Configuration JACKSON_JSON_NODE_CONFIGURATION = Configuration
