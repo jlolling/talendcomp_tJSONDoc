@@ -20,6 +20,7 @@
 	boolean ignoreEmpty = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY__"));
 	boolean debugOutput = "true".equals(ElementParameterParser.getValue(node, "__STD_OUTPUT__"));
 	boolean validate = "true".equals(ElementParameterParser.getValue(node, "__VALIDATE_OUTPUT__"));
+	boolean outputAsNode = "true".equals(ElementParameterParser.getValue(node, "__OUTPUT_AS_NODE__"));
 	String outputColumn = ElementParameterParser.getValue(node, "__JSON_OUTPUT_COLUMN__"); 
 	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
 	String outgoingConnName = null;
@@ -67,23 +68,31 @@
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 		throw e;
 	}
-<% } %>
-	String jsonString_<%=cid%> = null;
+<%	} %>
+	Object jsonOutput_<%=cid%> = null;
+<%	if (outputAsNode) { %>
+	jsonOutput_<%=cid%> = <%=cid%>_outputNode;
+<%	} else { %>
 	try {
-		jsonString_<%=cid%> = <%=cid%>.getJsonString(<%=cid%>_outputNode, <%=prettyPrint%>, <%=ignoreEmpty%>);
+		jsonOutput_<%=cid%> = <%=cid%>.getJsonString(<%=cid%>_outputNode, <%=prettyPrint%>, <%=ignoreEmpty%>);
 	} catch (Exception e) {
-<% 		if (log4jEnabled) { %>
+<%		if (log4jEnabled) { %>
 		log.error(currentComponent + ": " + e.getMessage(), e);
-<% 		} %>
+<%		} %>
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 		throw e;
 	}
-	globalMap.put("<%=cid%>_JSON_STRING", jsonString_<%=cid%>);
-<% if (debugOutput) { %>
-	System.out.println(jsonString_<%=cid%>);
-<% } %>
-<% if (outgoingConnName != null && outputColumn != null) { %>
+	globalMap.put("<%=cid%>_JSON_STRING", (String) jsonOutput_<%=cid%>);
+<%		if (debugOutput) { %>
+	System.out.println(jsonOutput_<%=cid%>);
+<%		} %>
+<%	} %>
+<%	if (outgoingConnName != null && outputColumn != null) { %>
 	if (true) { // open a loop for one row
-		 <%=outgoingConnName%>.<%=outputColumn%> = jsonString_<%=cid%>;
-<% } %>
+<%		if (outputAsNode) { %>
+		 <%=outgoingConnName%>.<%=outputColumn%> = jsonOutput_<%=cid%>;
+<%		} else { %>
+		 <%=outgoingConnName%>.<%=outputColumn%> = (String) jsonOutput_<%=cid%>;
+<%		} %>
+<%	} %>
 	
