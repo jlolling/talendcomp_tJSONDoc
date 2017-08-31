@@ -148,7 +148,7 @@ public class Diff {
 	 * Find the differences between to JsonNodes in the deep
 	 * @param reference node which is the reference
 	 * @param test node is the test object
-	 * @return List of Differences
+	 * @return List of Differences at least an empty list
 	 * @throws Exception 
 	 */
 	public List<Difference> findDifference(JsonNode reference, JsonNode test) throws Exception {
@@ -389,6 +389,7 @@ public class Diff {
 				}
 			}
 		}
+		result = listDiffs;
 		return listDiffs;
 	}
 	

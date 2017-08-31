@@ -72,10 +72,18 @@
 		Object jsonContentJava = <%=jsonStringJava%>;
 		String jsonContentPlain = <%=jsonStringPlain%>;
 		Object jsonContent = null;
-		if (jsonContentJava != null) {
+		if (jsonContentJava instanceof com.fasterxml.jackson.databind.JsonNode) {
+			jsonContent = jsonContentJava;
+		} else if (jsonContentJava instanceof java.io.File) {
+			jsonContent = jsonContentJava;
+		} else if (jsonContentJava instanceof String && ((String) jsonContentJava).trim().isEmpty() == false) {
 			jsonContent = jsonContentJava;
 		} else {
 			jsonContent = jsonContentPlain;
+<%				if (jsonStringJava != null && jsonStringJava.trim().isEmpty() == false) { %>
+			// actually we have a configured input but do not got a real input
+			System.err.println("<%=cid%>: Use currently test from plain input data as input!");
+<%				} %>
 		}
 <%			} else { %>
 		Object jsonContent = <%=jsonStringPlain%>;

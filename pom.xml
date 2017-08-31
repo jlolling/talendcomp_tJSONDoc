@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.jlo.talendcomp</groupId>
 	<artifactId>jlo-talendcomp-json</artifactId>
-	<version>11.0</version>
+	<version>12.0</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -94,6 +94,16 @@
 						</goals>
 						<configuration>
 							<componentName>tJSONDocDiff</componentName>
+							<noJars>true</noJars>
+						</configuration>
+					</execution>
+					<execution>
+						<id>tJSONDocExtractFields</id>
+						<goals>
+							<goal>component</goal>
+						</goals>
+						<configuration>
+							<componentName>tJSONDocExtractFields</componentName>
 							<noJars>true</noJars>
 						</configuration>
 					</execution>
