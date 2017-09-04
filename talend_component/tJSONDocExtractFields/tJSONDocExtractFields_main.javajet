@@ -31,6 +31,14 @@
     		listColumns = metadata.getListColumns();
 		}
 	}
+	List<IMetadataColumn> listIncomingColumns = new ArrayList<IMetadataColumn>();
+	IConnection inconn = null;
+	List<? extends IConnection> inConns = NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA);
+	if (inConns.size() > 0) {
+		inconn = inConns.get(0);
+		IMetadataTable metadata = node.getMetadataFromConnector(inconn.getConnectorName());
+		listIncomingColumns = metadata.getListColumns();
+	}
 	@SuppressWarnings("unchecked")
 	List<Map<String, String>> configList = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__COLUMN_CONFIG__");
     String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
@@ -158,7 +166,16 @@
 		}
 		boolean isNullable = mc.isNullable();
 		if (ignore) {
-			continue; // skip over this column
+			boolean contains = false;
+			for (IMetadataColumn incol : listIncomingColumns) {
+				if (incol.getLabel().equals(mc.getLabel())) {
+	      			if (conn != null) { %>
+		<%=conn.getName()%>.<%=mc.getLabel()%> = <%=inconn.getName()%>.<%=incol.getLabel()%>;
+<%       			}
+					break;
+				}
+			}
+			continue;
 		} %>
 			{
 <%		if (arrayOfArrays) { %>
