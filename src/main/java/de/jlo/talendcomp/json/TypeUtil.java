@@ -138,6 +138,8 @@ public final class TypeUtil {
 			return node.asBoolean();
 		} else if (node.isTextual()) {
 			return convertToBoolean(node.asText());
+		} else if (node.isNumber()) {
+			return convertToBoolean(node.asText());
 		} else {
 			throw new Exception("Node: " + node + " cannot be converted to Boolean");
 		}
