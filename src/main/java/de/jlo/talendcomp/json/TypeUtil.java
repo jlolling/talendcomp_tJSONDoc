@@ -140,6 +140,10 @@ public final class TypeUtil {
 			return convertToBoolean(node.asText());
 		} else if (node.isNumber()) {
 			return convertToBoolean(node.asText());
+		} else if (node.isNull()) {
+			return null;
+		} else if (node.isMissingNode()) {
+			return null;
 		} else {
 			throw new Exception("Node: " + node + " cannot be converted to Boolean");
 		}
@@ -159,6 +163,10 @@ public final class TypeUtil {
 			return node.asDouble();
 		} else if (node.isTextual()) {
 			return convertToDouble(node.asText());
+		} else if (node.isNull()) {
+			return null;
+		} else if (node.isMissingNode()) {
+			return null;
 		} else {
 			throw new Exception("Node: " + node + " cannot be converted to Double");
 		}
@@ -180,6 +188,8 @@ public final class TypeUtil {
 			return convertToInteger(node.asText());
 		} else if (node.isNull()) {
 			return null;
+		} else if (node.isMissingNode()) {
+			return null;
 		} else {
 			throw new Exception("Node: " + node + " cannot be converted to Integer");
 		}
@@ -198,6 +208,8 @@ public final class TypeUtil {
 		} else if (node.isTextual()) {
 			return convertToShort(node.asText());
 		} else if (node.isNull()) {
+			return null;
+		} else if (node.isMissingNode()) {
 			return null;
 		} else {
 			throw new Exception("Node: " + node + " cannot be converted to Short");
@@ -233,6 +245,8 @@ public final class TypeUtil {
 			return convertToFloat(node.asText());
 		} else if (node.isNull()) {
 			return null;
+		} else if (node.isMissingNode()) {
+			return null;
 		} else {
 			throw new Exception("Node: " + node + " cannot be converted to Float");
 		}
@@ -251,6 +265,8 @@ public final class TypeUtil {
 		} else if (node.isTextual()) {
 			return convertToLong(node.asText());
 		} else if (node.isNull()) {
+			return null;
+		} else if (node.isMissingNode()) {
 			return null;
 		} else {
 			throw new Exception("Node: " + node + " cannot be converted to Long");
