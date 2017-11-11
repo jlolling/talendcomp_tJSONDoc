@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import de.cimt.talendcomp.test.TalendFakeJob;
 
@@ -365,6 +366,30 @@ public class TestInput extends TalendFakeJob {
 			assertEquals(expected, actual);
 		}
 		assertTrue(true);
+	}
+	
+	@Test
+	public void testReturnArrayAsNodeSimple() throws Exception {
+		String json = "{\n"
+			    + "	\"array\" : [1,2,3,4,5]"
+			    + "}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode(doc.getRootNode(), "$", false);
+		Object result = doc.getValueAsObject(parent, "array", false, false, null);
+		assertTrue("Result is not an ArrayNode", result instanceof ArrayNode);
+	}
+
+	@Test
+	public void testReturnArrayAsNodeComplex() throws Exception {
+		String json = "{\n"
+				+ "    \"field\" : {\n"
+			    + "	     \"array\" : [1,2,3,4,5]"
+			    + "    }\n"
+			    + "}";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode parent = doc.getNode(doc.getRootNode(), "$", false);
+		Object result = doc.getValueAsObject(parent, "field.array", false, false, null);
+		assertTrue("Result is not an ArrayNode", result instanceof ArrayNode);
 	}
 
 }

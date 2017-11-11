@@ -726,7 +726,11 @@ public class JsonDocument {
 			if (fieldName == null || ".".equals(fieldName) || node.isValueNode()) {
 				valueNode = node;
 			} else {
-				valueNode = node.path(fieldName);
+				if (fieldName.contains(".") || fieldName.contains("[") || fieldName.contains("$")) {
+					valueNode = getNodeIncludeMissing(node, fieldName);
+				} else {
+					valueNode = node.path(fieldName);
+				}
 				if (isNullable == false && valueNode != null && valueNode.isNull()) {
 					throw new Exception(currentPath + ": Attribute: " + fieldName + ": value is null but configured as not-nullable!");
 				}
