@@ -71,7 +71,7 @@ public class JsonDocument {
 	public static final Date NULL_DATE = new Date(Long.MAX_VALUE);
 	
 	private JsonNode rootNode = null;
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final static ObjectMapper objectMapper = new ObjectMapper();
 	private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 	private final Map<String, SimpleDateFormat> dateFormatMap = new HashMap<String, SimpleDateFormat>();
 	private DocumentContext rootContext = null;
