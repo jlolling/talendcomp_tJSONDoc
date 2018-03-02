@@ -51,16 +51,17 @@
    	boolean dieIfParentDoesNotExist = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_PARENT_NOT_EXISTS__"));
 %>
 <%	if (conn != null) { %>
-<%	if (autoParentChildReleation == false || (foreignKeyColumn == null || foreignKeyColumn.isEmpty())) { %> 
+<%	if (autoParentChildReleation == false || (foreignKeyColumn == null || foreignKeyColumn.isEmpty())) { %>
+    // the entryNode is the node which receives our current values (new object(s), or array(s))
 	com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
 <%	} else if (conn != null) { %>
 	java.util.Map<Object, com.fasterxml.jackson.databind.JsonNode> parentkeyMap_<%=cid%> = (java.util.Map<Object, com.fasterxml.jackson.databind.JsonNode>) globalMap.get("keyMap_<%=docComp%>");
 	com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = null;
 	if (parentkeyMap_<%=cid%> != null) {
-		entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) parentkeyMap_<%=cid%>.get(<%=conn.getName()%>.<%=foreignKeyColumn%>);	
-		
+		// because of the foreign key releation we add our current values to this node referenced by the foreign key
+		entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) parentkeyMap_<%=cid%>.get(<%=conn.getName()%>.<%=foreignKeyColumn%>);
 	} else {
-		throw new Exception("No parent key map available. Take care you have referenced a tJSONDocOutput component.");
+		throw new Exception("No parent key map available. Take care you have referenced the correct tJSONDocOutput component.");
 	}
 <%  } %>
 	if (entryNode_<%=cid%> != null) {
