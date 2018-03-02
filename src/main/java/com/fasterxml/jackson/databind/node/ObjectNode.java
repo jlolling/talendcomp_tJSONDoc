@@ -15,9 +15,9 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonPointer;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.util.RawValue;
@@ -292,13 +292,19 @@ public class ObjectNode
      * all of its descendants using specified JSON generator.
      */
     @Override
-    public void serialize(JsonGenerator jg, SerializerProvider provider)
-        throws IOException, JsonProcessingException
+    public void serialize(JsonGenerator g, SerializerProvider provider)
+        throws IOException
     {
     	boolean ignoreNull = (provider != null ? provider.getConfig().getDefaultPropertyInclusion().getValueInclusion().equals(Include.NON_EMPTY) : false);
-        jg.writeStartObject();
+        g.writeStartObject(this);
         for (Map.Entry<String, JsonNode> en : _children.entrySet()) {
-        	JsonNode value = en.getValue();
+            /* 17-Feb-2009, tatu: Can we trust that all nodes will always
+             *   extend BaseJsonNode? Or if not, at least implement
+             *   JsonSerializable? Let's start with former, change if
+             *   we must.
+             */
+            BaseJsonNode value = (BaseJsonNode) en.getValue();
+
         	if (ignoreNull) {
         		if (value.getNodeType() == JsonNodeType.NULL || value.getNodeType() == JsonNodeType.MISSING) {
             		continue; // if the node is null replacement: skip it
@@ -313,28 +319,35 @@ public class ObjectNode
         			}
         		}
         	}
-            jg.writeFieldName(en.getKey());
-                /* 17-Feb-2009, tatu: Can we trust that all nodes will always
-                 *   extend BaseJsonNode? Or if not, at least implement
-                 *   JsonSerializable? Let's start with former, change if
-                 *   we must.
-                 */
-            ((BaseJsonNode) en.getValue()).serialize(jg, provider);
+            g.writeFieldName(en.getKey());
+            value.serialize(g, provider);
         }
-        jg.writeEndObject();
+        g.writeEndObject();
     }
 
     @Override
-    public void serializeWithType(JsonGenerator jg, SerializerProvider provider,
+    public void serializeWithType(JsonGenerator g, SerializerProvider provider,
             TypeSerializer typeSer)
-        throws IOException, JsonProcessingException
+        throws IOException
     {
-        typeSer.writeTypePrefixForObject(this, jg);
+        @SuppressWarnings("deprecation")
+        boolean trimEmptyArray = (provider != null) &&
+                !provider.isEnabled(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
+        typeSer.writeTypePrefixForObject(this, g);
         for (Map.Entry<String, JsonNode> en : _children.entrySet()) {
-            jg.writeFieldName(en.getKey());
-            ((BaseJsonNode) en.getValue()).serialize(jg, provider);
+            BaseJsonNode value = (BaseJsonNode) en.getValue();
+
+            // check if WRITE_EMPTY_JSON_ARRAYS feature is disabled,
+            // if the feature is disabled, then should not write an empty array
+            // to the output, so continue to the next element in the iteration
+            if (trimEmptyArray && value.isArray() && value.isEmpty(provider)) {
+                continue;
+            }
+            
+            g.writeFieldName(en.getKey());
+            value.serialize(g, provider);
         }
-        typeSer.writeTypeSuffixForObject(this, jg);
+        typeSer.writeTypeSuffixForObject(this, g);
     }
 
     /*
@@ -770,6 +783,8 @@ public class ObjectNode
      * Method for setting value of a field to specified numeric value.
      * 
      * @return This node (to allow chaining)
+     *
+     * @since 2.9
      */
     public ObjectNode put(String fieldName, BigInteger v) {
         return _put(fieldName, (v == null) ? nullNode()
