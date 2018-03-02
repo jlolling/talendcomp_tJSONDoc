@@ -1327,6 +1327,19 @@ public class JsonDocument {
 			schemaMap.put(schemaId, schemaNode);
 		}
 	}
+	
+	private String getErrorPointer(ProcessingMessage message) {
+		String field = null;
+		JsonNode node = message.asJson();
+		JsonNode schemaNode = node.get("schema");
+		if (schemaNode != null && schemaNode.isNull() == false && schemaNode.isMissingNode() == false) {
+			JsonNode pointerNode = schemaNode.get("pointer");
+			if (pointerNode != null && pointerNode.isNull() == false && pointerNode.isMissingNode() == false) {
+				field = pointerNode.asText();
+			}
+		}
+		return field;
+	}
 
 	/**
 	 * validates the current document against a schema
@@ -1344,8 +1357,14 @@ public class JsonDocument {
 	        } else {
 	        	StringBuilder sb = new StringBuilder();
 	            for (ProcessingMessage message : report) {
+	            	sb.append("[");
 	            	sb.append(message.getLogLevel());
-	            	sb.append(": ");
+	            	sb.append("] ");
+	            	String pointer = getErrorPointer(message);
+	            	if (pointer != null) {
+	            		sb.append(pointer);
+	            		sb.append(": ");
+	            	}
 	            	sb.append(message.getMessage());
 	            	sb.append("\n");
 	            }
