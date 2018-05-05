@@ -16,9 +16,9 @@
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
-							<Implementation-Title>cimt-talendcomp-json</Implementation-Title>
+							<Implementation-Title>jlo-talendcomp-json</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
-							<Implementation-Vendor>cimt-ag</Implementation-Vendor>
+							<Implementation-Vendor>Jan Lolling</Implementation-Vendor>
 							<Implementation-Timestamp>${maven.build.timestamp}</Implementation-Timestamp>
 						</manifestEntries>
 					</archive>
