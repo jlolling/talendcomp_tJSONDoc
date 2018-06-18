@@ -41,11 +41,15 @@
 	} 
 	boolean dieOnTargetKeyAttrIsMissing = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_MISSING_TARGET_JSON_KEY_ATTRIBUTE__"));
 	boolean dieOnTargetLoopPathIsMissing = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_TARGET_JSON_PATH_IS_MISSING__"));
+	boolean mergeSourceNodeAttributesIntoTargetNode = "true".equals(ElementParameterParser.getValue(node, "__MERGE_SOURCE_NODE_INTO_TARGET_NODE__"));
+	boolean targetMountAttributeIsArray = "true".equals(ElementParameterParser.getValue(node, "__TARGET_JSON_MOUNT_ATTRIBUTE_IS_ARRAY__")) && (mergeSourceNodeAttributesIntoTargetNode == false);
 	String targetMountAttribute = ElementParameterParser.getValue(node, "__TARGET_JSON_MOUNT_ATTRIBUTE__");
+	if (mergeSourceNodeAttributesIntoTargetNode) {
+		targetMountAttribute = "\".\"";
+	}
 	if (targetMountAttribute == null || targetMountAttribute.trim().isEmpty()) {
 		targetMountAttribute = "null";
 	} 
-	boolean targetMountAttributeIsArray = "true".equals(ElementParameterParser.getValue(node, "__TARGET_JSON_MOUNT_ATTRIBUTE_IS_ARRAY__"));
 	boolean cloneObjects = "true".equals(ElementParameterParser.getValue(node, "__CLONE_OBJECTS__"));
 	boolean dieIfTargetNotFound = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_TARGET_NOT_FOUND__"));
 	boolean debug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG__"));

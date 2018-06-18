@@ -247,10 +247,14 @@ public class Merge {
 							// merge all attributes from source to target node
 							Iterator<Map.Entry<String, JsonNode>> it = ((ObjectNode) sourceNode).fields();
 							while (it.hasNext()) {
-								Map.Entry<String, JsonNode> sourceValue = it.next();
-								String key = sourceValue.getKey();
-								JsonNode value = sourceValue.getValue();
-								((ObjectNode) targetNode).set(key, value);
+								Map.Entry<String, JsonNode> sourceValueEntry = it.next();
+								String sourceKey = sourceValueEntry.getKey();
+								JsonNode sourceValue = sourceValueEntry.getValue();
+								if (cloneSourceNodes) {
+									((ObjectNode) targetNode).set(sourceKey, sourceValue.deepCopy());
+								} else {
+									((ObjectNode) targetNode).set(sourceKey, sourceValue);
+								}
 							}
 							countAssigned++;
 						} else {
