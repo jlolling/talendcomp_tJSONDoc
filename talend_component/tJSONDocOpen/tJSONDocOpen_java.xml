@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" SCHEMA_AUTO_PROPAGATE="true" PLATEFORM="ALL" RELEASE_DATE="20180302" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="13.0"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" SCHEMA_AUTO_PROPAGATE="true" PLATEFORM="ALL" RELEASE_DATE="20180618" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="13.1"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -64,13 +64,13 @@
     <PARAMETER NAME="JSON_SCHEMA_CONTENT_JAVA" FIELD="MEMO_JAVA" NUM_ROW="40" REQUIRED="true" SHOW_IF="SETUP_JSON_SCHEMA == 'READ_SCHEMA_FROM_JAVA'"> 
       <DEFAULT/> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20180302" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 13.0 build at: 20180302</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20180618" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 13.1 build at: 20180618</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-13.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-13.1.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.2.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.0.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.2.jar" REQUIRED="true"/>

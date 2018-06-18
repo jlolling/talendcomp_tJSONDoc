@@ -1,7 +1,9 @@
 package de.jlo.talendcomp.json.ops;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -241,14 +243,26 @@ public class Merge {
 							}
 						}
 					} else {
-						JsonNode child = ((ObjectNode) targetNode).path(targetMountAttribute);
-						if (child.isNull() || child.isMissingNode()) {
-							if (cloneSourceNodes) {
-								((ObjectNode) targetNode).set(targetMountAttribute, sourceNode.deepCopy());
-							} else {
-								((ObjectNode) targetNode).set(targetMountAttribute, sourceNode);
+						if (".".equals(targetMountAttribute)) {
+							// merge all attributes from source to target node
+							Iterator<Map.Entry<String, JsonNode>> it = ((ObjectNode) sourceNode).fields();
+							while (it.hasNext()) {
+								Map.Entry<String, JsonNode> sourceValue = it.next();
+								String key = sourceValue.getKey();
+								JsonNode value = sourceValue.getValue();
+								((ObjectNode) targetNode).set(key, value);
 							}
 							countAssigned++;
+						} else {
+							JsonNode child = ((ObjectNode) targetNode).path(targetMountAttribute);
+							if (child.isNull() || child.isMissingNode()) {
+								if (cloneSourceNodes) {
+									((ObjectNode) targetNode).set(targetMountAttribute, sourceNode.deepCopy());
+								} else {
+									((ObjectNode) targetNode).set(targetMountAttribute, sourceNode);
+								}
+								countAssigned++;
+							}
 						}
 					}
 					foundTarget = true;
