@@ -70,7 +70,9 @@
 			if (<%=cid%>.next() == false) {
 				break;
 			}
+<%	 if (conn != null) { %>
 			<%=conn.getName()%> = new <%=conn.getName()%>Struct();
+<%	 } %>
 <%  if (provideJsonObject) { %>
 			globalMap.put("<%=cid%>_CURRENT_NODE", <%=cid%>.getLoopJsonNode());
 <%  } %>

@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
+
 public class Util {
 
     public static String buildListAsString(Collection<? extends Object> keys, boolean sql) {
@@ -83,6 +86,21 @@ public class Util {
 			country = locale.substring(p);
 		}
 		return new Locale(language, country);
+	}
+
+	public static boolean isNull(JsonNode node, boolean takeEmptyLikeNull) {
+		if (node == null) {
+			return true;
+		} else if (node.isNull()) {
+			return true;
+		} else if (node instanceof ValueNode) {
+			return false;
+		} else {
+			if (takeEmptyLikeNull && node.size() == 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 
 import de.jlo.talendcomp.json.JsonDocument;
+import de.jlo.talendcomp.json.Util;
 
 public class Diff {
 
@@ -195,23 +196,23 @@ public class Diff {
 				ObjectNode tn = (ObjectNode) test;
 				// Test ref->test
 				{
-					Iterator<Map.Entry<String, JsonNode>> fi = rn.fields();
-					while (fi.hasNext()) {
-						Map.Entry<String, JsonNode> entry = fi.next();
+					Iterator<Map.Entry<String, JsonNode>> fields = rn.fields();
+					while (fields.hasNext()) {
+						Map.Entry<String, JsonNode> entry = fields.next();
 						// check if field exists in test node
 						String newParentPath = parentPath + "." + entry.getKey();
 						if (containsDiff(listDiffs, newParentPath) == false) {
 							if (tn.has(entry.getKey())) {
 								JsonNode tnValue = tn.get(entry.getKey());
-								if (isNull(entry.getValue()) == false && isNull(tnValue) == false) {
+								if (Util.isNull(entry.getValue(), takeEmptyLikeNull) == false && Util.isNull(tnValue, takeEmptyLikeNull) == false) {
 									findDifference(newParentPath, entry.getValue(), tnValue, listDiffs);
-								} else if (isNull(entry.getValue()) && isNull(tnValue) == false) {
+								} else if (Util.isNull(entry.getValue(), takeEmptyLikeNull) && Util.isNull(tnValue, takeEmptyLikeNull) == false) {
 									Difference diff = new Difference();
 									diff.setJsonPath(newParentPath);
 									diff.setRefValue(NullNode.getInstance());
 									diff.setTestValue(tnValue);
 									listDiffs.add(diff);
-								} else if (isNull(entry.getValue()) == false && isNull(tnValue)) {
+								} else if (Util.isNull(entry.getValue(), takeEmptyLikeNull) == false && Util.isNull(tnValue, takeEmptyLikeNull)) {
 									Difference diff = new Difference();
 									diff.setJsonPath(newParentPath);
 									diff.setRefValue(entry.getValue());
@@ -220,7 +221,7 @@ public class Diff {
 								}
 							} else {
 								if (takeEmptyLikeNull) {
-									if (isNull(tn.get(entry.getKey())) == false || isNull(entry.getValue()) == false) {
+									if (Util.isNull(tn.get(entry.getKey()), takeEmptyLikeNull) == false || Util.isNull(entry.getValue(), takeEmptyLikeNull) == false) {
 										Difference diff = new Difference();
 										diff.setJsonPath(newParentPath);
 										diff.setRefValue(entry.getValue());
@@ -238,23 +239,23 @@ public class Diff {
 				}
 				// Test test->ref
 				{
-					Iterator<Map.Entry<String, JsonNode>> fi = tn.fields(); 
-					while (fi.hasNext()) {
-						Map.Entry<String, JsonNode> entry = fi.next();
+					Iterator<Map.Entry<String, JsonNode>> fields = tn.fields(); 
+					while (fields.hasNext()) {
+						Map.Entry<String, JsonNode> entry = fields.next();
 						// check if field exists in test node
 						String newParentPath = parentPath + "." + entry.getKey();
 						if (containsDiff(listDiffs, newParentPath) == false) {
 							if (rn.has(entry.getKey())) {
 								JsonNode rnValue = rn.get(entry.getKey());
-								if (isNull(entry.getValue()) == false && isNull(rnValue) == false) {
+								if (Util.isNull(entry.getValue(), takeEmptyLikeNull) == false && Util.isNull(rnValue, takeEmptyLikeNull) == false) {
 									findDifference(newParentPath, rnValue, entry.getValue(), listDiffs);
-								} else if (isNull(rnValue) == false && isNull(entry.getValue())) {
+								} else if (Util.isNull(rnValue, takeEmptyLikeNull) == false && Util.isNull(entry.getValue(), takeEmptyLikeNull)) {
 									Difference diff = new Difference();
 									diff.setJsonPath(newParentPath);
 									diff.setRefValue(rnValue);
 									diff.setTestValue(NullNode.getInstance());
 									listDiffs.add(diff);
-								} else if (isNull(rnValue) && isNull(entry.getValue()) == false) {
+								} else if (Util.isNull(rnValue, takeEmptyLikeNull) && Util.isNull(entry.getValue(), takeEmptyLikeNull) == false) {
 									Difference diff = new Difference();
 									diff.setJsonPath(newParentPath);
 									diff.setRefValue(NullNode.getInstance());
@@ -263,7 +264,7 @@ public class Diff {
 								}
 							} else {
 								if (takeEmptyLikeNull) {
-									if (isNull(rn.get(entry.getKey())) == false || isNull(entry.getValue()) == false) {
+									if (Util.isNull(rn.get(entry.getKey()), takeEmptyLikeNull) == false || Util.isNull(entry.getValue(), takeEmptyLikeNull) == false) {
 										Difference diff = new Difference();
 										diff.setJsonPath(newParentPath);
 										diff.setRefValue(NullNode.getInstance());
@@ -284,7 +285,7 @@ public class Diff {
 			} else {
 				if (containsDiff(listDiffs, parentPath) == false) {
 					if (takeEmptyLikeNull) {
-						if (isNull(reference) == false || isNull(test) == false) {
+						if (Util.isNull(reference, takeEmptyLikeNull) == false || Util.isNull(test, takeEmptyLikeNull) == false) {
 							Difference diff = new Difference();
 							diff.setJsonPath(parentPath);
 							diff.setTypeMismatch(true);
@@ -357,7 +358,7 @@ public class Diff {
 				}
 			} else {
 				if (containsDiff(listDiffs, parentPath) == false) {
-					if (isNull(test) == false || isNull(rn) == false) {
+					if (Util.isNull(test, takeEmptyLikeNull) == false || Util.isNull(rn, takeEmptyLikeNull) == false) {
 						Difference diff = new Difference();
 						diff.setJsonPath(parentPath);
 						diff.setTypeMismatch(true);
@@ -414,26 +415,11 @@ public class Diff {
 	}
 	
 	private boolean equals(JsonNode n1, JsonNode n2) {
-		if (isNull(n1) == false && isNull(n2) == false) {
+		if (Util.isNull(n1, takeEmptyLikeNull) == false && Util.isNull(n2, takeEmptyLikeNull) == false) {
 			return n1.toString().equals(n2.toString());
 		} else {
 			return false;
 		}
-	}
-
-	private boolean isNull(JsonNode node) {
-		if (node == null) {
-			return true;
-		} else if (node.isNull()) {
-			return true;
-		} else if (node instanceof ValueNode) {
-			return false;
-		} else {
-			if (takeEmptyLikeNull && node.size() == 0) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private boolean containsNode(List<JsonNode> arrayNode, JsonNode node) {
@@ -539,6 +525,7 @@ public class Diff {
 		if (rootArraySortAttribute != null) {
 			Collections.sort(list, new Comparator<JsonNode>() {
 
+				@Override
 				public int compare(JsonNode n1, JsonNode n2) {
 					JsonNode vn1 = n1.get(rootArraySortAttribute);
 					JsonNode vn2 = n2.get(rootArraySortAttribute);

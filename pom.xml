@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.jlo.talendcomp</groupId>
 	<artifactId>jlo-talendcomp-json</artifactId>
-	<version>13.1</version>
+	<version>14.0</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -22,6 +22,13 @@
 							<Implementation-Timestamp>${maven.build.timestamp}</Implementation-Timestamp>
 						</manifestEntries>
 					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -104,6 +111,16 @@
 						</goals>
 						<configuration>
 							<componentName>tJSONDocExtractFields</componentName>
+							<noJars>true</noJars>
+						</configuration>
+					</execution>
+					<execution>
+						<id>tJSONDocTraverseFields</id>
+						<goals>
+							<goal>component</goal>
+						</goals>
+						<configuration>
+							<componentName>tJSONDocTraverseFields</componentName>
 							<noJars>true</noJars>
 						</configuration>
 					</execution>

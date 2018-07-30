@@ -52,7 +52,7 @@
 %>
 <%	if (conn != null) { %>
 <%	if (autoParentChildReleation == false || (foreignKeyColumn == null || foreignKeyColumn.isEmpty())) { %>
-    // the entryNode is the node which receives our current values (new object(s), or array(s))
+   // the entryNode is the node which receives our current values (new object(s), or array(s))
 	com.fasterxml.jackson.databind.JsonNode entryNode_<%=cid%> = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE");
 <%	} else if (conn != null) { %>
 	java.util.Map<Object, com.fasterxml.jackson.databind.JsonNode> parentkeyMap_<%=cid%> = (java.util.Map<Object, com.fasterxml.jackson.databind.JsonNode>) globalMap.get("keyMap_<%=docComp%>");
@@ -65,26 +65,33 @@
 	}
 <%  } %>
 	if (entryNode_<%=cid%> != null) {
-	if (globalMap.get("entryNode_<%=cid%>") == null || (globalMap.get("entryNode_<%=cid%>") != entryNode_<%=cid%>)) {
-		try {
-			<%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
-			globalMap.put("<%=cid%>", <%=cid%>);
-			// get the parent object we have to dock on
-			globalMap.put("entryNode_<%=cid%>", entryNode_<%=cid%>);
-	   		String jsonPath = <%=jsonPath%>;
-	   		// build path to enhance the error messages
-	   		String path = null;
-	   		if (jsonPath != null && jsonPath.isEmpty() == false) {
-	   			if (jsonPath.startsWith("$")) {
-	   				path = jsonPath;
-	   			} else if (".".equals(jsonPath)) {
-	   				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
-	   			} else {
-	   				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH") + "." + jsonPath;
-	   			}
-	   		} else {
-   				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
-	   		}
+		String jsonPath = <%=jsonPath%>;
+		// build path to enhance the error messages
+		String path = null;
+		if (jsonPath != null && jsonPath.isEmpty() == false) {
+			if (jsonPath.startsWith("$")) {
+				path = jsonPath;
+			} else if (".".equals(jsonPath)) {
+				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
+			} else {
+				path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH") + "." + jsonPath;
+			}
+		} else {
+			path = (String) globalMap.get("<%=docComp%>_CURRENT_PATH");
+		}
+		/* we have to initialize the current node (which we want to create):
+		 * if there is no parent node
+		 * if there is a different entry node then in previous flow record
+		 * if there is a different path then in previous flow record
+		 */
+		if (globalMap.get("entryNode_<%=cid%>") == null 
+			|| (path.equals(globalMap.get("<%=cid%>_CURRENT_PATH")) == false)
+			|| (globalMap.get("entryNode_<%=cid%>") != entryNode_<%=cid%>)) {
+			try {
+				<%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+				globalMap.put("<%=cid%>", <%=cid%>);
+				// get the parent object we have to dock on
+				globalMap.put("entryNode_<%=cid%>", entryNode_<%=cid%>);
 	   		globalMap.put("<%=cid%>_CURRENT_PATH", path);
 	   		<%=cid%>.setCurrentPath(path);
 <%	if (outputType.startsWith("ARRAY_")) { %>
@@ -102,9 +109,9 @@
 			if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
 				parentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ArrayNode) node;
 			} else if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
-				throw new Exception(path + ": Actually an ArrayNode is expected, but there is already an ObjectNode at the path: " + jsonPath + ". Got node: " + node);
+				throw new Exception(path + ": ArrayNode is expected, but there is already an ObjectNode at the path: " + jsonPath + ". Got node: " + node);
 			} else {
-				throw new Exception(path + ": Actually an ArrayNode is expected, but there is " + node + " at the path: " + jsonPath + ". Got node: " + node);
+				throw new Exception(path + ": ArrayNode is expected, but there is " + node + " at the path: " + jsonPath + ". Got node: " + node);
 			}
 <%	} else { %>
 			com.fasterxml.jackson.databind.JsonNode node = <%=cid%>.getNode(entryNode_<%=cid%>, jsonPath, true);
@@ -126,7 +133,7 @@
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
 			throw e;
 		}
-    }	
+   }	
 	try { // start block for <%=cid%>
 		// get the parent node
 <%	if ("ARRAY_OF_OBJECTS".equals(outputType)) { %>
@@ -134,8 +141,10 @@
 		com.fasterxml.jackson.databind.node.ArrayNode parentNode = null;
 		if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
 			parentNode = (com.fasterxml.jackson.databind.node.ArrayNode) node;
+		} else if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
+			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ArrayNode is expected, but there is already an ObjectNode: " + node + ". Check the configuration.");
 		} else {
-			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ArrayNode is expected, but there is already an ObjectNode from the component: " + <%=cid%> + ". Check the configuration.");
+			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ArrayNode is expected, but there is anything else (or null): " + node + ". Check the configuration.");
 		}
 		com.fasterxml.jackson.databind.node.ObjectNode currentNode_<%=cid%> = parentNode.addObject();
 <%	} else if ("ARRAY_OF_ARRAYS".equals(outputType)) { %>
@@ -144,24 +153,28 @@
 		if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
 			parentNode = (com.fasterxml.jackson.databind.node.ArrayNode) node;
 		} else {
-			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ArrayNode is expected, but there is already an ObjectNode from the component: " + <%=cid%> + ". Check the configuration.");
+			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ArrayNode is expected, but there is already an ObjectNode: " + node + ". Check the configuration.");
 		}
 		com.fasterxml.jackson.databind.node.ArrayNode currentNode_<%=cid%> = parentNode.addArray();
 <%	} else if ("ARRAY_OF_VALUES".equals(outputType)) { %>
-        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
-        com.fasterxml.jackson.databind.node.ArrayNode currentNode_<%=cid%> = null;
+		com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+		com.fasterxml.jackson.databind.node.ArrayNode currentNode_<%=cid%> = null;
 		if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
 			currentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ArrayNode) node;
+		} else if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
+			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ArrayNode is expected, but there is already an ObjectNode: " + node + ". Check the configuration.");
 		} else {
-			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ArrayNode is expected, but there is already an ObjectNode from the component: " + <%=cid%> + ". Check the configuration.");
+			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ArrayNode is expected, but there is anything else (or null): " + node + ". Check the configuration.");
 		}
 <%	} else if ("SINGLE_OBJECT".equals(outputType)) { %>
-        com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
-        com.fasterxml.jackson.databind.node.ObjectNode currentNode_<%=cid%> = null;
+		com.fasterxml.jackson.databind.JsonNode node = (com.fasterxml.jackson.databind.JsonNode) globalMap.get("parent_node_<%=cid%>");
+		com.fasterxml.jackson.databind.node.ObjectNode currentNode_<%=cid%> = null;
 		if (node instanceof com.fasterxml.jackson.databind.node.ObjectNode) {
 			currentNode_<%=cid%> = (com.fasterxml.jackson.databind.node.ObjectNode) node;
+		} else if (node instanceof com.fasterxml.jackson.databind.node.ArrayNode) {
+			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ObjectNode is expected, but there is already an ArrayNode: " + node + ". Check the configuration.");
 		} else {
-			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ObjectNode is expected, but there is already an ArrayNode from the component: " + <%=cid%> + ". Check the configuration.");
+			throw new Exception(globalMap.get("<%=cid%>_CURRENT_PATH") + ": Actually as parent an ObjectNode is expected, but there is anything else (or null): " + node + ". Check the configuration.");
 		}
 <%	}
 	String keyFieldName = null;

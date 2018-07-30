@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 
 public class Traverse {
+	
 	private Set<String> excludeFieldSet = new HashSet<String>();
 	private String[] pathArray = new String[0];
 	private JSONValue dummy = new JSONValue();
-	private boolean ignoreNullValues = true;
+	private int maxLevel = 0;
 	
 	public void addExcludeFields(String commaDelimitedFieldNames) {
 		String[] fields = commaDelimitedFieldNames.split(",");
@@ -63,29 +66,37 @@ public class Traverse {
 	private List<JSONValue> traverse(JsonNode node, List<de.jlo.talendcomp.json.ops.JSONValue> valueList, List<String> keyPath) {
 		if (keyPath == null) {
 			keyPath = new ArrayList<String>();
+			keyPath.add("$");
 		}
 		if (valueList == null) {
 			valueList = new ArrayList<JSONValue>();
 		}
-		Iterator<String> keys = node.fieldNames();
-		Object child = null;
-		while (keys.hasNext()) {
-			String key = keys.next();
-			if (excludeFieldSet.contains(key) == false) {
-				child = node.get(key);
-				if (child instanceof ObjectNode) {
+		if (maxLevel == 0 || ((keyPath.size() - 1) < (maxLevel + 1))) {
+			if (node instanceof ObjectNode) {
+				Iterator<String> keys = node.fieldNames();
+				while (keys.hasNext()) {
 					List<String> childPath = clone(keyPath);
-					childPath.add(key);
-					traverse((ObjectNode) child, valueList, childPath);
-				} else {
-					if (child != null || ignoreNullValues == false) {
-						JSONValue value = new JSONValue();
-						value.setKey(key);
-						value.setValue(child);
-					    value.setKeyPath(keyPath);
-					    valueList.add(value);
+					String key = keys.next();
+					if (excludeFieldSet.contains(key) == false) {
+						JsonNode child = node.get(key);
+						childPath.add(key);
+						traverse(child, valueList, childPath);
 					}
 				}
+			} else if (node instanceof ArrayNode) {
+				ArrayNode arrayNode = (ArrayNode) node;
+				int count = arrayNode.size();
+				for (int i = 0; i < count; i++) {
+					JsonNode child = arrayNode.get(i);
+					List<String> childPath = clone(keyPath);
+					childPath.add("[" + i + "]");
+					traverse(child, valueList, childPath);
+				}
+			} else if (node instanceof ValueNode) {
+				JSONValue value = new JSONValue();
+				value.setValue(node);
+			    value.setKeyPath(keyPath);
+			    valueList.add(value);
 			}
 		}
 		return valueList;
@@ -103,8 +114,16 @@ public class Traverse {
 		return dummy;
 	}
 
-	public void setIgnoreNullValues(boolean ignoreNullValues) {
-		this.ignoreNullValues = ignoreNullValues;
+	public int getMaxLevel() {
+		return maxLevel;
+	}
+
+	public void setMaxLevel(Integer maxLevel) {
+		if (maxLevel != null) {
+			this.maxLevel = maxLevel;
+		} else {
+			this.maxLevel = 0;
+		}
 	}
 
 }

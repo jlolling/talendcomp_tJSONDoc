@@ -732,10 +732,10 @@ public class JsonDocument {
 					valueNode = node.path(fieldName);
 				}
 				if (isNullable == false && valueNode != null && valueNode.isNull()) {
-					throw new Exception(currentPath + ": Attribute: " + fieldName + ": value is null but configured as not-nullable!");
+					throw new Exception(currentPath + ": Attribute: <" + fieldName + ">: value is null but configured as not-nullable!");
 				}
 				if (allowMissing == false && valueNode != null && valueNode.isMissingNode()) {
-					throw new Exception(currentPath + ": Attribute: " + fieldName + " is missing but mandatory!");
+					throw new Exception(currentPath + ": Attribute: <" + fieldName + "> is missing but mandatory!");
 				}
 			}
 			return valueNode;
@@ -1323,7 +1323,6 @@ public class JsonDocument {
 			throw new IllegalArgumentException("schemaId cannot be null or empty");
 		}
 		if (schemaNode != null) {
-			System.out.println("Prepare json schema for id: " + schemaId);
 			schemaMap.put(schemaId, schemaNode);
 		}
 	}

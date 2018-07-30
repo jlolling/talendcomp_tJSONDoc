@@ -2,11 +2,13 @@ package de.jlo.talendcomp.json;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import de.jlo.talendcomp.json.ops.Diff;
 
@@ -111,6 +113,26 @@ public class TestDiff {
 		String nodeStr2 = "{\"a\" : [1,2,4,5]}";
 		JsonNode refNode = new JsonDocument(nodeStr1).getRootNode();
 		JsonNode testNode = new JsonDocument(nodeStr2).getRootNode();
+		Diff comp = new Diff();
+		List<Diff.Difference> result = comp.findDifference(refNode, testNode);
+		for (Diff.Difference diff : result) {
+			System.out.println(diff);
+		}
+		assertEquals(3, result.size());
+	}
+
+	@Test
+	public void testDiffArraysInObjectsApiCreated() throws Exception {
+		System.out.println("#### testDiffArraysInObjectsApiCreated ...");
+		String nodeStr1 = "{\"a\" : [1,2,3,4,6]}";
+		String nodeStr2 = "{\"a\" : []}";
+		JsonNode refNode = new JsonDocument(nodeStr1).getRootNode();
+		JsonNode testNode = new JsonDocument(nodeStr2).getRootNode();
+		ArrayNode arrayNode = (ArrayNode) testNode.withArray("a");
+		arrayNode.add(new BigDecimal("1"));
+		arrayNode.add(Long.valueOf("2"));
+		arrayNode.add(4l);
+		arrayNode.add(5l);
 		Diff comp = new Diff();
 		List<Diff.Difference> result = comp.findDifference(refNode, testNode);
 		for (Diff.Difference diff : result) {

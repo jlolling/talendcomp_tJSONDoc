@@ -1,0 +1,83 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		java.util.List 
+		java.util.ArrayList 
+    	java.util.Map		
+	" 
+%>
+<% 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	List<IMetadataColumn> listIncomingColumns = new ArrayList<IMetadataColumn>();
+	IConnection inconn = null;
+	List<? extends IConnection> inConns = NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA);
+	if (inConns.size() > 0) {
+		inconn = inConns.get(0);
+		IMetadataTable metadata = node.getMetadataFromConnector(inconn.getConnectorName());
+		listIncomingColumns = metadata.getListColumns();
+	}
+	List<IMetadataColumn> listOutgoingColumns = new ArrayList<IMetadataColumn>(); // dummy
+	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
+	IConnection outconn = null;
+	if (outConns.size() > 0) {
+		outconn = outConns.get(0);
+		IMetadataTable metadata = node.getMetadataFromConnector(outconn.getConnectorName());
+		listOutgoingColumns = metadata.getListColumns();
+	}
+	String sourceComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+	String maxLevel = ElementParameterParser.getValue(node, "__MAX_LEVEL__");
+   boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+   						   "JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
+%>
+	// take over input to output variables not affected by the component
+<%	if (inconn != null && outconn != null) {
+		for (IMetadataColumn incol : listIncomingColumns) {
+			for (IMetadataColumn outcol : listOutgoingColumns) {
+				if ("JSON_PATH".equals(incol.getLabel()) == false &&
+					"ATTRIBUTE_NAME".equals(incol.getLabel()) == false && 
+					"VALUE".equals(incol.getLabel()) == false && 
+					"LEVEL".equals(incol.getLabel()) == false && 
+					"IS_ARRAY_VALUE".equals(incol.getLabel()) == false && 
+					"COUNT_ATTRIBUTES".equals(incol.getLabel()) == false && 
+					incol.getLabel().equals(outcol.getLabel())) { %>
+	<%=outconn.getName()%>.<%=outcol.getLabel()%> = <%=inconn.getName()%>.<%=incol.getLabel()%>;
+<%					break;
+       		}
+			}
+		}
+	} %>
+	globalMap.remove("<%=cid%>_CURRENT_NODE");
+	// setup traverse
+	de.jlo.talendcomp.json.ops.Traverse <%=cid%> = (de.jlo.talendcomp.json.ops.Traverse) globalMap.get("<%=cid%>");
+	if (<%=cid%> == null) {
+		<%=cid%> = new de.jlo.talendcomp.json.ops.Traverse();
+<% if (maxLevel != null && maxLevel.trim().isEmpty() == false) { %>
+		<%=cid%>.setMaxLevel(<%=maxLevel%>);
+<%	} %>
+		globalMap.put("<%=cid%>", <%=cid%>);
+	}
+	List<de.jlo.talendcomp.json.ops.JSONValue> listValues_<%=cid%> = <%=cid%>.traverse((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=sourceComp%>_CURRENT_NODE"));
+<%	if (outconn != null) { %>
+	for (de.jlo.talendcomp.json.ops.JSONValue value_<%=cid%> : listValues_<%=cid%>) {
+		<%=outconn.getName()%>.JSON_PATH = value_<%=cid%>.getJsonPath();
+		<%=outconn.getName()%>.ATTRIBUTE_NAME = value_<%=cid%>.getAttributeName();
+		<%=outconn.getName()%>.VALUE = value_<%=cid%>.getValue();
+		<%=outconn.getName()%>.LEVEL = value_<%=cid%>.getLevel();
+		<%=outconn.getName()%>.IS_ARRAY_VALUE = value_<%=cid%>.isArrayValue();
+		<%=outconn.getName()%>.COUNT_ATTRIBUTES = listValues_<%=cid%>.size();
+		Integer counter_<%=cid%> = (Integer) globalMap.get("<%=cid%>_NB_LINE");
+		if (counter_<%=cid%> == null) {
+			counter_<%=cid%> = 0;
+		}
+		globalMap.put("<%=cid%>_NB_LINE", counter_<%=cid%>.intValue() + 1);
+<% } %>

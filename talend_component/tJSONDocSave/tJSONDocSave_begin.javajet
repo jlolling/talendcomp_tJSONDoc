@@ -19,7 +19,8 @@
 	boolean prettyPrint = "true".equals(ElementParameterParser.getValue(node, "__PRETTY_PRINT__"));
 	boolean ignoreEmpty = "true".equals(ElementParameterParser.getValue(node, "__IGNORE_EMPTY__"));
 	boolean debugOutput = "true".equals(ElementParameterParser.getValue(node, "__STD_OUTPUT__"));
-	boolean validate = "true".equals(ElementParameterParser.getValue(node, "__VALIDATE_OUTPUT__"));
+	boolean schemaProvided = ("NO_JSON_SCHEMA".equals(ElementParameterParser.getValue(node.getProcess(), docComp, "__SETUP_JSON_SCHEMA__")) == false);
+	boolean validate = "true".equals(ElementParameterParser.getValue(node, "__VALIDATE_OUTPUT__")) && schemaProvided;
 	boolean outputAsNode = "true".equals(ElementParameterParser.getValue(node, "__OUTPUT_AS_NODE__"));
 	String outputColumn = ElementParameterParser.getValue(node, "__JSON_OUTPUT_COLUMN__"); 
 	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);

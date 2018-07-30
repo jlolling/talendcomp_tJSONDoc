@@ -16,7 +16,8 @@
 	String setup = ElementParameterParser.getValue(node, "__SETUP__");
 	String jsonStringJava = "null";
 	String jsonStringPlain = "null";
-	boolean validate = "true".equals(ElementParameterParser.getValue(node, "__VALIDATE_INPUT__"));
+	boolean schemaProvided = ("NO_JSON_SCHEMA".equals(ElementParameterParser.getValue(node, "__SETUP_JSON_SCHEMA__")) == false);
+	boolean validate = "true".equals(ElementParameterParser.getValue(node, "__VALIDATE_INPUT__")) && schemaProvided;
 	boolean usePlainTextForTest = "true".equals(ElementParameterParser.getValue(node, "__USE_PLAIN_TEXT_ONLY_AS_TEST__"));
 	if ("READ_FROM_INPUT".equals(setup) || ("READ_FROM_INPUT_PLAIN_TEXT".equals(setup) && usePlainTextForTest)) {
     	boolean simplifiedLineBreaks = "true".equals(ElementParameterParser.getValue(node, "__SIMPLIFIED_LINE_BREAKS__"));
