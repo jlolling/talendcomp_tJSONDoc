@@ -7,5 +7,6 @@ This project consists of 7 components to work with JSON in a fine grained way.
 * tJSONDocSave - write the JSON document as file or provide the content as flow
 * tJSONDocDiff - compares 2 JSON documents and returns a detailed list of the differences
 * tJSONDocMerge - merges 2 JSON documents by the help of key attributes
+* tJSONDocTraverseFields - returns all key value pair for simple attributes, retrieves through the whole object and array hierachy
 
 These components will be published on Talend Exchange: http://exchange.talend.com
