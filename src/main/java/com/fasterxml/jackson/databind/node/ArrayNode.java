@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.WritableTypeId;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -185,14 +186,15 @@ public class ArrayNode
     }
 
     @Override
-    public void serializeWithType(JsonGenerator jg, SerializerProvider provider, TypeSerializer typeSer)
+    public void serializeWithType(JsonGenerator g, SerializerProvider provider, TypeSerializer typeSer)
         throws IOException
     {
-        typeSer.writeTypePrefixForArray(this, jg);
+        WritableTypeId typeIdDef = typeSer.writeTypePrefix(g,
+                typeSer.typeId(this, JsonToken.START_ARRAY));
         for (JsonNode n : _children) {
-            ((BaseJsonNode)n).serialize(jg, provider);
+            ((BaseJsonNode)n).serialize(g, provider);
         }
-        typeSer.writeTypeSuffixForArray(this, jg);
+        typeSer.writeTypeSuffix(g, typeIdDef);
     }
 
     /*

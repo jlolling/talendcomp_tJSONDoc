@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.WritableTypeId;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -333,7 +334,9 @@ public class ObjectNode
         @SuppressWarnings("deprecation")
         boolean trimEmptyArray = (provider != null) &&
                 !provider.isEnabled(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
-        typeSer.writeTypePrefixForObject(this, g);
+
+        WritableTypeId typeIdDef = typeSer.writeTypePrefix(g,
+                typeSer.typeId(this, JsonToken.START_OBJECT));
         for (Map.Entry<String, JsonNode> en : _children.entrySet()) {
             BaseJsonNode value = (BaseJsonNode) en.getValue();
 
@@ -347,7 +350,7 @@ public class ObjectNode
             g.writeFieldName(en.getKey());
             value.serialize(g, provider);
         }
-        typeSer.writeTypeSuffixForObject(this, g);
+        typeSer.writeTypeSuffix(g, typeIdDef);
     }
 
     /*
