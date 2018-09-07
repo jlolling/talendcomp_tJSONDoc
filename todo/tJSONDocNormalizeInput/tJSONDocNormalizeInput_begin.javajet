@@ -118,7 +118,7 @@
 <%	if (dieIfParentIsEmpty) { %>
 		throw new Exception("The referenced object: " + <%=jsonPath%> + " is empty!");
 <%	} else if (provideEmptyNode) { %>
-		listNodes_<%=cid%>.add(<%=cid%>.createEmptyNode());
+		listNodes_<%=cid%>.add(<%=cid%>.createEmptyObjectNode());
 <%	} %>
 	}
 <%	if (provideValuesAsList) { %>

@@ -181,10 +181,19 @@ public class JsonDocument {
 		}
 	}
 
+	@Deprecated
 	public ObjectNode createEmptyNode() {
 		return objectMapper.createObjectNode();
 	}
 	
+	public ObjectNode createEmptyObjectNode() {
+		return objectMapper.createObjectNode();
+	}
+	
+	public ArrayNode createEmptyArrayNode() {
+		return objectMapper.createArrayNode();
+	}
+
 	public ObjectNode createObjectNode(String name) {
 		ObjectNode child = ((ObjectNode) rootNode).objectNode();
 		if (isArray()) {
