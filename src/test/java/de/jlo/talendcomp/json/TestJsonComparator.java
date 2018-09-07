@@ -11,14 +11,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 public class TestJsonComparator {
 	
 	@Test
-	public void testIntersectArray() {
+	public void testIntersectArray() throws Exception {
 		System.out.println("#### testIntersectArray...");
 		String array1 = "[10,{\"a\":33},30,40]";
-		String array2 = "[11,{\"a\":33},31,40,\"x\"]";
-		JsonDocument ad1 = new JsonDocument(array1);
-		JsonDocument ad2 = new JsonDocument(array2);
+		String array2 = "[11,{\"a\":33},31,\"x\",40]";
+		ArrayNode an1 = (ArrayNode) JsonDocument.buildNode(array1);
+		ArrayNode an2 = (ArrayNode) JsonDocument.buildNode(array2);
 		JsonComparator comp = new JsonComparator();
-		JsonNode result = comp.intersect((ArrayNode) ad1.getRootNode(), (ArrayNode) ad2.getRootNode());
+		JsonNode result = comp.intersect(an1, an2);
 		int expected = 2;
 		int actual = result.size();
 		System.out.println(result);
