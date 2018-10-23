@@ -41,6 +41,7 @@ public class GenericDateUtil {
      * 
      * @param source the formatted time as String
      * @return Date object representing the duration
+     * @throws ParseException if the available patterns are not sufficient to parse the source
      */
 	public static Date parseDuration(String source) throws ParseException {
 		return parseDuration(source, (String[]) null);
@@ -53,6 +54,7 @@ public class GenericDateUtil {
      * @param source the formatted time as String
      * @param suggestedPattern an array of suggested patterns
      * @return Date object representing the duration
+     * @throws ParseException if the available patterns are not sufficient to parse the source
      */
 	public static Date parseDuration(String source, String ...suggestedPattern) throws ParseException {
 		return getDateParser().parseDuration(source, suggestedPattern);
@@ -75,6 +77,7 @@ public class GenericDateUtil {
      * 
      * @param source the formatted date as String
      * @return Date object representing the Date
+     * @throws ParseException if the available patterns are not sufficient to parse the source
      */
 	public static Date parseDate(String source) throws ParseException {
 		return parseDate(source, (String[]) null);
@@ -88,6 +91,7 @@ public class GenericDateUtil {
      * @param source the formatted time as String
      * @param suggestedPattern an array of suggested patterns
      * @return Date object representing the Date
+     * @throws ParseException if the available patterns are not sufficient to parse the source
      */
 	public static Date parseDate(String source, String ...suggestedPattern) throws ParseException {
 		return getDateParser().parseDate(source, null, suggestedPattern);
@@ -101,6 +105,7 @@ public class GenericDateUtil {
      * @param source the formatted time as String
      * @param suggestedPattern an array of suggested patterns
      * @return Date object representing the Date
+     * @throws ParseException if the available patterns are not sufficient to parse the source
      */
 	public static Date parseDate(String source, Locale locale, String ...suggestedPattern) throws ParseException {
 		return getDateParser().parseDate(source, locale, suggestedPattern);
@@ -296,6 +301,11 @@ public class GenericDateUtil {
     	return utcTimeZone;
     }
     
+    /**
+     * Checks if the date is pointing to first date of our era.
+     * @param date the date to check
+     * @return true if it is a zero date
+     */
     public static boolean isZeroDate(Date date) {
     	if (date != null) {
     		Calendar cal = Calendar.getInstance(getUTCTimeZone());

@@ -56,6 +56,7 @@
     boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    						   "JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
    	boolean provideValuesAsList = "true".equals(ElementParameterParser.getValue(node, "__PROVIDE_VALUES_AS_COMMA_SEP_LIST__"));
+   	boolean checkIfObject = "ARRAY_OF_OBJECTS".equals(ElementParameterParser.getValue(node, "__INPUT_STRUCTURE__"));
    	boolean arrayOfArrays = "ARRAY_OF_ARRAYS".equals(ElementParameterParser.getValue(node, "__INPUT_STRUCTURE__"));
    	String defaultLocale = ElementParameterParser.getValue(node, "__DEFAULT_LOCALE__");
    	if (defaultLocale == null || defaultLocale.trim().isEmpty()) {
@@ -128,6 +129,11 @@
 	globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", 0);
 	<%=cid%>.setDefaultLocale(<%=defaultLocale%>);
 	for (com.fasterxml.jackson.databind.JsonNode currentNode_<%=cid%> : listNodes_<%=cid%>) {
+		Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
+		globalMap.put("<%=cid%>_NB_LINE", counter.intValue() + 1);
+		if (<%=checkIfObject%> && currentNode_<%=cid%>.isValueNode()) {
+			throw new Exception("The parent node contains a value node at position: " + counter + ". Parent node: " + globalMap.get("parent_node_<%=cid%>"));
+		}
 		// loop over the given children of the parent node or the values of the array
 		int countNotNullAttributes_<%=cid%> = 0;
 		try {
@@ -198,13 +204,10 @@
 			}
 <%	} // for %>
 			globalMap.put("<%=cid%>_CURRENT_NODE", currentNode_<%=cid%>);
-			Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
-			globalMap.put("<%=cid%>_NB_LINE", counter.intValue() + 1);
 			globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", countNotNullAttributes_<%=cid%>);
 		} catch (Exception e) {
 <% 	if (log4jEnabled) { %>
 			log.error(currentComponent + ": " + e.getMessage(), e);
 <% 	} %>
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
-			throw e;
 		}

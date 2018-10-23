@@ -88,6 +88,10 @@ public class JsonDocument {
 	private static final Map<String, JsonNode> schemaMap = new HashMap<String, JsonNode>();
 	private static final JsonSchemaFactory schemaFactory = JsonSchemaFactory.byDefault();
 	
+	/**
+	 * creates an empty container node
+	 * @param isArray
+	 */
 	public JsonDocument(boolean isArray) {
 		if (isArray) {
 			rootContext = parseContext.parse("[]");
@@ -101,6 +105,10 @@ public class JsonDocument {
 		}
 	}
 
+	/**
+	 * Creates an json object tree based on the given String content
+	 * @param jsonContent the json to parse
+	 */
 	public JsonDocument(String jsonContent) {
 		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
 			rootContext = parseContext.parse(jsonContent);
@@ -114,6 +122,11 @@ public class JsonDocument {
 		}
 	}
 	
+	/**
+	 * Creates a json object tree based on the given file
+	 * @param jsonFile the file to read
+	 * @throws Exception if parsing failes
+	 */
 	public JsonDocument(File jsonFile) throws Exception {
 		if (jsonFile != null) {
 			if (jsonFile.exists() == false) {
@@ -132,6 +145,11 @@ public class JsonDocument {
 		}
 	}
 
+	/**
+	 * Creates an instance of JsonDocument beased on the given json node (will be root)
+	 * @param jsonNode the root node
+	 * @throws Exception
+	 */
 	public JsonDocument(JsonNode jsonNode) throws Exception {
 		if (jsonNode == null || jsonNode.isNull()) {
 			throw new IllegalArgumentException("jsonNode cannor be null or a NullNode");
@@ -145,18 +163,33 @@ public class JsonDocument {
 		}
 	}
 	
+	/**
+	 * @return The DocumentContext
+	 */
 	public DocumentContext getDocumentContext() {
 		return rootContext;
 	}
 	
+	/**
+	 * 
+	 * @return true if the root node is an array
+	 */
 	public boolean isArray() {
 		return rootNode.isArray();
 	}
 	
+	/**
+	 * 
+	 * @return number of objects on the root (or children in the root array)
+	 */
 	public int getCountRootObjects() {
 		return getCountObjects(rootNode);
 	}
 	
+	/**
+	 * 
+	 * @return true if the root is an empty container node
+	 */
 	public boolean isEmpty() {
 		if (rootNode instanceof ArrayNode || rootNode instanceof ObjectNode) {
 			return rootNode.size() == 0;
@@ -171,6 +204,11 @@ public class JsonDocument {
 		}
 	}
 
+	/**
+	 * 
+	 * @param node the container node
+	 * @return number of objects on the root (or children in the given array node)
+	 */
 	public int getCountObjects(JsonNode node) {
 		if (node instanceof ArrayNode) {
 			return node.size();
@@ -186,14 +224,27 @@ public class JsonDocument {
 		return objectMapper.createObjectNode();
 	}
 	
+	/**
+	 * 
+	 * @return a new object node
+	 */
 	public ObjectNode createEmptyObjectNode() {
 		return objectMapper.createObjectNode();
 	}
 	
+	/**
+	 * 
+	 * @return a new array node
+	 */
 	public ArrayNode createEmptyArrayNode() {
 		return objectMapper.createArrayNode();
 	}
 
+	/**
+	 * 
+	 * @param name of the attribute which points to the new object node
+	 * @return a new object node
+	 */
 	public ObjectNode createObjectNode(String name) {
 		ObjectNode child = ((ObjectNode) rootNode).objectNode();
 		if (isArray()) {
@@ -309,8 +360,8 @@ public class JsonDocument {
 	
 	/**
 	 * Retrieves with real JSONPath the nodes starting from the given node
-	 * @param parentNode
-	 * @param jsonPath
+	 * @param parentNode the node where we start searching
+	 * @param jsonPath the json path
 	 * @return an ArrayNode with the search result
 	 */
 	public JsonNode getNode(JsonNode parentNode, String jsonPath) {
@@ -345,8 +396,8 @@ public class JsonDocument {
 			
 	/**
 	 * Retrieves with real JSONPath the nodes starting from the given node
-	 * @param parentNode
-	 * @param jsonPath
+	 * @param parentNode the node where we start searching
+	 * @param jsonPath the json path
 	 * @return an ArrayNode with the search result
 	 */
 	public JsonNode getNodeIncludeMissing(JsonNode parentNode, String jsonPath) {
@@ -385,6 +436,7 @@ public class JsonDocument {
 	 * @param jsonPath must be a path with query parts and starts with the given parent node
 	 * @param create if true, missing nodes will be created otherwise it returns null
 	 * @return node
+	 * @throws Exception if there is an error while creating the missing nodes
 	 */
 	public JsonNode getNode(JsonNode parentNode, String jsonPath, boolean create) throws Exception {
 		if (jsonPath == null || jsonPath.trim().isEmpty()) {
@@ -758,7 +810,7 @@ public class JsonDocument {
 	 * Returns the value of the addressed field
 	 * @param node node containing the field 
 	 * @param fieldName attribute name
-	 * @param isNullable 
+	 * @param isNullable true if it allowed to get null
 	 * @param dummy only to become compatible with the other methods
 	 * @return if node is an ObjectNode: the value of the attribute, if node is a value node: the node itself, if the fieldName == ".": the node itself
 	 * @throws Exception if iNullable == false and the attribute does not exists or is null or the node is null.
@@ -770,7 +822,19 @@ public class JsonDocument {
 				valueNode = node;
 				if (valueNode != null && valueNode.isNull()) {
 					if (isNullable == false) {
-						throw new Exception(currentPath + ": Value of the given node is null but configured as not-nullable!");
+						String message = currentPath + ": ";
+						if (fieldName != null && ".".equals(fieldName) == false) {
+							message = message + "Attribute: " + fieldName + ": ";
+						}
+						if (valueNode.isValueNode()) {
+							message = message + "ValueNode is null";
+						} else if (valueNode.isArray()) {
+							message = message + "ArrayNode is null"; 
+						} else {
+							message = message + "ObjectNode is null"; 
+						}
+						message = message + " but configured as not-nullable!";
+						throw new Exception(message);
 					} else {
 						valueNode = null;
 					}
@@ -886,22 +950,26 @@ public class JsonDocument {
 		return result;
 	}
 	
-	private JsonNode getNodeFromArray(JsonNode node, int arrayIndex, boolean allowMissing) throws Exception {
+	private JsonNode getNodeFromArray(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing) throws Exception {
 		if (node instanceof ArrayNode) {
 			ArrayNode arrayNode = (ArrayNode) node;
 			if (arrayIndex < arrayNode.size()) {
-				return arrayNode.get(arrayIndex);
+				JsonNode child = arrayNode.get(arrayIndex);
+				if (child.isNull() && isNullable) {
+					throw new Exception("ArrayNode: " + node + " contains at index: " + arrayIndex + " a null node but is configured as not nullable.");
+				}
+				return child; 
 			} else if (allowMissing) {
 				return null;
 			} else {
-				throw new Exception("Node: " + node + " has less elements than expected array index: " + arrayIndex);
+				throw new Exception("ArrayNode: " + node + " has less elements than expected array index: " + arrayIndex);
 			}
 		}
 		return node;
 	}
 	
 	public String getValueAsString(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, String missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsString(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -926,7 +994,7 @@ public class JsonDocument {
 	}
 
 	public Boolean getValueAsBoolean(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Boolean missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsBoolean(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -943,7 +1011,7 @@ public class JsonDocument {
 			try {
 				return TypeUtil.convertToBoolean(valueNode);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -951,7 +1019,7 @@ public class JsonDocument {
 	}
 
 	public Integer getValueAsInteger(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Integer missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsInteger(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -968,7 +1036,7 @@ public class JsonDocument {
 			try {
 				return TypeUtil.convertToInteger(valueNode);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -976,7 +1044,7 @@ public class JsonDocument {
 	}
 	
 	public Long getValueAsLong(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Long missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsLong(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -993,7 +1061,7 @@ public class JsonDocument {
 			try {
 				return TypeUtil.convertToLong(valueNode);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -1001,7 +1069,7 @@ public class JsonDocument {
 	}
 
 	public Double getValueAsDouble(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Double missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsDouble(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -1018,7 +1086,7 @@ public class JsonDocument {
 			try {
 				return TypeUtil.convertToDouble(valueNode);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -1026,7 +1094,7 @@ public class JsonDocument {
 	}
 
 	public Float getValueAsFloat(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Float missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsFloat(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -1043,7 +1111,7 @@ public class JsonDocument {
 			try {
 				return TypeUtil.convertToFloat(valueNode);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -1051,7 +1119,7 @@ public class JsonDocument {
 	}
 
 	public Short getValueAsShort(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Short missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsShort(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -1068,7 +1136,7 @@ public class JsonDocument {
 			try {
 				return TypeUtil.convertToShort(valueNode);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -1076,7 +1144,7 @@ public class JsonDocument {
 	}
 
 	public BigDecimal getValueAsBigDecimal(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, BigDecimal missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsBigDecimal(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -1093,7 +1161,7 @@ public class JsonDocument {
 			try {
 				return TypeUtil.convertToBigDecimal(valueNode);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -1101,7 +1169,7 @@ public class JsonDocument {
 	}
 
 	public BigDecimal getValueAsBigDecimal(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, String missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsBigDecimal(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -1122,7 +1190,7 @@ public class JsonDocument {
 			try {
 				return TypeUtil.convertToBigDecimal(valueNode);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -1130,7 +1198,7 @@ public class JsonDocument {
 	}
 
 	public BigInteger getValueAsBigInteger(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, BigInteger missingNodeValue) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsBigInteger(oneNode, ".", isNullable, allowMissing, missingNodeValue);
 	}
 	
@@ -1147,7 +1215,7 @@ public class JsonDocument {
 			try {
 				return TypeUtil.convertToBigInteger(valueNode);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -1155,7 +1223,7 @@ public class JsonDocument {
 	}
 
 	public Date getValueAsDate(JsonNode node, int arrayIndex, boolean isNullable, boolean allowMissing, Date missingNodeValue, String pattern) throws Exception {
-		JsonNode oneNode = getNodeFromArray(node, arrayIndex, allowMissing);
+		JsonNode oneNode = getNodeFromArray(node, arrayIndex, isNullable, allowMissing);
 		return getValueAsDate(oneNode, ".", isNullable, allowMissing, missingNodeValue, pattern);
 	}
 	
@@ -1172,7 +1240,7 @@ public class JsonDocument {
 			try {
 				return parseDate(valueNode.asText(), pattern);
 			} catch (Exception e) {
-				throw new Exception("Read attribute: " + fieldName + " failed.", e);
+				throw new Exception("Convert attribute: " + fieldName + " failed.", e);
 			}
 		} else {
 			return null;
@@ -1351,7 +1419,7 @@ public class JsonDocument {
 
 	/**
 	 * validates the current document against a schema
-	 * @param schemaId
+	 * @param schemaId the id of the json-schema
 	 * @return null if ok, otherwise a String containing the error messages 
 	 * @throws ProcessingException in case of the validation technical fails
 	 */

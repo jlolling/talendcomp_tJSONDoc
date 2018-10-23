@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.cimt.talendcomp.test.TalendFakeJob;
+import de.cimt.talend.mock.TalendJobMock;
 
-public class TestAddressArray extends TalendFakeJob {
+public class TestAddressArray extends TalendJobMock {
 
 	
 	@Before
