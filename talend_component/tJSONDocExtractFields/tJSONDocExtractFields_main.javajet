@@ -215,8 +215,8 @@
 			}
 <%	} // for %>
 			globalMap.put("<%=cid%>_CURRENT_NODE", currentNode_<%=cid%>);
-			Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
-			globalMap.put("<%=cid%>_NB_LINE", counter.intValue() + 1);
+			Integer counter_<%=cid%> = (Integer) globalMap.get("<%=cid%>_NB_LINE");
+			globalMap.put("<%=cid%>_NB_LINE", counter_<%=cid%>.intValue() + 1);
 			globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", countNotNullAttributes_<%=cid%>);
 		} catch (Exception e) {
 <% 	if (log4jEnabled) { %>

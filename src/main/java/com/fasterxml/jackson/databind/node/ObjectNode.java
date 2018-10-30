@@ -90,6 +90,11 @@ public class ObjectNode
         return JsonNodeType.OBJECT;
     }
 
+    @Override
+    public final boolean isObject() {
+        return true;
+    }
+    
     @Override public JsonToken asToken() { return JsonToken.START_OBJECT; }
 
     @Override
@@ -296,6 +301,9 @@ public class ObjectNode
     public void serialize(JsonGenerator g, SerializerProvider provider)
         throws IOException
     {
+        @SuppressWarnings("deprecation")
+        boolean trimEmptyArray = (provider != null) &&
+                !provider.isEnabled(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
     	boolean ignoreNull = (provider != null ? provider.getConfig().getDefaultPropertyInclusion().getValueInclusion().equals(Include.NON_EMPTY) : false);
         g.writeStartObject(this);
         for (Map.Entry<String, JsonNode> en : _children.entrySet()) {
@@ -314,6 +322,13 @@ public class ObjectNode
         				continue; // if the ObjectNode has no attributes: skip it
         			}
         		} else if (value.isArray()) {
+        			ArrayNode arrayNode = (ArrayNode) value;
+        			if (arrayNode.size() == 0) {
+        				continue; // if the array has no elements: skip it
+        			}
+        		}
+        	} else if (trimEmptyArray) {
+        		if (value.isArray()) {
         			ArrayNode arrayNode = (ArrayNode) value;
         			if (arrayNode.size() == 0) {
         				continue; // if the array has no elements: skip it

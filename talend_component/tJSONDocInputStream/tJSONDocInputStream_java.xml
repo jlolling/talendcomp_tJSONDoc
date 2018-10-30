@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20181023" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="15.0"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20181030" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="15.0"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -51,24 +51,24 @@
     <PARAMETER NAME="PROVIDE_CURRENT_JSON_OBJECT" FIELD="CHECK" REQUIRED="true" NUM_ROW="10"> 
       <DEFAULT>true</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20181023" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 15.0 build at: 20181023</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20181030" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 15.0 build at: 20181030</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
       <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-15.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.5.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.2.jar" REQUIRED="true"/>
-      <IMPORT NAME="json-schema-validator" MODULE="json-schema-validator-2.2.8.jar" REQUIRED="true"/>
-      <IMPORT NAME="json-schema-core" MODULE="json-schema-core-1.2.8.jar" REQUIRED="true"/>
-      <IMPORT NAME="rhino" MODULE="rhino-1.7R4.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-coreutils" MODULE="jackson-coreutils-1.8.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-schema-validator" MODULE="json-schema-validator-2.2.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-schema-core" MODULE="json-schema-core-1.2.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-coreutils" MODULE="jackson-coreutils-1.9.jar" REQUIRED="true"/>
+      <IMPORT NAME="guava" MODULE="guava-16.0.1.jar" REQUIRED="true"/>
       <IMPORT NAME="msg-simple" MODULE="msg-simple-1.1.jar" REQUIRED="true"/>
       <IMPORT NAME="btf" MODULE="btf-1.2.jar" REQUIRED="true"/>
-      <IMPORT NAME="guava" MODULE="guava-16.0.1.jar" REQUIRED="true"/>
       <IMPORT NAME="uri-template" MODULE="uri-template-0.9.jar" REQUIRED="true"/>
+      <IMPORT NAME="rhino" MODULE="rhino-1.7.7.1.jar" REQUIRED="true"/>
       <IMPORT NAME="mailapi" MODULE="mailapi-1.4.3.jar" REQUIRED="true"/>
       <IMPORT NAME="activation" MODULE="activation-1.1.jar" REQUIRED="true"/>
       <IMPORT NAME="joda-time" MODULE="joda-time-2.9.7.jar" REQUIRED="true"/>

@@ -80,7 +80,6 @@ public class JsonDocument {
             .mappingProvider(new JacksonMappingProvider())
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
-	private final ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 	private static final ParseContext staticParseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 	private final Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
 	private String currentPath = "";
@@ -94,9 +93,9 @@ public class JsonDocument {
 	 */
 	public JsonDocument(boolean isArray) {
 		if (isArray) {
-			rootContext = parseContext.parse("[]");
+			rootContext = staticParseContext.parse("[]");
 		} else {
-			rootContext = parseContext.parse("{}");
+			rootContext = staticParseContext.parse("{}");
 		}
 		rootNode = rootContext.read("$");
 		JsonNode testNode = rootContext.read("$");
@@ -111,7 +110,7 @@ public class JsonDocument {
 	 */
 	public JsonDocument(String jsonContent) {
 		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
-			rootContext = parseContext.parse(jsonContent);
+			rootContext = staticParseContext.parse(jsonContent);
 		} else { 
 			throw new IllegalArgumentException("Json input content cannot be empty or null");
 		}
@@ -133,7 +132,7 @@ public class JsonDocument {
 				throw new Exception("JSON input file: " + jsonFile.getAbsolutePath() + " does not exists or is not readable!");
 			}
 			InputStream in = new FileInputStream(jsonFile); 
-			rootContext = parseContext.parse(in);
+			rootContext = staticParseContext.parse(in);
 			// parseContext closes this stream
 		} else { 
 			throw new IllegalArgumentException("Json input input file cannot be null!");
@@ -1375,31 +1374,24 @@ public class JsonDocument {
 	/**
 	 * Set the schema
 	 * @param schemaId - typically the job name + component name
-	 * @param schemaString the schema as string
-	 * @throws Exception
-	 */
-	public static void setJsonSchema(String schemaId, String schemaString) throws Exception {
-		if (schemaId == null || schemaId.trim().isEmpty()) {
-			throw new IllegalArgumentException("schemaId cannot be null or empty");
-		}
-		if (schemaId != null && schemaId.trim().isEmpty() == false) {
-			System.out.println("Prepare json schema for id: " + schemaId);
-			JsonNode schemaNode = parse(schemaString);
-			schemaMap.put(schemaId, schemaNode);
-		}
-	}
-	
-	/**
-	 * Set the schema
-	 * @param schemaId - typically the job name + component name
 	 * @param schemaNode the schema as JsonNode
 	 * @throws Exception
 	 */
-	public static void setJsonSchema(String schemaId, JsonNode schemaNode) throws Exception {
+	public static void setJsonSchema(String schemaId, Object schemaContent) throws Exception {
 		if (schemaId == null || schemaId.trim().isEmpty()) {
 			throw new IllegalArgumentException("schemaId cannot be null or empty");
 		}
-		if (schemaNode != null) {
+		if (schemaContent != null && schemaId != null && schemaId.trim().isEmpty() == false) {
+			JsonNode schemaNode = null;
+			if (schemaContent instanceof String) {
+				schemaNode = parse((String) schemaContent);
+			} else if (schemaContent instanceof JsonNode) {
+				schemaNode = (JsonNode) schemaContent;
+			} else if (schemaContent instanceof JsonDocument) {
+				schemaNode = ((JsonDocument) schemaContent).getRootNode();
+			} else {
+				throw new IllegalArgumentException("Schema content must be provided as String or JsonNode. Currently got object type: " + schemaContent.getClass().getName());
+			}
 			schemaMap.put(schemaId, schemaNode);
 		}
 	}

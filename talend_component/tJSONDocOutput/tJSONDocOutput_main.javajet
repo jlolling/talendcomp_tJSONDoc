@@ -265,8 +265,8 @@
 		globalMap.put("<%=cid%>.<%=mc.getLabel()%>", <%=conn.getName()%>.<%=mc.getLabel()%>);
 <%	} // for  %>
 		globalMap.put("<%=cid%>_CURRENT_NODE", currentNode_<%=cid%>);
-		Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
-		globalMap.put("<%=cid%>_NB_LINE", counter.intValue() + 1);
+		Integer counter_<%=cid%> = (Integer) globalMap.get("<%=cid%>_NB_LINE");
+		globalMap.put("<%=cid%>_NB_LINE", counter_<%=cid%>.intValue() + 1);
 	} catch (Exception e) {
 <%	if (log4jEnabled) { %>
 		log.error(currentComponent + ": " + e.getMessage(), e);

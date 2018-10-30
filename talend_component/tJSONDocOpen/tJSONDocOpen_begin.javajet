@@ -47,8 +47,8 @@
    		throw e;
 	}
 <%	} else if ("READ_SCHEMA_FROM_JAVA".equals(setupJsonSchema)) { %>
-   	try {
-		String jsonContent = <%=jsonStringJava%>;
+   try {
+		Object jsonContent = <%=jsonStringJava%>;
 		de.jlo.talendcomp.json.JsonDocument.setJsonSchema(jobName + ".<%=cid%>", jsonContent);
 	} catch (Exception e) {
 <%	if (log4jEnabled) { %>

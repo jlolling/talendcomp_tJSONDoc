@@ -91,6 +91,11 @@ public class ArrayNode
         return JsonNodeType.ARRAY;
     }
 
+    @Override
+    public boolean isArray() {
+        return true;
+    }
+
     @Override public JsonToken asToken() { return JsonToken.START_ARRAY; }
 
     @Override
@@ -184,7 +189,6 @@ public class ArrayNode
         }
         f.writeEndArray();
     }
-
     @Override
     public void serializeWithType(JsonGenerator g, SerializerProvider provider, TypeSerializer typeSer)
         throws IOException
@@ -376,8 +380,8 @@ public class ArrayNode
      */
 
     /**
-     * Method that will construct an ArrayNode and add it as a
-     * field of this ObjectNode, replacing old value, if any.
+     * Method that will construct an ArrayNode and add it at the end
+     * of this array node.
      *
      * @return Newly constructed ArrayNode
      */

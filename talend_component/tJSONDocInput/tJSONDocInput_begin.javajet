@@ -129,10 +129,10 @@
 	globalMap.put("<%=cid%>_NB_NOT_NULL_ATTRIBUTES", 0);
 	<%=cid%>.setDefaultLocale(<%=defaultLocale%>);
 	for (com.fasterxml.jackson.databind.JsonNode currentNode_<%=cid%> : listNodes_<%=cid%>) {
-		Integer counter = (Integer) globalMap.get("<%=cid%>_NB_LINE");
-		globalMap.put("<%=cid%>_NB_LINE", counter.intValue() + 1);
+		Integer counter_<%=cid%> = (Integer) globalMap.get("<%=cid%>_NB_LINE");
+		globalMap.put("<%=cid%>_NB_LINE", counter_<%=cid%>.intValue() + 1);
 		if (<%=checkIfObject%> && currentNode_<%=cid%>.isValueNode()) {
-			throw new Exception("The parent node contains a value node at position: " + counter + ". Parent node: " + globalMap.get("parent_node_<%=cid%>"));
+			throw new Exception("The parent node contains a value node at position: " + counter_<%=cid%> + ". Parent node: " + globalMap.get("parent_node_<%=cid%>"));
 		}
 		// loop over the given children of the parent node or the values of the array
 		int countNotNullAttributes_<%=cid%> = 0;
