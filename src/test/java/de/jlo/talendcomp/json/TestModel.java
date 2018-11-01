@@ -1,6 +1,7 @@
 package de.jlo.talendcomp.json;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,6 +130,7 @@ public class TestModel {
 		assertEquals(1, doc1.getCountRootObjects());
 	}
 	
+	@Test
 	public void testThreadSaveJsonDocument() throws Exception {
 		String jsonTemplate = "{\"created_by\" : <value>,\n"
 			    + "   \"data_status_id\" : 1,\n"
@@ -183,27 +185,47 @@ public class TestModel {
 			    + "      ]\n"
 			    + "   }\n"
 			    + "}";
-		List<String> jsons = new ArrayList<>();
-		for (int i = 0; i < 100; i++) {
-			jsons.add(jsonTemplate.replace("<value>", String.valueOf(i)));
+		List<JsonThread> threads = new ArrayList<>();
+		int max = 10000;
+		for (int i = 0; i < max; i++) {
+			threads.add(new JsonThread(jsonTemplate, i));
 		}
-		
+		for (int i = 0; i < max; i++) {
+			threads.get(i).start();
+		}
+		for (int i = 0; i < max; i++) {
+			threads.get(i).join();
+		}
+		System.out.println(threads.size() + " Threads run to test thread save parsing.");
+		assertTrue(true);
 	}
 	
 	private static class JsonThread extends Thread {
 		
 		String json = null;
-		int index;
+		int expectedIndex;
 		
 		public JsonThread(String template, int index) {
-			this.index = index;
+			this.expectedIndex = index;
 			this.json = template.replace("<value>", String.valueOf(index));
 		}
 		
 		@Override
 		public void run() {
-			JsonDocument doc = new JsonDocument(json);
-			//int index = 
+//			System.out.println("expected: " + expectedIndex);
+			int actualIndex = -1;
+			JsonDocument doc = null;
+			try {
+				doc = new JsonDocument(json);
+				actualIndex = doc.getNode("$.created_by").asInt();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			if (expectedIndex != actualIndex) {
+				throw new IllegalStateException("Parse document does not work correctly. json: " + doc);
+			} else {
+//				System.out.println("actual: " + actualIndex);
+			}
 		}
 	}
 }
