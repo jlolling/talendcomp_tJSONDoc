@@ -90,10 +90,10 @@ public class ObjectNode
         return JsonNodeType.OBJECT;
     }
 
-//    @Override
-//    public final boolean isObject() {
-//        return true;
-//    }
+    @Override
+    public final boolean isObject() {
+        return true;
+    }
     
     @Override public JsonToken asToken() { return JsonToken.START_OBJECT; }
 

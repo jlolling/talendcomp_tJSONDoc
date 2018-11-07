@@ -186,17 +186,29 @@ public class TestModel {
 			    + "   }\n"
 			    + "}";
 		List<JsonThread> threads = new ArrayList<>();
-		int max = 10000;
+		int max = 2000;
 		for (int i = 0; i < max; i++) {
 			threads.add(new JsonThread(jsonTemplate, i));
 		}
 		for (int i = 0; i < max; i++) {
 			threads.get(i).start();
 		}
-		for (int i = 0; i < max; i++) {
-			threads.get(i).join();
+		boolean running = true;
+		while (running) {
+			running = false;
+			for (int i = 0; i < max; i++) {
+				if (threads.get(i).isAlive()) {
+					running = true;
+				}
+			}
 		}
-		System.out.println(threads.size() + " Threads run to test thread save parsing.");
+		for (int i = 0; i < max; i++) {
+			JsonThread t = threads.get(i);
+			if (t.ex != null) {
+				assertTrue("Exception detected: " + t.ex, false);
+			}
+		}
+		System.out.println(threads.size() + " Threads had run to test thread save parsing.");
 		assertTrue(true);
 	}
 	
@@ -204,6 +216,7 @@ public class TestModel {
 		
 		String json = null;
 		int expectedIndex;
+		Exception ex = null;
 		
 		public JsonThread(String template, int index) {
 			this.expectedIndex = index;
@@ -212,19 +225,21 @@ public class TestModel {
 		
 		@Override
 		public void run() {
-//			System.out.println("expected: " + expectedIndex);
 			int actualIndex = -1;
 			JsonDocument doc = null;
 			try {
 				doc = new JsonDocument(json);
-				actualIndex = doc.getNode("$.created_by").asInt();
+				Thread.sleep(1000);
+				if (expectedIndex % 2 == 0) {
+					actualIndex = doc.getNode("$.participation.participantname.participant_name_id").asInt();
+				} else {
+					actualIndex = doc.getNode("$.created_by").asInt();
+				}
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				ex = e; 
 			}
 			if (expectedIndex != actualIndex) {
-				throw new IllegalStateException("Parse document does not work correctly. json: " + doc);
-			} else {
-//				System.out.println("actual: " + actualIndex);
+				ex = new Exception("We got values from other threads! json: expcted: " + expectedIndex + " actual: " + actualIndex);
 			}
 		}
 	}

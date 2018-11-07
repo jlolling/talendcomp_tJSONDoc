@@ -81,8 +81,8 @@ public class JsonDocument {
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
 	private static final ThreadLocal<ParseContext> tl = new ThreadLocal<ParseContext>();
-//	private ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
-//	private static ParseContext staticParseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+	private ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+	private static ParseContext staticParseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 	private final Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
 	private String currentPath = "";
 	private Locale defaultLocale = Locale.getDefault();
@@ -95,10 +95,11 @@ public class JsonDocument {
 	 */
 	public JsonDocument(boolean isArray) {
 		if (isArray) {
-			rootContext = getParseContext().parse("[]");
+			rootContext = parseContext.parse("[]");
 		} else {
-			rootContext = getParseContext().parse("{}");
+			rootContext = parseContext.parse("{}");
 		}
+		tl.remove();
 		rootNode = rootContext.read("$");
 		JsonNode testNode = rootContext.read("$");
 		if (rootNode != testNode) {
@@ -106,24 +107,13 @@ public class JsonDocument {
 		}
 	}
 	
-	public static ParseContext getParseContext() {
-		synchronized(tl) {
-			ParseContext pc = tl.get();
-			if (pc == null) {
-				pc = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
-				tl.set(pc);
-			}
-			return pc;
-		}
-	}
-
 	/**
 	 * Creates an json object tree based on the given String content
 	 * @param jsonContent the json to parse
 	 */
 	public JsonDocument(String jsonContent) {
 		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
-			rootContext = getParseContext().parse(jsonContent);
+			rootContext = parseContext.parse(jsonContent);
 		} else { 
 			throw new IllegalArgumentException("Json input content cannot be empty or null");
 		}
@@ -145,7 +135,7 @@ public class JsonDocument {
 				throw new Exception("JSON input file: " + jsonFile.getAbsolutePath() + " does not exists or is not readable!");
 			}
 			InputStream in = new FileInputStream(jsonFile); 
-			rootContext = getParseContext().parse(in);
+			rootContext = parseContext.parse(in);
 			// parseContext closes this stream
 		} else { 
 			throw new IllegalArgumentException("Json input input file cannot be null!");
@@ -166,7 +156,6 @@ public class JsonDocument {
 		if (jsonNode == null || jsonNode.isNull()) {
 			throw new IllegalArgumentException("jsonNode cannor be null or a NullNode");
 		}
-		ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 		rootContext = parseContext.parse(jsonNode);
 		rootNode = jsonNode;
 		JsonNode testNode = rootContext.read("$");
@@ -1376,7 +1365,7 @@ public class JsonDocument {
 	
 	public static JsonNode parse(String jsonContent) throws Exception {
 		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
-			DocumentContext docContext = getParseContext().parse(jsonContent);
+			DocumentContext docContext = staticParseContext.parse(jsonContent);
 			JsonNode node = docContext.json();
 			return node;
 		} else {
