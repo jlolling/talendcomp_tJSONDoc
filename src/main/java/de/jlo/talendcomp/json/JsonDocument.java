@@ -81,6 +81,8 @@ public class JsonDocument {
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
 	private static final ThreadLocal<ParseContext> tl = new ThreadLocal<ParseContext>();
+//	private ParseContext parseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+//	private static ParseContext staticParseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
 	private final Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
 	private String currentPath = "";
 	private Locale defaultLocale = Locale.getDefault();

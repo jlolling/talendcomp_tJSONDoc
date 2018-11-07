@@ -58,9 +58,9 @@
   <CODEGENERATION> 
     <IMPORTS> 
       <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-15.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.2.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.2.jar" REQUIRED="true"/>
       <IMPORT NAME="json-schema-validator" MODULE="json-schema-validator-2.2.10.jar" REQUIRED="true"/>
       <IMPORT NAME="json-schema-core" MODULE="json-schema-core-1.2.10.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-coreutils" MODULE="jackson-coreutils-1.9.jar" REQUIRED="true"/>
