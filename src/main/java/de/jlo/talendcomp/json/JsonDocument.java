@@ -80,7 +80,7 @@ public class JsonDocument {
             .mappingProvider(new JacksonMappingProvider())
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .build();
-	private static final ParseContext staticParseContext = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+	private static final ThreadLocal<ParseContext> tl = new ThreadLocal<ParseContext>();
 	private final Map<String, JsonPath> compiledPathMap = new HashMap<String, JsonPath>();
 	private String currentPath = "";
 	private Locale defaultLocale = Locale.getDefault();
@@ -93,14 +93,25 @@ public class JsonDocument {
 	 */
 	public JsonDocument(boolean isArray) {
 		if (isArray) {
-			rootContext = staticParseContext.parse("[]");
+			rootContext = getParseContext().parse("[]");
 		} else {
-			rootContext = staticParseContext.parse("{}");
+			rootContext = getParseContext().parse("{}");
 		}
 		rootNode = rootContext.read("$");
 		JsonNode testNode = rootContext.read("$");
 		if (rootNode != testNode) {
 			throw new IllegalStateException("Cloned objects detected! Use the latest Jayway library 2.2.1+");
+		}
+	}
+	
+	public static ParseContext getParseContext() {
+		synchronized(tl) {
+			ParseContext pc = tl.get();
+			if (pc == null) {
+				pc = JsonPath.using(JACKSON_JSON_NODE_CONFIGURATION);
+				tl.set(pc);
+			}
+			return pc;
 		}
 	}
 
@@ -110,7 +121,7 @@ public class JsonDocument {
 	 */
 	public JsonDocument(String jsonContent) {
 		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
-			rootContext = staticParseContext.parse(jsonContent);
+			rootContext = getParseContext().parse(jsonContent);
 		} else { 
 			throw new IllegalArgumentException("Json input content cannot be empty or null");
 		}
@@ -132,7 +143,7 @@ public class JsonDocument {
 				throw new Exception("JSON input file: " + jsonFile.getAbsolutePath() + " does not exists or is not readable!");
 			}
 			InputStream in = new FileInputStream(jsonFile); 
-			rootContext = staticParseContext.parse(in);
+			rootContext = getParseContext().parse(in);
 			// parseContext closes this stream
 		} else { 
 			throw new IllegalArgumentException("Json input input file cannot be null!");
@@ -1363,7 +1374,7 @@ public class JsonDocument {
 	
 	public static JsonNode parse(String jsonContent) throws Exception {
 		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
-			DocumentContext docContext = staticParseContext.parse(jsonContent);
+			DocumentContext docContext = getParseContext().parse(jsonContent);
 			JsonNode node = docContext.json();
 			return node;
 		} else {
