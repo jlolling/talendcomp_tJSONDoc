@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20181107" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="15.1"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20190206" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="15.1"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -51,16 +51,16 @@
     <PARAMETER NAME="PROVIDE_CURRENT_JSON_OBJECT" FIELD="CHECK" REQUIRED="true" NUM_ROW="10"> 
       <DEFAULT>true</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20181107" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 15.1 build at: 20181107</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20190206" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 15.1 build at: 20190206</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
       <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-15.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.8.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.8.jar" REQUIRED="true"/>
       <IMPORT NAME="json-schema-validator" MODULE="json-schema-validator-2.2.10.jar" REQUIRED="true"/>
       <IMPORT NAME="json-schema-core" MODULE="json-schema-core-1.2.10.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-coreutils" MODULE="jackson-coreutils-1.9.jar" REQUIRED="true"/>
