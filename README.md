@@ -1,5 +1,5 @@
 # Talend Component Suite tJSONDoc*
-This project consists of 7 components to work with JSON in a fine grained way.
+This project consists of components to work with JSON in a fine grained way.
 * tJSONDocOpen - creates or opens a JSON document
 * tJSONDocOutput - create sub-nodes to the document
 * tJSONDocInput - select nodes vias json-path and read attributes from them
