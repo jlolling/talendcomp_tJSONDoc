@@ -173,4 +173,21 @@ public class TestDiff {
 		assertEquals(0, result.size());
 	}
 
+	@Test
+	public void testDiffArraysByKeys2() throws Exception {
+		System.out.println("#### testDiffArraysByKeys2 ...");
+		String nodeStr1 = "[{\"key\":1,\"a\":10,\"b\":\"x\"},{\"key\":2,\"a\":11,\"b\":\"y\"},{\"key\":3,\"a\":12},{\"key\":4,\"a\":13}]";
+		String nodeStr2 = "[{\"key\":2,\"a\":21,\"b\":\"z\"},{\"key\":1,\"a\":10,\"b\":\"x\"},{\"key\":4,\"a\":13},{\"key\":3,\"a\":12}]";
+		JsonNode refNode = new JsonDocument(nodeStr1).getRootNode();
+		JsonNode testNode = new JsonDocument(nodeStr2).getRootNode();
+		Diff comp = new Diff();
+		comp.setIgnoreArrayIndex(true);
+		comp.setSortKeyAttribute("key");
+		List<Diff.Difference> result = comp.findDifference(refNode, testNode);
+		for (Diff.Difference diff : result) {
+			System.out.println(diff);
+		}
+		assertEquals(1, result.size());
+	}
+
 }
