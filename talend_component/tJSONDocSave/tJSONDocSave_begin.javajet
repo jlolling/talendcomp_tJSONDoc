@@ -13,7 +13,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode) codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-    String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+   String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
 	String file = ElementParameterParser.getValue(node, "__OUTPUT_FILE_PATH__");
 	boolean outputAsfile = "true".equals(ElementParameterParser.getValue(node, "__OUTPUT_AS_FILE__"));
 	boolean prettyPrint = "true".equals(ElementParameterParser.getValue(node, "__PRETTY_PRINT__"));
@@ -21,6 +21,7 @@
 	boolean debugOutput = "true".equals(ElementParameterParser.getValue(node, "__STD_OUTPUT__"));
 	boolean schemaProvided = ("NO_JSON_SCHEMA".equals(ElementParameterParser.getValue(node.getProcess(), docComp, "__SETUP_JSON_SCHEMA__")) == false);
 	boolean validate = "true".equals(ElementParameterParser.getValue(node, "__VALIDATE_OUTPUT__")) && schemaProvided;
+	boolean dieOnValidationErrors = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_VALIDATE_ERRORS__"));
 	boolean outputAsNode = "true".equals(ElementParameterParser.getValue(node, "__OUTPUT_AS_NODE__"));
 	String outputColumn = ElementParameterParser.getValue(node, "__JSON_OUTPUT_COLUMN__"); 
 	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
@@ -39,12 +40,15 @@
    	}
 %>
 	de.jlo.talendcomp.json.JsonDocument <%=cid%> = new de.jlo.talendcomp.json.JsonDocument((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=docComp%>_CURRENT_NODE"));
+	globalMap.put("<%=cid%>", <%=cid%>);
 <%	if (validate) { %>
 	String <%=cid%>_validationErrors = <%=cid%>.validate(jobName + ".<%=docComp%>");
+	globalMap.put("<%=cid%>_ERROR_MESSAGE", <%=cid%>_validationErrors);
+<%		if (dieOnValidationErrors) { %>
 	if (<%=cid%>_validationErrors != null) {
-		globalMap.put("<%=cid%>_ERROR_MESSAGE", <%=cid%>_validationErrors);
 		throw new Exception(<%=cid%>_validationErrors);
 	}
+<%		} %>	
 <%	} %>	
 	com.fasterxml.jackson.databind.JsonNode <%=cid%>_outputNode = null;
 	try {

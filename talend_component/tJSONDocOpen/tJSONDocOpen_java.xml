@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" SCHEMA_AUTO_PROPAGATE="true" PLATEFORM="ALL" RELEASE_DATE="20190206" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="15.2"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" SCHEMA_AUTO_PROPAGATE="true" PLATEFORM="ALL" RELEASE_DATE="20190704" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="16.0"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -48,6 +48,9 @@
     <PARAMETER NAME="JSON_INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW="40" SHOW_IF="SETUP == 'READ_FROM_FLOW'"/>  
     <PARAMETER NAME="VALIDATE_INPUT" FIELD="CHECK" NUM_ROW="50" REQUIRED="true" SHOW_IF="SETUP_JSON_SCHEMA != 'NO_JSON_SCHEMA'"> 
       <DEFAULT>false</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER NAME="DIE_ON_VALIDATE_ERRORS" FIELD="CHECK" NUM_ROW="50" REQUIRED="true" SHOW_IF="(SETUP_JSON_SCHEMA != 'NO_JSON_SCHEMA') and (VALIDATE_INPUT == 'true')"> 
+      <DEFAULT>true</DEFAULT> 
     </PARAMETER> 
   </PARAMETERS>  
   <ADVANCED_PARAMETERS> 
@@ -64,32 +67,19 @@
     <PARAMETER NAME="JSON_SCHEMA_CONTENT_JAVA" FIELD="MEMO_JAVA" NUM_ROW="40" REQUIRED="true" SHOW_IF="SETUP_JSON_SCHEMA == 'READ_SCHEMA_FROM_JAVA'"> 
       <DEFAULT/> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20190206" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 15.2 build at: 20190206</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20190704" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 16.0 build at: 20190704</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-15.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-16.0.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.8.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.0.jar" REQUIRED="true"/>
       <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.8.jar" REQUIRED="true"/>
-      <IMPORT NAME="json-schema-validator" MODULE="json-schema-validator-2.2.10.jar" REQUIRED="true"/>
-      <IMPORT NAME="json-schema-core" MODULE="json-schema-core-1.2.10.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-coreutils" MODULE="jackson-coreutils-1.9.jar" REQUIRED="true"/>
-      <IMPORT NAME="guava" MODULE="guava-16.0.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="msg-simple" MODULE="msg-simple-1.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="btf" MODULE="btf-1.2.jar" REQUIRED="true"/>
-      <IMPORT NAME="uri-template" MODULE="uri-template-0.9.jar" REQUIRED="true"/>
-      <IMPORT NAME="rhino" MODULE="rhino-1.7.7.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="mailapi" MODULE="mailapi-1.4.3.jar" REQUIRED="true"/>
-      <IMPORT NAME="activation" MODULE="activation-1.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="joda-time" MODULE="joda-time-2.9.7.jar" REQUIRED="true"/>
-      <IMPORT NAME="libphonenumber" MODULE="libphonenumber-8.0.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="jsr305" MODULE="jsr305-3.0.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="jopt-simple" MODULE="jopt-simple-5.0.3.jar" REQUIRED="true"/>
-      <IMPORT NAME="json-path" MODULE="json-path-2.4.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-schema-validator" MODULE="json-schema-validator-1.0.16.jar" REQUIRED="true"/>
       <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.7.25.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-path" MODULE="json-path-2.4.0.jar" REQUIRED="true"/>
       <IMPORT NAME="slf4j-simple" MODULE="slf4j-simple-1.6.1.jar" REQUIRED="true"/>
       <IMPORT NAME="commons-lang3" MODULE="commons-lang3-3.4.jar" REQUIRED="true"/>
     </IMPORTS> 
@@ -97,6 +87,7 @@
   <RETURNS> 
     <RETURN AVAILABILITY="FLOW" NAME="CURRENT_NODE" TYPE="id_Object"/>  
     <RETURN AVAILABILITY="FLOW" NAME="CURRENT_PATH" TYPE="id_String"/>  
-    <RETURN AVAILABILITY="FLOW" NAME="COUNT_ROOT_OBJECTS" TYPE="id_Integer"/> 
+    <RETURN AVAILABILITY="FLOW" NAME="COUNT_ROOT_OBJECTS" TYPE="id_Integer"/>  
+    <RETURN AVAILABILITY="FLOW" NAME="NB_VALIDATION_PROBLEMS" TYPE="id_Integer"/> 
   </RETURNS>
 </COMPONENT>

@@ -102,5 +102,22 @@ public class Util {
 		}
 		return false;
 	}
+	
+	public static String toString(String[] array) {
+		if (array == null) {
+			return null;
+		} else {
+			StringBuilder r = new StringBuilder();
+			r.append("[");
+			for (int i = 0; i < array.length; i++) {
+				if (i > 0) {
+					r.append(",");
+				}
+				r.append(array[i]);
+			}
+			r.append("]");
+			return r.toString();
+		}
+	}
 
 }

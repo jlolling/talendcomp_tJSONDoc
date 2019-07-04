@@ -18,6 +18,7 @@
 	String jsonStringPlain = "null";
 	boolean schemaProvided = ("NO_JSON_SCHEMA".equals(ElementParameterParser.getValue(node, "__SETUP_JSON_SCHEMA__")) == false);
 	boolean validate = "true".equals(ElementParameterParser.getValue(node, "__VALIDATE_INPUT__")) && schemaProvided;
+	boolean dieOnValidationErrors = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_VALIDATE_ERRORS__"));
 	boolean usePlainTextForTest = "true".equals(ElementParameterParser.getValue(node, "__USE_PLAIN_TEXT_ONLY_AS_TEST__"));
 	if ("READ_FROM_INPUT".equals(setup) || ("READ_FROM_INPUT_PLAIN_TEXT".equals(setup) && usePlainTextForTest)) {
     	boolean simplifiedLineBreaks = "true".equals(ElementParameterParser.getValue(node, "__SIMPLIFIED_LINE_BREAKS__"));
@@ -138,9 +139,12 @@
 		globalMap.put("<%=cid%>_COUNT_ROOT_OBJECTS", <%=cid%>.getCountRootObjects());
 <%	if (validate) { %>
 		String <%=cid%>_validationErrors = <%=cid%>.validate(jobName + ".<%=cid%>");
+		globalMap.put("(<%=cid%>_NB_VALIDATION_PROBLEMS", <%=cid%>.getLastValidationReport().size());
+<%		if (dieOnValidationErrors) { %>
 		if (<%=cid%>_validationErrors != null) {
 			throw new Exception(<%=cid%>_validationErrors);
 		}
+<%		} %>	
 <%	} %>	
 	} catch (Exception e) {
 <%	if (log4jEnabled) { %>

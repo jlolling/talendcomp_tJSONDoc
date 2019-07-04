@@ -1,14 +1,14 @@
 package de.jlo.talendcomp.json;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jsonschema.core.report.ProcessingMessage;
-import com.github.fge.jsonschema.core.report.ProcessingReport;
-import com.github.fge.jsonschema.main.JsonSchemaFactory;
-import com.github.fge.jsonschema.main.JsonValidator;
+import com.networknt.schema.ValidationMessage;
 
 public class TestSchemaValidation {
 	
@@ -251,21 +251,10 @@ public class TestSchemaValidation {
 	public void testValidate() throws Exception {
 		JsonNode schemaNode = JsonDocument.parse(jsonSchemaStr);
 		JsonNode dataNode = JsonDocument.parse(jsonDocStr);
-		final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
-        JsonValidator v = factory.getValidator();
-        ProcessingReport report = v.validate(schemaNode, dataNode, true);
-        if (report.isSuccess()) {
-        	System.out.println("OK");
-        } else {
-            for (ProcessingMessage message : report) {
-            	System.out.println(message.getLogLevel() + ": " + message.getMessage());
-            }
-        }
-//        System.out.println(report);
-//        if (!report.toString().contains("success")) {
-//            throw new Exception(
-//                    report.toString());
-//        }
+		String schemaId = "0";
+		JsonDocument.setJsonSchema(schemaId, schemaNode);
+		JsonDocument doc = new JsonDocument(dataNode);
+		System.out.println(doc.validate(schemaId));
         assertTrue(true);
 	}
 
@@ -274,13 +263,18 @@ public class TestSchemaValidation {
 		JsonDocument doc = new JsonDocument(jsonDocStr);
 		String schemaId = "project.jobName";
 		JsonDocument.setJsonSchema(schemaId, jsonSchemaStr);
-		String errors = doc.validate(schemaId);
-		if (errors != null) {
-			System.out.println(errors);
-		} else {
-			System.out.println("OK");
+		doc.validate(schemaId);
+		Set<ValidationMessage> report = doc.getLastValidationReport();
+		for (com.networknt.schema.ValidationMessage m : report) {
+			System.out.println("type: " + m.getType());
+			System.out.println("path: " + m.getPath());
+			System.out.println("code: " + m.getCode());
+			System.out.println("details: " + m.getDetails());
+			System.out.println("arguments: " + Util.toString(m.getArguments()));
+			System.out.println("message: " + m.getMessage());
+			System.out.println("-----------------------------------------------------");
 		}
-		assertTrue(true);
+		assertEquals(6, report.size());
 	}
 
 }

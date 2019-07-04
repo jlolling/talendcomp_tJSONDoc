@@ -187,7 +187,7 @@ public class TestDiff {
 		for (Diff.Difference diff : result) {
 			System.out.println(diff);
 		}
-		assertEquals(1, result.size());
+		assertEquals(2, result.size());
 	}
 
 }

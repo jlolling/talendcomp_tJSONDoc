@@ -1,0 +1,42 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		java.util.List 
+		java.util.ArrayList 
+    	java.util.Map		
+	" 
+%>
+<% 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String connName = null;
+	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
+	if (outConns.size() > 0) {
+		connName = outConns.get(0).getName();
+	}
+	@SuppressWarnings("unchecked")
+	List<Map<String, String>> configList = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__COLUMN_CONFIG__");
+   String docComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
+   boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
+   						   "JOBLET".equals(node.getComponent().getComponentType().toString()) == false; %>
+	de.jlo.talendcomp.json.JsonDocument <%=cid%> = (de.jlo.talendcomp.json.JsonDocument) globalMap.get("<%=docComp%>");
+	java.util.Set<com.networknt.schema.ValidationMessage> report_<%=cid%> = <%=cid%>.getLastValidationReport();
+	globalMap.put("<%=cid%>_NB_VALIDATION_PROBLEMS", report_<%=cid%>.size());
+	globalMap.put("<%=cid%>_ERROR_MESSAGE", de.jlo.talendcomp.json.JsonDocument.buildValidationReportText(report_<%=cid%>));
+	int nbline_<%=cid%> = 0;
+<%	if (connName != null) { %>
+	for (com.networknt.schema.ValidationMessage message : report_<%=cid%>) {
+		<%=connName%>.JSON_PATH = message.getPath();
+		<%=connName%>.VALIDATION_TYPE = message.getType();
+		<%=connName%>.VALIDATION_MESSAGE = message.getMessage();
+		nbline_<%=cid%>++;
+<% } %>

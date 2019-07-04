@@ -28,10 +28,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,11 +44,6 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import com.github.fge.jsonschema.core.report.ProcessingMessage;
-import com.github.fge.jsonschema.core.report.ProcessingReport;
-import com.github.fge.jsonschema.main.JsonSchemaFactory;
-import com.github.fge.jsonschema.main.JsonValidator;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -54,6 +51,9 @@ import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.ValidationMessage;
 
 /**
  * Convenient class to work with the Jackson-API for JSON
@@ -87,7 +87,8 @@ public class JsonDocument {
 	private String currentPath = "";
 	private Locale defaultLocale = Locale.getDefault();
 	private static final Map<String, JsonNode> schemaMap = new HashMap<String, JsonNode>();
-	private static final JsonSchemaFactory schemaFactory = JsonSchemaFactory.byDefault();
+	private static final JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance();
+	private Set<ValidationMessage> lastValidationReport = new HashSet<>();
 	
 	/**
 	 * creates an empty container node
@@ -1398,50 +1399,45 @@ public class JsonDocument {
 		}
 	}
 	
-	private String getErrorPointer(ProcessingMessage message) {
-		String field = null;
-		JsonNode node = message.asJson();
-		JsonNode schemaNode = node.get("schema");
-		if (schemaNode != null && schemaNode.isNull() == false && schemaNode.isMissingNode() == false) {
-			JsonNode pointerNode = schemaNode.get("pointer");
-			if (pointerNode != null && pointerNode.isNull() == false && pointerNode.isMissingNode() == false) {
-				field = pointerNode.asText();
-			}
-		}
-		return field;
-	}
-
 	/**
 	 * validates the current document against a schema
 	 * @param schemaId the id of the json-schema
-	 * @return null if ok, otherwise a String containing the error messages 
+	 * @return a set of ValidationMessage, the set is empty if no problems found 
 	 * @throws ProcessingException in case of the validation technical fails
 	 */
 	public String validate(String schemaId) throws Exception {
+		lastValidationReport.clear();
 		JsonNode schemaNode = schemaMap.get(schemaId);
 		if (schemaNode != null) {
-			JsonValidator v = schemaFactory.getValidator();
-	        ProcessingReport report = v.validate(schemaNode, rootNode, true);
-	        if (report.isSuccess()) {
-	        	return null;
-	        } else {
-	        	StringBuilder sb = new StringBuilder();
-	            for (ProcessingMessage message : report) {
-	            	sb.append("[");
-	            	sb.append(message.getLogLevel());
-	            	sb.append("] ");
-	            	String pointer = getErrorPointer(message);
-	            	if (pointer != null) {
-	            		sb.append(pointer);
-	            		sb.append(": ");
-	            	}
-	            	sb.append(message.getMessage());
-	            	sb.append("\n");
-	            }
-	            return sb.toString();
-	        }
+			JsonSchema v = schemaFactory.getSchema(schemaNode);
+			lastValidationReport = v.validate(rootNode);
+	        return buildValidationReportText(lastValidationReport);
 		} else {
 			throw new Exception("No json schema defined for the component: " + schemaId);
+		}
+	}
+	
+	public Set<ValidationMessage> getLastValidationReport() {
+		return lastValidationReport;
+	}
+	
+	/**
+	 * Build a summary text from the report.
+	 * @param report
+	 * @return
+	 */
+	public static String buildValidationReportText(Set<ValidationMessage> report) {
+		if (report.isEmpty()) {
+			return null;
+		} else {
+			StringBuilder text = new StringBuilder();
+			text.append(report.size() + " problems found:");
+			text.append("\n");
+			for (ValidationMessage m : report) {
+				text.append(m.getMessage());
+				text.append("\n");
+			}
+			return text.toString();
 		}
 	}
 
