@@ -58,12 +58,6 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>de.cimt.talend.mock</groupId>
-			<artifactId>talend-job-mock</artifactId>
-			<version>1.0</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

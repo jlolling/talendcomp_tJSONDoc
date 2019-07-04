@@ -8,9 +8,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import de.cimt.talend.mock.TalendJobMock;
-
-public class TestRemoveEmpty extends TalendJobMock {
+public class TestRemoveEmpty {
 	
 	@Test
 	public void testReadNull() throws Exception {

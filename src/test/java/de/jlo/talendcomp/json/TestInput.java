@@ -6,7 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,9 +16,9 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import de.cimt.talend.mock.TalendJobMock;
-
-public class TestInput extends TalendJobMock {
+public class TestInput {
+	
+	Map<String, Object> globalMap = new HashMap<>();
 	
 	public static class row1Struct {
 

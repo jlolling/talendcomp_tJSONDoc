@@ -3,13 +3,15 @@ package de.jlo.talendcomp.json;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import de.cimt.talend.mock.TalendJobMock;
+public class TestAddressArray {
 
-public class TestAddressArray extends TalendJobMock {
-
+	Map<String, Object> globalMap = new HashMap<>();
 	
 	@Before
 	public void setupDocument() {
