@@ -26,12 +26,12 @@
     </PARAMETER>  
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="false" NUM_ROW="30"> 
       <TABLE READONLY="false"> 
-        <COLUMN NAME="JSON_PATH" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="LEVEL" TYPE="id_Integer" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="ATTRIBUTE_NAME" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="VALUE" TYPE="id_Object" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="IS_ARRAY_VALUE" TYPE="id_Boolean" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="COUNT_ATTRIBUTES" TYPE="id_Integer" READONLY="true" CUSTOM="true"/> 
+        <COLUMN NAME="JSON_PATH" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true" COMMENT="json path to the current part of the document"/>  
+        <COLUMN NAME="LEVEL" TYPE="id_Integer" READONLY="true" CUSTOM="true" COMMENT="level or number of objects within the path to the current part of the document"/>  
+        <COLUMN NAME="ATTRIBUTE_NAME" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true" COMMENT="name of the current json attribute"/>  
+        <COLUMN NAME="VALUE" TYPE="id_Object" READONLY="true" CUSTOM="true" COMMENT="value of the current json attribute"/>  
+        <COLUMN NAME="IS_ARRAY_VALUE" TYPE="id_Boolean" READONLY="true" CUSTOM="true" COMMENT="true if the value of the current json attribute is part of an array"/>  
+        <COLUMN NAME="COUNT_ATTRIBUTES" TYPE="id_Integer" READONLY="true" CUSTOM="true" COMMENT="number detected attributes within the current traverse run"/> 
       </TABLE> 
     </PARAMETER> 
   </PARAMETERS>  

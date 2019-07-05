@@ -23,9 +23,9 @@
     <PARAMETER NAME="JSON_DOCUMENT" FIELD="COMPONENT_LIST" NUM_ROW="10" FILTER="REGEXP:^(tJSONDocOpen|tJSONDocSave)(.)*" REQUIRED="true"/>  
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="false" NUM_ROW="20"> 
       <TABLE READONLY="false"> 
-        <COLUMN NAME="JSON_PATH" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="VALIDATION_TYPE" TYPE="id_String" LENGTH="32" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="VALIDATION_MESSAGE" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true"/>  
+        <COLUMN NAME="JSON_PATH" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true" COMMENT="json path to the validation issue"/>  
+        <COLUMN NAME="VALIDATION_TYPE" TYPE="id_String" LENGTH="32" READONLY="true" CUSTOM="true" COMMENT="type of detected problem. Examples: [type or unionType]=value type mismatch, [additionalProperties]=unexpected property found"/>  
+        <COLUMN NAME="VALIDATION_MESSAGE" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true" COMMENT="description of the current issue"/>  
       </TABLE> 
     </PARAMETER> 
   </PARAMETERS>  

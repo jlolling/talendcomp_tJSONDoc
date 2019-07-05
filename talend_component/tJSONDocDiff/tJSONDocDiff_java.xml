@@ -22,12 +22,12 @@
   <PARAMETERS> 
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1"> 
       <TABLE READONLY="true"> 
-        <COLUMN NAME="JSON_PATH" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="REF_VALUE_STRING" TYPE="id_String" LENGTH="4000" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="REF_VALUE_NODE" TYPE="id_Object" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="TEST_VALUE_STRING" TYPE="id_String" LENGTH="4000" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="TEST_VALUE_NODE" TYPE="id_Object" READONLY="true" CUSTOM="true"/>  
-        <COLUMN NAME="TYPE_MISMATCH" TYPE="id_Boolean" READONLY="true" CUSTOM="true"/> 
+        <COLUMN NAME="JSON_PATH" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true" COMMENT="json path pointer to the current difference"/>  
+        <COLUMN NAME="REF_VALUE_STRING" TYPE="id_String" LENGTH="4000" READONLY="true" CUSTOM="true" COMMENT="reference value as String"/>  
+        <COLUMN NAME="REF_VALUE_NODE" TYPE="id_Object" READONLY="true" CUSTOM="true" COMMENT="reference value as json node"/>  
+        <COLUMN NAME="TEST_VALUE_STRING" TYPE="id_String" LENGTH="4000" READONLY="true" CUSTOM="true" COMMENT="test value (the value differ from the reference) as String"/>  
+        <COLUMN NAME="TEST_VALUE_NODE" TYPE="id_Object" READONLY="true" CUSTOM="true" COMMENT="test value (the value differ from the reference) as json node"/>  
+        <COLUMN NAME="TYPE_MISMATCH" TYPE="id_Boolean" READONLY="true" CUSTOM="true" COMMENT="true if the current difference is caused by a data type mismatch"/> 
       </TABLE> 
     </PARAMETER>  
     <PARAMETER FIELD="CLOSED_LIST" NAME="REF_SETUP" NUM_ROW="10" GROUP="REF" REQUIRED="true"> 
