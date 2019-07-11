@@ -1,0 +1,120 @@
+[
+  {
+    "header": "global header1",
+    "items": [
+      {
+        "group_header": "group_header1",
+        "item_data": [
+          {
+            "item-key": 1
+          },
+          {
+            "item-key": 2
+          },
+          {
+            "item-key": 3
+          }
+        ],
+        "item_data2": [
+          {
+            "item-key": 1
+          },
+          {
+            "item-key": 2
+          },
+          {
+            "item-key": 3
+          }
+        ]
+      },
+      {
+        "group_header": "group_header2",
+        "item_data": [
+          {
+            "item-key": 4
+          },
+          {
+            "item-key": 5
+          },
+          {
+            "item-key": 6
+          }
+        ]
+      }
+    ],
+    "more_items": [
+      {
+        "more_items_group_header": "group_header1",
+        "item_data": [
+          {
+            "item-key": 1
+          },
+          {
+            "item-key": 2
+          },
+          {
+            "item-key": 3
+          }
+        ],
+        "item_data2": [
+          {
+            "item-key": 1
+          },
+          {
+            "item-key": 2
+          },
+          {
+            "item-key": 3
+          }
+        ]
+      },
+      {
+        "more_items_group_header": "group_header2",
+        "item_data": [
+          {
+            "item-key": 4
+          },
+          {
+            "item-key": 5
+          },
+          {
+            "item-key": 6
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "header": "global header2",
+    "items": [
+      {
+        "group_header": "group_header3",
+        "item_data": [
+          {
+            "item-key": 7
+          },
+          {
+            "item-key": 8
+          },
+          {
+            "item-key": 9
+          }
+        ]
+      },
+      {
+        "group_header": "group_header4",
+        "item_data": [
+          {
+            "item-key": 10
+          },
+          {
+            "item-key": 11
+          },
+          {
+            "item-key": 12
+          }
+        ]
+      }
+    ]
+  }
+]

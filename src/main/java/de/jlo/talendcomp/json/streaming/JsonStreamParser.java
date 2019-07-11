@@ -31,9 +31,10 @@ public class JsonStreamParser {
 	private Stack<String> stack = new Stack<String>();
 	private int currentLoopIndex = 0;
 	private String loopPath = null;
-	private Map<String, String> columnExpectedPathMap = new HashMap<String, String>();
+	private Map<String, String> columnExpectedPathMap = new HashMap<>();
 	private Set<String> expectedPathSet = new TreeSet<String>();
-	private TreeMap<String, StringBuilder> currentPathContentMap = new TreeMap<String, StringBuilder>();
+	private TreeMap<String, StringBuilder> currentPathContentMap = new TreeMap<>();
+	private Map<String, Integer> expectedPathOccurence = new HashMap<>();
 	private List<String> keysToDel = new ArrayList<String>();
 	private boolean streamEnded = false;
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -80,28 +81,55 @@ public class JsonStreamParser {
 	}
 	
 	private void reset() {
-		currentPathContentMap = new TreeMap<String, StringBuilder>();
+		currentPathContentMap.clear();
+		expectedPathSet.clear();
+		expectedPathOccurence.clear();
 		currentLoopIndex = 0;
 	}
 	
 	public void setInputStream(InputStream in) throws Exception {
 		if (in == null) {
-			throw new IllegalArgumentException("InputStream must be null!");
+			throw new IllegalArgumentException("InputStream cannot be null!");
 		}
 		reset();
 		parser = factory.createParser(in);
 	}
 	
+	public void setInputResource(String inputResourceName) throws Exception {
+		if (inputResourceName == null || inputResourceName.trim().isEmpty()) {
+			throw new IllegalArgumentException("Input resource name cannot be null or empty!");
+		}
+		reset();
+		if (inputResourceName.startsWith("/") == false) {
+			inputResourceName = "/" + inputResourceName;
+		}
+		InputStream in = this.getClass().getResourceAsStream(inputResourceName.trim());
+		if (in == null) {
+			throw new Exception("There is no input resource with the name: " + inputResourceName);
+		}
+		parser = factory.createParser(in);
+	}
+	
 	public static int getKeyLevel(String key) {
 		int level = 0;
+		char c = '°';
 		for (int i = 0, n = key.length(); i < n; i++) {
-			char c = key.charAt(i);
+			c = key.charAt(i);
 			if (c == '$') {
 				level++;
 			} else if (c == '[') {
 				level++;
 			} else if (c == '.') {
 				level++;
+			}
+		}
+		// after the loop c contains the last char
+		if (c != ']') {
+			// we do not have an array as last element
+			// in this case it is a attribute and we have to lower the level to reach the 
+			// object carring this attribute
+			if (level > 1) {
+				level--;
 			}
 		}
 		return level;
@@ -169,6 +197,12 @@ public class JsonStreamParser {
 		if (loopPath == null) {
 			throw new IllegalArgumentException("Loop-path not set.");
 		}
+		if (columnExpectedPathMap.isEmpty()) {
+			throw new IllegalArgumentException("Expected path set and column mapping is empty. Take care calling the configuration methods AFTER setting set input!");
+		}
+		if (expectedPathSet.isEmpty()) {
+			throw new IllegalArgumentException("Expected path set is empty. Take care calling the configuration methods AFTER setting set input!");
+		}
 		// prepare for next record
 		clearPathContentMap();
 		boolean endReached = false;
@@ -177,6 +211,9 @@ public class JsonStreamParser {
 		while ((token = parser.nextToken()) != null) {
 			name = parser.getCurrentName();
 			if (token == JsonToken.START_OBJECT) {
+				if (logger.isTraceEnabled()) {
+					logger.trace("START_OBJECT");
+				}
 				if (firstToken) {
 					firstToken = false;
 					push("$");
@@ -189,7 +226,13 @@ public class JsonStreamParser {
 				// check if the path is expected, start collecting tokens
 				incrementJsonLevel();
 				appendObject(path, "{");
+				if (logger.isTraceEnabled()) {
+					logger.trace("START_OBJECT: path: " + path + ", level: " + jsonLevel);
+				}
 			} else if (token == JsonToken.START_ARRAY) {
+				if (logger.isTraceEnabled()) {
+					logger.trace("START_ARRAY");
+				}
 				if (firstToken) {
 					firstToken = false;
 					push("$");
@@ -202,9 +245,12 @@ public class JsonStreamParser {
 				incrementJsonLevel();
 				appendContent(getCurrentStackPath(), "["); // the start of the array applies to the former object
 				push(name + "[*]");
+				if (logger.isTraceEnabled()) {
+					logger.trace("START_ARRAY: path: " + getCurrentStackPath() + ", level: " + jsonLevel);
+				}
 			} else if (token == JsonToken.FIELD_NAME) {
 				appendName(getCurrentStackPath(), "\"" + parser.getText() + "\":");
-			} else if (token == JsonToken.VALUE_TRUE || token == JsonToken.VALUE_FALSE) {
+			} else if (token == JsonToken.VALUE_TRUE || token == JsonToken.VALUE_FALSE) {	
 				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), parser.getText());
 			} else if (token == JsonToken.VALUE_NULL) {
 				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), "null");
@@ -215,6 +261,9 @@ public class JsonStreamParser {
 			} else if (token == JsonToken.VALUE_STRING) {
 				appendValue(getCurrentStackPath() + "." + parser.getCurrentName(), getJsonStringValue(parser.getText()));
 			} else if (token == JsonToken.END_OBJECT) {
+				if (logger.isTraceEnabled()) {
+					logger.trace("END_OBJECT");
+				}
 				String path = pop();
 				appendContent(path, "}");
 				decrementJsonLevel();
@@ -235,6 +284,9 @@ public class JsonStreamParser {
 					}
 				}
 			} else if (token == JsonToken.END_ARRAY) {
+				if (logger.isTraceEnabled()) {
+					logger.trace("END_ARRAY");
+				}
 				String path = pop();
 				appendContent(getCurrentStackPath(), "]"); // the end of the array applies to the former object
 				decrementJsonLevel();
@@ -342,7 +394,7 @@ public class JsonStreamParser {
 			logger.trace("appendObject: path: " + path + " level: " + jsonLevel + " object: " + object);
 		}
 		for (String ep : expectedPathSet) {
-			if (isMatchingSubpath(path,ep)) {
+			if (isMatchingSubpath(path, ep)) {
 				if (keysToDel.contains(ep)) {
 					currentPathContentMap.remove(ep);
 					keysToDel.remove(ep);
@@ -358,6 +410,13 @@ public class JsonStreamParser {
 				if (sb == null) {
 					sb = new StringBuilder(object);
 					currentPathContentMap.put(ep, sb);
+					Integer counter = expectedPathOccurence.get(ep);
+					if (counter == null) {
+						counter = 1;
+					} else {
+						counter = counter + 1;
+					}
+					expectedPathOccurence.put(ep, counter);
 				} else {
 					if (sb.toString().endsWith("}")) {
 						sb.append(",");
@@ -389,6 +448,13 @@ public class JsonStreamParser {
 				if (sb == null) {
 					sb = new StringBuilder(value);
 					currentPathContentMap.put(ep, sb);
+					Integer counter = expectedPathOccurence.get(ep);
+					if (counter == null) {
+						counter = 1;
+					} else {
+						counter = counter + 1;
+					}
+					expectedPathOccurence.put(ep, counter);
 				} else {
 					if (sb.toString().endsWith(":") == false && sb.toString().endsWith("[") == false) {
 						// we have no attribute name before, it must be an value array
@@ -409,10 +475,10 @@ public class JsonStreamParser {
 	}
 
 	private String pop() {
-		if (logger.isTraceEnabled()) {
-			logger.trace("POP level=" + jsonLevel);
-		}
 		String path = getCurrentStackPath();
+		if (logger.isTraceEnabled()) {
+			logger.trace("POP current level=" + jsonLevel +" current path=" + path);
+		}
 		stack.pop();
 		return path;
 	}
@@ -485,6 +551,22 @@ public class JsonStreamParser {
 		}
 	}
 	
+	public int getCountOccurence(String name) {
+		if (name == null || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("name must not be null or empty");
+		}
+		String path = columnExpectedPathMap.get(name);
+		if (path == null) {
+			throw new IllegalArgumentException("name does not exist in configuration");
+		}
+		Integer counter = expectedPathOccurence.get(path);
+		if (counter == null) {
+			return 0;
+		} else {
+			return counter.intValue();
+		}
+	}
+
 	public String getLoopJsonString() {
 		return getValue(loopPathDummyName);
 	}

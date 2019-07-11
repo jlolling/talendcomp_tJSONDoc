@@ -1,0 +1,185 @@
+{
+  "merge_source_product_id" : 137106627,
+  "products" : [ {
+    "product_id" : 1,
+    "source" : "navi",
+    "rightsownerships" : [ {
+      "rights_ownership_id" : 11,
+      "source" : "navi",
+      "process_status" : "rights_ownership_deactivated",
+      "tu_id" : 1156,
+      "valid_from" : "2016-01-01",
+      "valid_to" : "2999-01-01",
+      "region_include" : [ 7391, 7393, 7394, 7395, 7396 ],
+      "usage_include" : [ 10406, 10435 ]
+    }, {
+      "rights_ownership_id" : 12,
+      "source" : "navi",
+      "process_status" : "rights_ownership_in_conflict",
+      "tu_id" : 1156,
+      "valid_from" : "2016-01-01",
+      "valid_to" : "2999-01-01",
+      "region_include" : [ 1234 ],
+      "usage_include" : [ 10406, 10435 ]
+    }, {
+      "rights_ownership_id" : 13,
+      "source" : "navi",
+      "process_status" : "rights_ownership_created",
+      "tu_id" : 1156,
+      "valid_from" : "2016-01-01",
+      "valid_to" : "2999-01-01",
+      "region_include" : [ 7393 ],
+      "usage_include" : [ 10406 ]
+    }, {
+      "rights_ownership_id" : 14,
+      "source" : "navi",
+      "process_status" : "rights_ownership_preliminarily_verified",
+      "tu_id" : 1156,
+      "valid_from" : "2015-01-01",
+      "valid_to" : "2015-01-02",
+      "region_include" : [ 7393 ],
+      "usage_include" : [ 10406 ]
+    }, {
+      "rights_ownership_id" : 15,
+      "source" : "navi",
+      "process_status" : "rights_ownership_created",
+      "tu_id" : 1156,
+      "valid_from" : "2016-01-01",
+      "valid_to" : "2999-01-01",
+      "region_include" : [ 7391, 7393, 7394, 7395, 7396 ],
+      "usage_include" : [ 10406, 10435 ]
+    } ]
+  }, {
+    "product_id" : 2,
+    "source" : "core",
+    "rightsownerships" : [ {
+      "rights_ownership_id" : 21,
+      "process_status" : "rights_ownership_created",
+      "source" : "core",
+      "tu_id" : 1156,
+      "valid_from" : "2016-01-01",
+      "valid_to" : "2999-01-01",
+      "region_include" : [ 7391, 7393, 7394, 7395, 7396 ],
+      "usage_include" : [ 10406, 10435 ]
+    } ]
+  }, {
+    "product_id" : 3,
+    "source" : "navi",
+    "rightsownerships" : [ {
+      "rights_ownership_id" : 31,
+      "process_status" : "rights_ownership_created",
+      "source" : "navi",
+      "tu_id" : 1156,
+      "valid_from" : "2016-01-01",
+      "valid_to" : "2999-01-01",
+      "region_include" : [ 7391, 7393, 7394, 7395, 7396 ],
+      "usage_include" : [ 10406, 10435 ]
+    } ]
+  }, {
+    "product_id" : 4,
+    "source" : "navi",
+    "rightsownerships" : [ {
+      "rights_ownership_id" : 41,
+      "process_status" : "rights_ownership_created",
+      "source" : "navi",
+      "tu_id" : 1156,
+      "valid_from" : "2011-01-01",
+      "valid_to" : "2011-01-01",
+      "region_include" : [ 7391, 7393, 7394, 7395, 7396 ],
+      "usage_include" : [ 10406, 10435 ]
+    } ]
+  } ],
+  "result" : {
+    "conflicts" : [ {
+      "merge_source_product_id" : 137106627,
+      "simple_conflict" : true,
+      "conflict_from" : "2016-01-01",
+      "conflict_to" : "2999-01-01",
+      "region_include" : [ 7393 ],
+      "usage_include" : [ 10406 ],
+      "conflict_parties" : [ {
+        "product_id" : 1,
+        "source" : "navi",
+        "rights_ownership_id" : 13,
+        "share_percent" : 100
+      }, {
+        "product_id" : 2,
+        "source" : "core",
+        "rights_ownership_id" : 21,
+        "share_percent" : 100
+      } ]
+    }, {
+      "merge_source_product_id" : 137106627,
+      "simple_conflict" : true,
+      "conflict_from" : "2016-01-01",
+      "conflict_to" : "2999-01-01",
+      "region_include" : [ 7393 ],
+      "usage_include" : [ 10406 ],
+      "conflict_parties" : [ {
+        "product_id" : 1,
+        "source" : "navi",
+        "rights_ownership_id" : 13,
+        "share_percent" : 100
+      }, {
+        "product_id" : 3,
+        "source" : "navi",
+        "rights_ownership_id" : 31,
+        "share_percent" : 100
+      } ]
+    }, {
+      "merge_source_product_id" : 137106627,
+      "simple_conflict" : true,
+      "conflict_from" : "2016-01-01",
+      "conflict_to" : "2999-01-01",
+      "region_include" : [ 7391, 7393, 7394, 7395, 7396 ],
+      "usage_include" : [ 10406, 10435 ],
+      "conflict_parties" : [ {
+        "product_id" : 1,
+        "source" : "navi",
+        "rights_ownership_id" : 15,
+        "share_percent" : 100
+      }, {
+        "product_id" : 2,
+        "source" : "core",
+        "rights_ownership_id" : 21,
+        "share_percent" : 100
+      } ]
+    }, {
+      "merge_source_product_id" : 137106627,
+      "simple_conflict" : true,
+      "conflict_from" : "2016-01-01",
+      "conflict_to" : "2999-01-01",
+      "region_include" : [ 7391, 7393, 7394, 7395, 7396 ],
+      "usage_include" : [ 10406, 10435 ],
+      "conflict_parties" : [ {
+        "product_id" : 1,
+        "source" : "navi",
+        "rights_ownership_id" : 15,
+        "share_percent" : 100
+      }, {
+        "product_id" : 3,
+        "source" : "navi",
+        "rights_ownership_id" : 31,
+        "share_percent" : 100
+      } ]
+    }, {
+      "merge_source_product_id" : 137106627,
+      "simple_conflict" : true,
+      "conflict_from" : "2016-01-01",
+      "conflict_to" : "2999-01-01",
+      "region_include" : [ 7391, 7393, 7394, 7395, 7396 ],
+      "usage_include" : [ 10406, 10435 ],
+      "conflict_parties" : [ {
+        "product_id" : 2,
+        "source" : "core",
+        "rights_ownership_id" : 21,
+        "share_percent" : 100
+      }, {
+        "product_id" : 3,
+        "source" : "navi",
+        "rights_ownership_id" : 31,
+        "share_percent" : 100
+      } ]
+    } ]
+  }
+}

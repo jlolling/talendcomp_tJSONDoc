@@ -1,0 +1,211 @@
+[
+ {
+  "name":"Hypn\u00f4se",
+  "taxId":4,
+  "description":"Ich bin eine Meta Desciption",
+  "descriptionLong":"Die erste Grundierung für die Wimpern von Essence: Die Lash Base wird unter der Mascara getragen und verlängert und verdichtet die Wimpern. Auch für Kontaklinsentrger/-innen geeignet.",
+  "highlight":true,
+  "keywords":"keyword 1, keyword 2",
+  "metaTitle":"Ich bin ein Meta Title",
+  "availableFrom":"2015-03-11T00:00:00+0100",
+  "availableTo":"2015-08-18T00:00:00+0100",
+  "categories":[],
+  "similar":[],
+  "related":[],
+  "mainDetail":
+  {
+   "number":"212616"
+  },
+  "supplier":"Lanc\u00d9me",
+  "configuratorSet":
+  {
+   "groups":
+   [
+    {
+     "name":"companySizeInfo",
+     "options":
+     [
+      {
+       "name":"30 ml"
+      },
+      {
+       "name":"50 ml"
+      },
+      {
+       "name":"75 ml"
+      }
+     ]
+    }
+   ]
+  },
+  "variants":
+  [
+   {
+    "isMain":true,
+    "active":true,
+    "number":"212616",
+    "weight":60,
+    "ean":"3147758235548",
+    "releaseDate":"2015-04-16T00:00:00+0200",
+    "purchaseUnit":"100",
+    "attribute":
+    {
+     "companyUnitId":"ml",
+     "companyNumberOfContentUnits":"30",
+     "companyGender":"weiblich",
+     "companySkinType":"hell",
+     "companySapGroup":"DCA111511",
+     "companyCountyOfOrigin":"DE",
+     "companyCharacteristic":"beruhigend",
+     "companyNew":0,
+     "companyShopUrl":"Make-up-Augen-Wimperntusche-Essence-Mascara-Lash-Base-Lash-Base_product_827009.html",
+     "companyDeliveryRoute":"2",
+     "companyAbcArticle":"B",
+     "companyBoxArticle":"1",
+     "companyArticleText":"EDP VAPO",
+     "companyLineNumber":"1234",
+     "companyLineName":"10 HYPNOSE",
+     "companyDepotNumber":"4321",
+     "companyDepotName":"3 LANCOME",
+     "companyUwgNumber":"2261",
+     "companyUwgName":"SPRAY",
+     "companyWgNumber":"3000",
+     "companyWgName":"DAMENDUFT-LINIE",
+     "companyArticleType":"Liedschatten",
+     "companyImage1":"image1.jpg",
+     "companyImage2":"image2.jpg",
+     "companyImage3":"",
+     "companyImage4":"",
+     "companyIngredients":"Inhaltsstoffe Beschreibung",
+     "companyUsage":"Anwendungsbeschreibung",
+     "companyIdPim":"2001004164"
+    },
+    "configuratorOptions":
+    [
+     {
+      "group":"companySizeInfo",
+      "group":"",
+      "option":"30 ml"
+     }
+    ],
+    "prices":
+    [
+     {
+      "customerGroupKey":"EK",
+      "price":49.99
+     }
+    ]
+   },
+   {
+    "isMain":false,
+    "active":true,
+    "number":"212617",
+    "weight":60,
+    "ean":"3147758235524",
+    "releaseDate":"2015-04-16T00:00:00+0200",
+    "purchaseUnit":"100",
+    "attribute":
+    {
+     "companyUnitId":"ml",
+     "companyNumberOfContentUnits":"50",
+     "companyGender":"weiblich",
+     "companySkinType":"hell",
+     "companySapGroup":"DCA111511",
+     "companyCountyOfOrigin":"DE",
+     "companyCharacteristic":"beruhigend",
+     "companyNew":0,
+     "companyShopUrl":"Make-up-Augen-Wimperntusche-Essence-Mascara-Lash-Base-Lash-Base_product_827009.html",
+     "companyDeliveryRoute":"2",
+     "companyAbcArticle":"B",
+     "companyBoxArticle":"1",
+     "companyArticleText":"EDP VAPO",
+     "companyLineNumber":"1234",
+     "companyLineName":"10 HYPNOSE",
+     "companyDepotNumber":"4321",
+     "companyDepotName":"3 LANCOME",
+     "companyUwgNumber":"2261",
+     "companyUwgName":"SPRAY",
+     "companyWgNumber":"3000",
+     "companyWgName":"DAMENDUFT-LINIE",
+     "companyArticleType":"Liedschatten",
+     "companyImage1":"image1.jpg",
+     "companyImage2":"image2.jpg",
+     "companyImage3":"",
+     "companyImage4":"",
+     "companyIngredients":"Inhaltsstoffe Beschreibung",
+     "companyUsage":"Anwendungsbeschreibung",
+     "companyIdPim":"2001004164"
+    },
+    "configuratorOptions":
+    [
+     {
+      "group":"companySizeInfo",
+      "option":"50 ml"
+     }
+    ],
+    "prices":
+    [
+     {
+      "customerGroupKey":"EK",
+      "price":79.95
+     }
+    ]
+   },
+   {
+    "isMain":false,
+    "number":"240527",
+    "active":true,
+    "weight":60,
+    "ean":"3147758235500",
+    "releaseDate":"2015-04-16T00:00:00+0200",
+    "purchaseUnit":"100",
+    "attribute":
+    {
+     "companyUnitId":"ml",
+     "companyNumberOfContentUnits":"75",
+     "companyGender":"weiblich",
+     "companySkinType":"hell",
+     "companySapGroup":"DCA111511",
+     "companyCountyOfOrigin":"DE",
+     "companyCharacteristic":"beruhigend",
+     "companyNew":0,
+     "companyShopUrl":"Make-up-Augen-Wimperntusche-Essence-Mascara-Lash-Base-Lash-Base_product_827009.html",
+     "companyDeliveryRoute":"2",
+     "companyAbcArticle":"B",
+     "companyBoxArticle":"1",
+     "companyArticleText":"EDP VAPO",
+     "companyLineNumber":"1234",
+     "companyLineName":"10 HYPNOSE",
+     "companyDepotNumber":"4321",
+     "companyDepotName":"3 LANCOME",
+     "companyUwgNumber":"2261",
+     "companyUwgName":"SPRAY",
+     "companyWgNumber":"3000",
+     "companyWgName":"DAMENDUFT-LINIE",
+     "companyArticleType":"Liedschatten",
+     "companyImage1":"image1.jpg",
+     "companyImage2":"image2.jpg",
+     "companyImage3":"",
+     "companyImage4":"",
+     "companyIngredients":"Inhaltsstoffe Beschreibung",
+     "companyUsage":"Anwendungsbeschreibung",
+     "companyIdPim":"2001004164"
+    },
+    "configuratorOptions":
+    [
+     {
+      "group":"companySizeInfo",
+      "option":"75 ml"
+     }
+    ],
+    "prices":
+    [
+     {
+      "customerGroupKey":"EK",
+      "price":98
+     }
+    ]
+   }
+  ]
+ }
+]

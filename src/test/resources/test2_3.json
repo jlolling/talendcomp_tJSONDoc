@@ -1,0 +1,65 @@
+{
+  "level-1" : {
+    "level-2" : [ {
+      "id" : "edf",
+      "level-3" : {
+        "integer-value" : 20,
+        "float_val" : 1.1,
+        "double_val" : 2.2,
+        "bigDec_value" : 2.3,
+        "string_val" : "üöä",
+        "bool_val" : false,
+        "date_val" : "07-09-2018",
+        "jsonString" : {
+          "a2" : "v2"
+        },
+        "empty_value" : null,
+        "level-4" : [ {
+          "integer-value" : 10,
+          "float_val" : 1.1,
+          "double_val" : 1.2,
+          "bigDec_value" : 1.3,
+          "string_val" : null,
+          "bool_val" : true,
+          "date_val" : "01-01-2018",
+          "jsonString" : {
+            "a1" : "v1"
+          }
+        }, {
+          "integer-value" : 20,
+          "double_val" : 2.2,
+          "bigDec_value" : 2.3,
+          "string_val" : "üöä",
+          "bool_val" : false,
+          "date_val" : "01-01-2018",
+          "jsonString" : {
+            "a2" : "v2"
+          }
+        }, {
+          "integer-value" : 10,
+          "float_val" : 1.1,
+          "double_val" : 1.2,
+          "bigDec_value" : 1.3,
+          "string_val" : null,
+          "bool_val" : true,
+          "date_val" : "01-01-2018",
+          "jsonString" : {
+            "a1" : "v1"
+          }
+        }, {
+          "integer-value" : 20,
+          "double_val" : 2.2,
+          "bigDec_value" : 2.3,
+          "string_val" : "üöä",
+          "bool_val" : false,
+          "date_val" : "01-01-2018",
+          "jsonString" : {
+            "a2" : "v2"
+          }
+        } ]
+      },
+      "example_array" : [ 10, 30 ]
+    } ]
+  },
+  "root_value" : "root_value"
+}

@@ -1431,7 +1431,7 @@ public class JsonDocument {
 			return null;
 		} else {
 			StringBuilder text = new StringBuilder();
-			text.append(report.size() + " problems found:");
+			text.append("JSON schema validation found " + report.size() + " problems");
 			text.append("\n");
 			for (ValidationMessage m : report) {
 				text.append(m.getMessage());
