@@ -82,7 +82,6 @@ public class JsonStreamParser {
 	
 	private void reset() {
 		currentPathContentMap.clear();
-		expectedPathSet.clear();
 		expectedPathOccurence.clear();
 		currentLoopIndex = 0;
 	}
@@ -198,10 +197,10 @@ public class JsonStreamParser {
 			throw new IllegalArgumentException("Loop-path not set.");
 		}
 		if (columnExpectedPathMap.isEmpty()) {
-			throw new IllegalArgumentException("Expected path set and column mapping is empty. Take care calling the configuration methods AFTER setting set input!");
+			throw new IllegalArgumentException("Expected path to column mapping is empty!");
 		}
 		if (expectedPathSet.isEmpty()) {
-			throw new IllegalArgumentException("Expected path set is empty. Take care calling the configuration methods AFTER setting set input!");
+			throw new IllegalArgumentException("Expected path set is empty!");
 		}
 		// prepare for next record
 		clearPathContentMap();

@@ -25,11 +25,11 @@ public class TestJsonStreamer {
 		System.out.println("Test testReadSimpleArray #################################");
 //		JsonStreamParser.enableTraceLogging(true);
 		JsonStreamParser p = new JsonStreamParser();
-		p.setInputResource("small_simple_array.json");
 		p.setLoopPath("$[*]");
 		p.addColumnAttrPath("id", "id");
 		p.addColumnAttrPath("name", "name");
 		p.addColumnAttrPath("city", "city");
+		p.setInputResource("small_simple_array.json");
 		String[] jsons = new String[] {
 				"{\"city\":\"Little Rock\",\"name\":\"Wilson\",\"id\":1}",
 				"{\"city\":\"Boise\",\"name\":\"Coolidge\",\"id\":null}",
