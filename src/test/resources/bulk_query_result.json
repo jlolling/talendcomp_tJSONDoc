@@ -1,327 +1,326 @@
 [
-{
-      "bo_extension_id": 9163369,
-      "object_revision": 1497625619070,
-      "baseproduct_id": 181651833,
-      "fieldname": "navi_process_status",
-      "modified_on": "2017-06-16T17:06:59000Z",
-      "source_type": 101,
-      "priority": 0,
-      "status": "navi_received",
-      "baseproduct_object": {
-        "creation_date": "2017-06-16T17:06:40.941",
-        "created_by": null,
-        "created_by_system": null,
-        "modification_date": "2017-06-16T17:06:40.941",
-        "modified_by": null,
-        "modified_by_system": null,
-        "object_revision": 1497625600941,
-        "data_status_sysname": "initial",
-        "process_status_sysname": "bp_created",
-        "datatype_sysname": "baseproduct",
-        "baseproduct": {
-          "businessobject_id": 181651833,
-          "display_mainartist": "Christoph Stiefel Trio",
-          "productduration": 496000,
-          "lineup_complete": false,
-          "total_shootingdays": null,
-          "repertoire_manager_id": null,
-          "source_id": 136750121,
-          "mediatype_sysname": "sound_recordings",
-          "genre_sysname": "gen_jazz",
-          "musicalgenre_sysname": null,
-          "musicalkey_sysname": null,
-          "product_type_sysname": "individual_product",
-          "mostly_fictional": false,
-          "rome_protected": true,
-          "priority_score": null,
-          "based_on_sources": false,
-          "relations_productidentities": [
-            {
-              "productidentity_id": 165123117,
-              "product_identifier": "13834",
-              "primary_selection": false,
-              "invalid": false,
-              "businessobject_id": 181653177,
-              "productidentity_type_sysname": "labelcode"
-            },
-            {
-              "productidentity_id": 165123118,
-              "product_identifier": "NCD4009",
-              "primary_selection": false,
-              "invalid": false,
-              "businessobject_id": 181653177,
-              "productidentity_type_sysname": "catalogue_label_number"
-            },
-            {
-              "productidentity_id": 165123119,
-              "product_identifier": "4012116400939",
-              "primary_selection": false,
-              "invalid": false,
-              "businessobject_id": 181653177,
-              "productidentity_type_sysname": "ean_13_barcode"
-            }
-          ],
-          "productidentities": [
-            {
-              "productidentity_id": 165123620,
-              "product_identifier": "DED810630040",
-              "primary_selection": true,
-              "invalid": false,
-              "productidentity_type_sysname": "isrc"
-            },
-            {
-              "productidentity_id": 165123621,
-              "product_identifier": "F-8167",
-              "primary_selection": false,
-              "invalid": false,
-              "productidentity_type_sysname": "track_id_label"
-            }
-          ],
-          "titles": [
-            {
-              "title_id": 43091611,
-              "title": "Still",
-              "titlesupplement": null,
-              "primary_selection": true,
-              "titletype_sysname": "alternative_title",
-              "language_sysname": "eng",
-              "region_sysname": null,
-              "titlesupplement_type_sysname": null
-            }
-          ],
-          "participations": [
-            181653350,
-            181656386,
-            181656387,
-            181660423
-          ],
-          "involved_persons": [
-            181654746
-          ],
-          "vita": [
-            {
-              "vita_id": 39532553,
-              "date": "2006-01-01",
-              "defaultselection": false,
-              "region_sysname": "country_deu",
-              "productvita_type_sysname": "recording"
-            }
-          ],
-          "participation_objects": [
-            {
-              "creation_date": "2017-06-16T17:06:42.571",
-              "created_by": null,
-              "created_by_system": null,
-              "modification_date": "2017-06-16T17:06:42.571",
-              "modified_by": null,
-              "modified_by_system": null,
-              "data_status_sysname": "initial",
-              "process_status_sysname": "contrib_created",
-              "datatype_sysname": "participation",
-              "object_revision": 1497625602571,
-              "participation": {
-                "businessobject_id": 181653350,
-                "product_id": 181651833,
-                "role_sysname": "participationrole_unknown",
-                "role2_sysname": null,
-                "function_sysname": null,
-                "shooting_days": null,
-                "takes": null,
-                "ensemblesize": null,
-                "participation_date": null,
-                "anonymous": false,
-                "source_id": 136750121,
-                "priority_score": null,
-                "participation_duration": null,
-                "is_mainartist": true,
-                "solidary": false,
-                "participant": {
-                  "participant_id": null
-                },
-                "pseudonym": {
-                  
-                },
-                "participantname": {
-                  "participant_name_id": 111100419,
-                  "nametype_sysname": "person_name",
-                  "salutation": null,
-                  "title": null,
-                  "firstname_supplement": null,
-                  "firstname": null,
-                  "name": "Christoph Stiefel Tri",
-                  "name_supplement": null,
-                  "language_sysname": "eng",
-                  "name_status_sysname": null
-                }
-              }
-            },
-            {
-              "creation_date": "2017-06-16T17:06:47.727",
-              "created_by": null,
-              "created_by_system": null,
-              "modification_date": "2017-06-16T17:06:47.727",
-              "modified_by": null,
-              "modified_by_system": null,
-              "data_status_sysname": "initial",
-              "process_status_sysname": "contrib_created",
-              "datatype_sysname": "participation",
-              "object_revision": 1497625607727,
-              "participation": {
-                "businessobject_id": 181656386,
-                "product_id": 181651833,
-                "role_sysname": "participationrole_unknown",
-                "role2_sysname": null,
-                "function_sysname": null,
-                "shooting_days": null,
-                "takes": null,
-                "ensemblesize": null,
-                "participation_date": null,
-                "anonymous": false,
-                "source_id": 136750121,
-                "priority_score": null,
-                "participation_duration": null,
-                "is_mainartist": false,
-                "solidary": false,
-                "participant": {
-                  "participant_id": null
-                },
-                "pseudonym": {
-                  
-                },
-                "participantname": {
-                  "participant_name_id": 111103455,
-                  "nametype_sysname": "person_name",
-                  "salutation": null,
-                  "title": null,
-                  "firstname_supplement": null,
-                  "firstname": null,
-                  "name": "Christoph Stiefel Trio(PERFORMER)",
-                  "name_supplement": null,
-                  "language_sysname": null,
-                  "name_status_sysname": null
-                }
-              }
-            },
-            {
-              "creation_date": "2017-06-16T17:06:47.728",
-              "created_by": null,
-              "created_by_system": null,
-              "modification_date": "2017-06-16T17:06:47.728",
-              "modified_by": null,
-              "modified_by_system": null,
-              "data_status_sysname": "initial",
-              "process_status_sysname": "contrib_created",
-              "datatype_sysname": "participation",
-              "object_revision": 1497625607728,
-              "participation": {
-                "businessobject_id": 181656387,
-                "product_id": 181651833,
-                "role_sysname": "participationrole_unknown",
-                "role2_sysname": null,
-                "function_sysname": null,
-                "shooting_days": null,
-                "takes": null,
-                "ensemblesize": null,
-                "participation_date": null,
-                "anonymous": false,
-                "source_id": 136750121,
-                "priority_score": null,
-                "participation_duration": null,
-                "is_mainartist": false,
-                "solidary": false,
-                "participant": {
-                  "participant_id": null
-                },
-                "pseudonym": {
-                  
-                },
-                "participantname": {
-                  "participant_name_id": 111103456,
-                  "nametype_sysname": "person_name",
-                  "salutation": null,
-                  "title": null,
-                  "firstname_supplement": null,
-                  "firstname": null,
-                  "name": "Christoph Stiefel(COMPOSER)",
-                  "name_supplement": null,
-                  "language_sysname": null,
-                  "name_status_sysname": null
-                }
-              }
-            },
-            {
-              "creation_date": "2017-06-16T17:06:54.980",
-              "created_by": null,
-              "created_by_system": null,
-              "modification_date": "2017-06-16T17:06:54.980",
-              "modified_by": null,
-              "modified_by_system": null,
-              "data_status_sysname": "initial",
-              "process_status_sysname": "contrib_verified_automatically",
-              "datatype_sysname": "participation",
-              "object_revision": 1497625614980,
-              "participation": {
-                "businessobject_id": 181660423,
-                "product_id": 181651833,
-                "role_sysname": "label",
-                "role2_sysname": null,
-                "function_sysname": null,
-                "shooting_days": null,
-                "takes": null,
-                "ensemblesize": null,
-                "participation_date": null,
-                "anonymous": false,
-                "source_id": 136750121,
-                "priority_score": null,
-                "participation_duration": null,
-                "is_mainartist": false,
-                "solidary": false,
-                "participant": {
-                  "participant_id": 145
-                },
-                "pseudonym": {
-                  
-                },
-                "participantname": {
-                  
-                }
+  {
+    "bo_extension_id": 9163369,
+    "object_revision": 1497625619070,
+    "baseproduct_id": 181651833,
+    "fieldname": "navi_process_status",
+    "modified_on": "2017-06-16T17:06:59000Z",
+    "source_type": 101,
+    "priority": 0,
+    "status": "navi_received",
+    "baseproduct_object": {
+      "creation_date": "2017-06-16T17:06:40.941",
+      "created_by": null,
+      "created_by_system": null,
+      "modification_date": "2017-06-16T17:06:40.941",
+      "modified_by": null,
+      "modified_by_system": null,
+      "object_revision": 1497625600941,
+      "data_status_sysname": "initial",
+      "process_status_sysname": "bp_created",
+      "datatype_sysname": "baseproduct",
+      "baseproduct": {
+        "businessobject_id": 181651833,
+        "display_mainartist": "Christoph Stiefel Trio",
+        "productduration": 496000,
+        "lineup_complete": false,
+        "total_shootingdays": null,
+        "repertoire_manager_id": null,
+        "source_id": 136750121,
+        "mediatype_sysname": "sound_recordings",
+        "genre_sysname": "gen_jazz",
+        "musicalgenre_sysname": null,
+        "musicalkey_sysname": null,
+        "product_type_sysname": "individual_product",
+        "mostly_fictional": false,
+        "rome_protected": true,
+        "priority_score": null,
+        "based_on_sources": false,
+        "relations_productidentities": [
+          {
+            "productidentity_id": 165123117,
+            "product_identifier": "13834",
+            "primary_selection": false,
+            "invalid": false,
+            "businessobject_id": 181653177,
+            "productidentity_type_sysname": "labelcode"
+          },
+          {
+            "productidentity_id": 165123118,
+            "product_identifier": "NCD4009",
+            "primary_selection": false,
+            "invalid": false,
+            "businessobject_id": 181653177,
+            "productidentity_type_sysname": "catalogue_label_number"
+          },
+          {
+            "productidentity_id": 165123119,
+            "product_identifier": "4012116400939",
+            "primary_selection": false,
+            "invalid": false,
+            "businessobject_id": 181653177,
+            "productidentity_type_sysname": "ean_13_barcode"
+          }
+        ],
+        "productidentities": [
+          {
+            "productidentity_id": 165123620,
+            "product_identifier": "DED810630040",
+            "primary_selection": true,
+            "invalid": false,
+            "productidentity_type_sysname": "isrc"
+          },
+          {
+            "productidentity_id": 165123621,
+            "product_identifier": "F-8167",
+            "primary_selection": false,
+            "invalid": false,
+            "productidentity_type_sysname": "track_id_label"
+          }
+        ],
+        "titles": [
+          {
+            "title_id": 43091611,
+            "title": "Still",
+            "titlesupplement": null,
+            "primary_selection": true,
+            "titletype_sysname": "alternative_title",
+            "language_sysname": "eng",
+            "region_sysname": null,
+            "titlesupplement_type_sysname": null
+          }
+        ],
+        "participations": [
+          181653350,
+          181656386,
+          181656387,
+          181660423
+        ],
+        "involved_persons": [
+          181654746
+        ],
+        "vita": [
+          {
+            "vita_id": 39532553,
+            "date": "2006-01-01",
+            "defaultselection": false,
+            "region_sysname": "country_deu",
+            "productvita_type_sysname": "recording"
+          }
+        ],
+        "participation_objects": [
+          {
+            "creation_date": "2017-06-16T17:06:42.571",
+            "created_by": null,
+            "created_by_system": null,
+            "modification_date": "2017-06-16T17:06:42.571",
+            "modified_by": null,
+            "modified_by_system": null,
+            "data_status_sysname": "initial",
+            "process_status_sysname": "contrib_created",
+            "datatype_sysname": "participation",
+            "object_revision": 1497625602571,
+            "participation": {
+              "businessobject_id": 181653350,
+              "product_id": 181651833,
+              "role_sysname": "participationrole_unknown",
+              "role2_sysname": null,
+              "function_sysname": null,
+              "shooting_days": null,
+              "takes": null,
+              "ensemblesize": null,
+              "participation_date": null,
+              "anonymous": false,
+              "source_id": 136750121,
+              "priority_score": null,
+              "participation_duration": null,
+              "is_mainartist": true,
+              "solidary": false,
+              "participant": {
+                "participant_id": null
+              },
+              "pseudonym": {
+                
+              },
+              "participantname": {
+                "participant_name_id": 111100419,
+                "nametype_sysname": "person_name",
+                "salutation": null,
+                "title": null,
+                "firstname_supplement": null,
+                "firstname": null,
+                "name": "Christoph Stiefel Tri",
+                "name_supplement": null,
+                "language_sysname": "eng",
+                "name_status_sysname": null
               }
             }
-          ],
-          "involved_persons_objects": [
-            {
-              "creation_date": "2017-06-16T17:06:45.117",
-              "created_by": null,
-              "modification_date": "2017-06-16T17:06:45.117",
-              "modified_by": null,
-              "data_status_sysname": "initial",
-              "process_status_sysname": "contrib_created",
-              "object_revision": 1497625605117,
-              "involvement": {
-                "involvement_id": 181654746,
-                "product_id": 181651833,
-                "businesspartner_id": null,
-                "role_sysname": "composer",
-                "partnername": {
-                  "partnername_id": 111101815,
-                  "nametype_sysname": "person_name",
-                  "default_selection": false,
-                  "salutation": null,
-                  "title": null,
-                  "firstname": null,
-                  "firstname_supplement": null,
-                  "name": "Christoph Stiefel",
-                  "name_supplement": null,
-                  "valid_from": null,
-                  "valid_to": null,
-                  "language_sysname": null,
-                  "name_status_sysname": null
-                }
+          },
+          {
+            "creation_date": "2017-06-16T17:06:47.727",
+            "created_by": null,
+            "created_by_system": null,
+            "modification_date": "2017-06-16T17:06:47.727",
+            "modified_by": null,
+            "modified_by_system": null,
+            "data_status_sysname": "initial",
+            "process_status_sysname": "contrib_created",
+            "datatype_sysname": "participation",
+            "object_revision": 1497625607727,
+            "participation": {
+              "businessobject_id": 181656386,
+              "product_id": 181651833,
+              "role_sysname": "participationrole_unknown",
+              "role2_sysname": null,
+              "function_sysname": null,
+              "shooting_days": null,
+              "takes": null,
+              "ensemblesize": null,
+              "participation_date": null,
+              "anonymous": false,
+              "source_id": 136750121,
+              "priority_score": null,
+              "participation_duration": null,
+              "is_mainartist": false,
+              "solidary": false,
+              "participant": {
+                "participant_id": null
+              },
+              "pseudonym": {
+                
+              },
+              "participantname": {
+                "participant_name_id": 111103455,
+                "nametype_sysname": "person_name",
+                "salutation": null,
+                "title": null,
+                "firstname_supplement": null,
+                "firstname": null,
+                "name": "Christoph Stiefel Trio(PERFORMER)",
+                "name_supplement": null,
+                "language_sysname": null,
+                "name_status_sysname": null
               }
             }
-          ]
-        }
+          },
+          {
+            "creation_date": "2017-06-16T17:06:47.728",
+            "created_by": null,
+            "created_by_system": null,
+            "modification_date": "2017-06-16T17:06:47.728",
+            "modified_by": null,
+            "modified_by_system": null,
+            "data_status_sysname": "initial",
+            "process_status_sysname": "contrib_created",
+            "datatype_sysname": "participation",
+            "object_revision": 1497625607728,
+            "participation": {
+              "businessobject_id": 181656387,
+              "product_id": 181651833,
+              "role_sysname": "participationrole_unknown",
+              "role2_sysname": null,
+              "function_sysname": null,
+              "shooting_days": null,
+              "takes": null,
+              "ensemblesize": null,
+              "participation_date": null,
+              "anonymous": false,
+              "source_id": 136750121,
+              "priority_score": null,
+              "participation_duration": null,
+              "is_mainartist": false,
+              "solidary": false,
+              "participant": {
+                "participant_id": null
+              },
+              "pseudonym": {
+                
+              },
+              "participantname": {
+                "participant_name_id": 111103456,
+                "nametype_sysname": "person_name",
+                "salutation": null,
+                "title": null,
+                "firstname_supplement": null,
+                "firstname": null,
+                "name": "Christoph Stiefel(COMPOSER)",
+                "name_supplement": null,
+                "language_sysname": null,
+                "name_status_sysname": null
+              }
+            }
+          },
+          {
+            "creation_date": "2017-06-16T17:06:54.980",
+            "created_by": null,
+            "created_by_system": null,
+            "modification_date": "2017-06-16T17:06:54.980",
+            "modified_by": null,
+            "modified_by_system": null,
+            "data_status_sysname": "initial",
+            "process_status_sysname": "contrib_verified_automatically",
+            "datatype_sysname": "participation",
+            "object_revision": 1497625614980,
+            "participation": {
+              "businessobject_id": 181660423,
+              "product_id": 181651833,
+              "role_sysname": "label",
+              "role2_sysname": null,
+              "function_sysname": null,
+              "shooting_days": null,
+              "takes": null,
+              "ensemblesize": null,
+              "participation_date": null,
+              "anonymous": false,
+              "source_id": 136750121,
+              "priority_score": null,
+              "participation_duration": null,
+              "is_mainartist": false,
+              "solidary": false,
+              "participant": {
+                "participant_id": 145
+              },
+              "pseudonym": {
+                
+              },
+              "participantname": {
+                
+              }
+            }
+          }
+        ],
+        "involved_persons_objects": [
+          {
+            "creation_date": "2017-06-16T17:06:45.117",
+            "created_by": null,
+            "modification_date": "2017-06-16T17:06:45.117",
+            "modified_by": null,
+            "data_status_sysname": "initial",
+            "process_status_sysname": "contrib_created",
+            "object_revision": 1497625605117,
+            "involvement": {
+              "involvement_id": 181654746,
+              "product_id": 181651833,
+              "businesspartner_id": null,
+              "role_sysname": "composer",
+              "partnername": {
+                "partnername_id": 111101815,
+                "nametype_sysname": "person_name",
+                "default_selection": false,
+                "salutation": null,
+                "title": null,
+                "firstname": null,
+                "firstname_supplement": null,
+                "name": "Christoph Stiefel",
+                "name_supplement": null,
+                "valid_from": null,
+                "valid_to": null,
+                "language_sysname": null,
+                "name_status_sysname": null
+              }
+            }
+          }
+        ]
       }
     }
   },
@@ -17214,5 +17213,6 @@
           ]
         }
       }
+    }
   }
 ]
