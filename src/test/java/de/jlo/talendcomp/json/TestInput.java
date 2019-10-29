@@ -34,13 +34,8 @@ public class TestInput {
 	public void setupDocument() {
 		System.out.println("Setup document...");
 		try {
-			String filePath = "/Data/Talend/testdata/json/test_1.json";
-			java.io.File jsonFile = null;
-			if (filePath != null && filePath.trim().isEmpty() == false) {
-				jsonFile = new java.io.File(filePath);
-			}
-			de.jlo.talendcomp.json.JsonDocument tJSONDocOpen_1 = new de.jlo.talendcomp.json.JsonDocument(
-					jsonFile);
+			String filePath = "/test_1.json";
+			de.jlo.talendcomp.json.JsonDocument tJSONDocOpen_1 = JsonDocument.createByResource(filePath);
 			globalMap.put("tJSONDocOpen_1", tJSONDocOpen_1);
 			globalMap.put("tJSONDocOpen_1_CURRENT_NODE",
 					tJSONDocOpen_1.getRootNode());

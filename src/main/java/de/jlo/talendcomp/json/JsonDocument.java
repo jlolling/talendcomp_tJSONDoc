@@ -147,6 +147,58 @@ public class JsonDocument {
 			throw new IllegalStateException("Clones objects detected! Use the latest Jayway library 2.2.1+");
 		}
 	}
+	
+	private void setupRootNode() {
+		rootNode = rootContext.read("$");
+		JsonNode testNode = rootContext.read("$");
+		if (rootNode != testNode) {
+			throw new IllegalStateException("Clones objects detected! Use the latest Jayway library 2.2.1+");
+		}
+	}
+	
+	/**
+	 * Creates a json object tree based on the given file
+	 * @param jsonFile the file to read
+	 * @throws Exception if parsing failes
+	 */
+	public JsonDocument(InputStream inputStream) throws Exception {
+		if (inputStream != null) {
+			rootContext = parseContext.parse(inputStream);
+		} else {
+			throw new IllegalArgumentException("Input stream cannot be null!");
+		}
+		setupRootNode();
+	}
+
+	public static JsonDocument createByFile(File file) throws Exception {
+		return new JsonDocument(file);
+	}
+
+	public static JsonDocument createByResource(String inputResourceName) throws Exception {
+		if (inputResourceName == null || inputResourceName.trim().isEmpty()) {
+			throw new IllegalArgumentException("Input resource name cannot be null or empty!");
+		}
+		if (inputResourceName.startsWith("/") == false) {
+			inputResourceName = "/" + inputResourceName;
+		}
+		InputStream in = JsonDocument.class.getResourceAsStream(inputResourceName.trim());
+		if (in == null) {
+			throw new Exception("There is no input resource with the name: " + inputResourceName);
+		}
+		return new JsonDocument(in);
+	}
+	
+	public static JsonDocument createByJsonString(String inputJsonString) throws Exception {
+		return new JsonDocument(inputJsonString);
+	}
+
+	public static JsonDocument createByJsonString(JsonNode node) throws Exception {
+		return new JsonDocument(node);
+	}
+
+	public static JsonDocument createEmpty(boolean rootArray) throws Exception {
+		return new JsonDocument(rootArray);
+	}
 
 	/**
 	 * Creates an instance of JsonDocument beased on the given json node (will be root)
