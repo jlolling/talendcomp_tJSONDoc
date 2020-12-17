@@ -27,7 +27,10 @@ import com.fasterxml.jackson.databind.util.RawValue;
  */
 public class ArrayNode
     extends ContainerNode<ArrayNode>
+    implements java.io.Serializable // since 2.10
 {
+    private static final long serialVersionUID = 1L;
+
     private final List<JsonNode> _children;
 
     public ArrayNode(JsonNodeFactory nf) {
@@ -103,6 +106,9 @@ public class ArrayNode
         return _children.size();
     }
 
+    @Override // since 2.10
+    public boolean isEmpty() { return _children.isEmpty(); }
+
     @Override
     public Iterator<JsonNode> elements() {
         return _children.iterator();
@@ -110,7 +116,7 @@ public class ArrayNode
 
     @Override
     public JsonNode get(int index) {
-        if (index >= 0 && index < _children.size()) {
+        if ((index >= 0) && (index < _children.size())) {
             return _children.get(index);
         }
         return null;
@@ -128,6 +134,15 @@ public class ArrayNode
             return _children.get(index);
         }
         return MissingNode.getInstance();
+    }
+
+    @Override
+    public JsonNode required(int index) {
+        if ((index >= 0) && (index < _children.size())) {
+            return _children.get(index);
+        }
+        return _reportRequiredViolation("No value at index #%d [0, %d) of `ArrayNode`",
+                index, _children.size());
     }
 
     @Override
@@ -162,7 +177,7 @@ public class ArrayNode
     {
         final List<JsonNode> c = _children;
         final int size = c.size();
-        f.writeStartArray(size);
+        f.writeStartArray(this, size);
     	boolean ignoreNull = (provider != null ? provider.getConfig().getDefaultPropertyInclusion().getValueInclusion().equals(Include.NON_EMPTY) : false);
         for (int i = 0; i < size; ++i) { // we'll typically have array list
             // For now, assuming it's either BaseJsonNode, JsonSerializable
@@ -189,6 +204,7 @@ public class ArrayNode
         }
         f.writeEndArray();
     }
+
     @Override
     public void serializeWithType(JsonGenerator g, SerializerProvider provider, TypeSerializer typeSer)
         throws IOException
@@ -323,14 +339,16 @@ public class ArrayNode
      */
     public ArrayNode addAll(Collection<? extends JsonNode> nodes)
     {
-        _children.addAll(nodes);
+        for (JsonNode node : nodes) {
+            add(node);
+        }
         return this;
     }
 
     /**
      * Method for inserting specified child node as an element
      * of this Array. If index is 0 or less, it will be inserted as
-     * the first element; if >= size(), appended at the end, and otherwise
+     * the first element; if {@code >= size()}, appended at the end, and otherwise
      * inserted before existing element in specified index.
      * No exceptions are thrown for any index.
      *
@@ -859,21 +877,6 @@ public class ArrayNode
     @Override
     public int hashCode() {
         return _children.hashCode();
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder(16 + (size() << 4));
-        sb.append('[');
-        for (int i = 0, len = _children.size(); i < len; ++i) {
-            if (i > 0) {
-                sb.append(',');
-            }
-            sb.append(_children.get(i).toString());
-        }
-        sb.append(']');
-        return sb.toString();
     }
 
     /*
