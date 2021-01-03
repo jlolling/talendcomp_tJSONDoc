@@ -1,0 +1,54 @@
+{
+   "created_byX" : 101,
+   "data_status_id" : 1,
+   "process_status_id" : 1,
+   "participation" : {
+      "product_id" : 100,
+      "role_id" : 1087,
+      "function_id" : 1100,
+      "shooting_days" : 12,
+      "participation_date" : "2012-01-01T11:22:33.999",
+      "source_id" : 102,
+      "participant" : {
+         "participant_id" : 103
+      },
+      "pseudonym" : {
+         "pseudonym_id" : null,
+         "nametype_id" : 5643,
+         "salutation" : null,
+         "title" : "Jan",
+         "firstname_supplement" : null,
+         "firstname" : null,
+         "name" : "The Symbol",
+         "name_supplement" : null
+      },
+      "participantname" : {
+         "participant_name_id" : null,
+         "nametype_id" : null,
+         "salutation" : null,
+         "title" : null,
+         "firstname_supplement" : null,
+         "firstname" : null,
+         "name" : null,
+         "name_supplement" : null
+      },
+      "rolenames" : [
+         {
+            "rolename" : "Landärztin Anna Maria Strickenbach",
+            "language_id" : 6541,
+            "default_selection" : true
+         },
+         {
+            "rolename" : "Country doctor Anna Maria Strickenbach",
+            "language_id" : 6598,
+            "default_selectionX" : false
+         }
+      ],
+      "remarks" : [
+         {
+            "remark" : "Hat nur in dieser einen Serienepisode mitgewirkt",
+            "remark_type_id" : 4321
+         }
+      ]
+   }
+}

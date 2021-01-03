@@ -53,6 +53,7 @@ import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion.VersionFlag;
 import com.networknt.schema.ValidationMessage;
 
 /**
@@ -87,7 +88,11 @@ public class JsonDocument {
 	private String currentPath = "";
 	private Locale defaultLocale = Locale.getDefault();
 	private static final Map<String, JsonNode> schemaMap = new HashMap<String, JsonNode>();
-	private static final JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance();
+	private static final String SCHEMA_VERSION_201909 = "https://json-schema.org/draft/2019-09/schema";
+	private static final String SCHEMA_VERSION_07 = "http://json-schema.org/draft-07/schema";
+	private static final String SCHEMA_VERSION_06 = "http://json-schema.org/draft-06/schema";
+	private static final String SCHEMA_VERSION_04 = "http://json-schema.org/draft-04/schema";
+	private static final Map<String, JsonSchemaFactory> schemaFactoryMap = new HashMap<>();
 	private Set<ValidationMessage> lastValidationReport = new HashSet<>();
 	
 	/**
@@ -1451,6 +1456,30 @@ public class JsonDocument {
 		}
 	}
 	
+	public static JsonSchemaFactory getJsonSchemaFactoryInstance(JsonNode schemaNode) throws Exception {
+		JsonNode schemaVersion = schemaNode.get("$schema");
+		String uri = schemaVersion.asText();
+		JsonSchemaFactory factory = schemaFactoryMap.get(uri);
+		if (factory == null) {
+			if (uri.startsWith(SCHEMA_VERSION_04)) {
+				factory = JsonSchemaFactory.getInstance(VersionFlag.V4);
+				schemaFactoryMap.put(uri, factory);
+			} else if (uri.startsWith(SCHEMA_VERSION_06)) {
+				factory = JsonSchemaFactory.getInstance(VersionFlag.V6);
+				schemaFactoryMap.put(uri, factory);
+			} else if (uri.startsWith(SCHEMA_VERSION_07)) {
+				factory = JsonSchemaFactory.getInstance(VersionFlag.V7);
+				schemaFactoryMap.put(uri, factory);
+			} else if (uri.startsWith(SCHEMA_VERSION_201909)) {
+				factory = JsonSchemaFactory.getInstance(VersionFlag.V201909);
+				schemaFactoryMap.put(uri, factory);
+			} else {
+				throw new Exception("Unknown schema version uri: " + uri);
+			}
+		}
+		return factory;
+	}
+	
 	/**
 	 * validates the current document against a schema
 	 * @param schemaId the id of the json-schema
@@ -1461,6 +1490,7 @@ public class JsonDocument {
 		lastValidationReport.clear();
 		JsonNode schemaNode = schemaMap.get(schemaId);
 		if (schemaNode != null) {
+			JsonSchemaFactory schemaFactory = getJsonSchemaFactoryInstance(schemaNode);
 			JsonSchema v = schemaFactory.getSchema(schemaNode);
 			lastValidationReport = v.validate(rootNode);
 	        return buildValidationReportText(lastValidationReport);

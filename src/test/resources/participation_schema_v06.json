@@ -1,0 +1,681 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema",
+    "$id": "http://example.com/participation.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "created_by": 101,
+            "data_status_id": 1,
+            "process_status_id": 1,
+            "participation": {
+                "product_id": 100,
+                "role_id": 1087,
+                "function_id": 1100,
+                "shooting_days": 12,
+                "participation_date": "2012-01-01T11:22:33.999",
+                "source_id": 102,
+                "participant": {
+                    "participant_id": 103
+                },
+                "pseudonym": {
+                    "pseudonym_id": null,
+                    "nametype_id": 5643,
+                    "salutation": null,
+                    "title": "Jan",
+                    "firstname_supplement": null,
+                    "firstname": null,
+                    "name": "The Symbol",
+                    "name_supplement": null
+                },
+                "participantname": {
+                    "participant_name_id": null,
+                    "nametype_id": null,
+                    "salutation": null,
+                    "title": null,
+                    "firstname_supplement": null,
+                    "firstname": null,
+                    "name": null,
+                    "name_supplement": null
+                },
+                "rolenames": [
+                    {
+                        "rolename": "Landärztin Anna Maria Strickenbach",
+                        "language_id": 6541,
+                        "default_selection": true
+                    },
+                    {
+                        "rolename": "Country doctor Anna Maria Strickenbach",
+                        "language_id": 6598,
+                        "default_selectionX": false
+                    }
+                ],
+                "remarks": [
+                    {
+                        "remark": "Hat nur in dieser einen Serienepisode mitgewirkt",
+                        "remark_type_id": 4321
+                    }
+                ]
+            }
+        }
+    ],
+    "required": [
+        "created_by",
+        "data_status_id",
+        "process_status_id",
+        "participation"
+    ],
+    "properties": {
+        "created_by": {
+            "$id": "#/properties/created_by",
+            "type": "integer",
+            "title": "The created_by schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                101
+            ]
+        },
+        "data_status_id": {
+            "$id": "#/properties/data_status_id",
+            "type": "integer",
+            "title": "The data_status_id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1
+            ]
+        },
+        "process_status_id": {
+            "$id": "#/properties/process_status_id",
+            "type": "integer",
+            "title": "The process_status_id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1
+            ]
+        },
+        "participation": {
+            "$id": "#/properties/participation",
+            "type": "object",
+            "title": "The participation schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "product_id": 100,
+                    "role_id": 1087,
+                    "function_id": 1100,
+                    "shooting_days": 12,
+                    "participation_date": "2012-01-01T11:22:33.999",
+                    "source_id": 102,
+                    "participant": {
+                        "participant_id": 103
+                    },
+                    "pseudonym": {
+                        "pseudonym_id": null,
+                        "nametype_id": 5643,
+                        "salutation": null,
+                        "title": "Jan",
+                        "firstname_supplement": null,
+                        "firstname": null,
+                        "name": "The Symbol",
+                        "name_supplement": null
+                    },
+                    "participantname": {
+                        "participant_name_id": null,
+                        "nametype_id": null,
+                        "salutation": null,
+                        "title": null,
+                        "firstname_supplement": null,
+                        "firstname": null,
+                        "name": null,
+                        "name_supplement": null
+                    },
+                    "rolenames": [
+                        {
+                            "rolename": "Landärztin Anna Maria Strickenbach",
+                            "language_id": 6541,
+                            "default_selection": true
+                        },
+                        {
+                            "rolename": "Country doctor Anna Maria Strickenbach",
+                            "language_id": 6598,
+                            "default_selectionX": false
+                        }
+                    ],
+                    "remarks": [
+                        {
+                            "remark": "Hat nur in dieser einen Serienepisode mitgewirkt",
+                            "remark_type_id": 4321
+                        }
+                    ]
+                }
+            ],
+            "required": [
+                "product_id",
+                "role_id",
+                "function_id",
+                "shooting_days",
+                "participation_date",
+                "source_id",
+                "participant",
+                "pseudonym",
+                "participantname",
+                "rolenames",
+                "remarks"
+            ],
+            "properties": {
+                "product_id": {
+                    "$id": "#/properties/participation/properties/product_id",
+                    "type": "integer",
+                    "title": "The product_id schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": 0,
+                    "examples": [
+                        100
+                    ]
+                },
+                "role_id": {
+                    "$id": "#/properties/participation/properties/role_id",
+                    "type": "integer",
+                    "title": "The role_id schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": 0,
+                    "examples": [
+                        1087
+                    ]
+                },
+                "function_id": {
+                    "$id": "#/properties/participation/properties/function_id",
+                    "type": "integer",
+                    "title": "The function_id schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": 0,
+                    "examples": [
+                        1100
+                    ]
+                },
+                "shooting_days": {
+                    "$id": "#/properties/participation/properties/shooting_days",
+                    "type": "integer",
+                    "title": "The shooting_days schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": 0,
+                    "examples": [
+                        12
+                    ]
+                },
+                "participation_date": {
+                    "$id": "#/properties/participation/properties/participation_date",
+                    "type": "string",
+                    "title": "The participation_date schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "2012-01-01T11:22:33.999"
+                    ]
+                },
+                "source_id": {
+                    "$id": "#/properties/participation/properties/source_id",
+                    "type": "integer",
+                    "title": "The source_id schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": 0,
+                    "examples": [
+                        102
+                    ]
+                },
+                "participant": {
+                    "$id": "#/properties/participation/properties/participant",
+                    "type": "object",
+                    "title": "The participant schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "participant_id": 103
+                        }
+                    ],
+                    "required": [
+                        "participant_id"
+                    ],
+                    "properties": {
+                        "participant_id": {
+                            "$id": "#/properties/participation/properties/participant/properties/participant_id",
+                            "type": "integer",
+                            "title": "The participant_id schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                103
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "pseudonym": {
+                    "$id": "#/properties/participation/properties/pseudonym",
+                    "type": "object",
+                    "title": "The pseudonym schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "pseudonym_id": null,
+                            "nametype_id": 5643,
+                            "salutation": null,
+                            "title": "Jan",
+                            "firstname_supplement": null,
+                            "firstname": null,
+                            "name": "The Symbol",
+                            "name_supplement": null
+                        }
+                    ],
+                    "required": [
+                        "pseudonym_id",
+                        "nametype_id",
+                        "salutation",
+                        "title",
+                        "firstname_supplement",
+                        "firstname",
+                        "name",
+                        "name_supplement"
+                    ],
+                    "properties": {
+                        "pseudonym_id": {
+                            "$id": "#/properties/participation/properties/pseudonym/properties/pseudonym_id",
+                            "type": "null",
+                            "title": "The pseudonym_id schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "nametype_id": {
+                            "$id": "#/properties/participation/properties/pseudonym/properties/nametype_id",
+                            "type": "integer",
+                            "title": "The nametype_id schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                5643
+                            ]
+                        },
+                        "salutation": {
+                            "$id": "#/properties/participation/properties/pseudonym/properties/salutation",
+                            "type": "null",
+                            "title": "The salutation schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "title": {
+                            "$id": "#/properties/participation/properties/pseudonym/properties/title",
+                            "type": "string",
+                            "title": "The title schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "Jan"
+                            ]
+                        },
+                        "firstname_supplement": {
+                            "$id": "#/properties/participation/properties/pseudonym/properties/firstname_supplement",
+                            "type": "null",
+                            "title": "The firstname_supplement schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "firstname": {
+                            "$id": "#/properties/participation/properties/pseudonym/properties/firstname",
+                            "type": "null",
+                            "title": "The firstname schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "name": {
+                            "$id": "#/properties/participation/properties/pseudonym/properties/name",
+                            "type": "string",
+                            "title": "The name schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "The Symbol"
+                            ]
+                        },
+                        "name_supplement": {
+                            "$id": "#/properties/participation/properties/pseudonym/properties/name_supplement",
+                            "type": "null",
+                            "title": "The name_supplement schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "participantname": {
+                    "$id": "#/properties/participation/properties/participantname",
+                    "type": "object",
+                    "title": "The participantname schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "participant_name_id": null,
+                            "nametype_id": null,
+                            "salutation": null,
+                            "title": null,
+                            "firstname_supplement": null,
+                            "firstname": null,
+                            "name": null,
+                            "name_supplement": null
+                        }
+                    ],
+                    "required": [
+                        "participant_name_id",
+                        "nametype_id",
+                        "salutation",
+                        "title",
+                        "firstname_supplement",
+                        "firstname",
+                        "name",
+                        "name_supplement"
+                    ],
+                    "properties": {
+                        "participant_name_id": {
+                            "$id": "#/properties/participation/properties/participantname/properties/participant_name_id",
+                            "type": "null",
+                            "title": "The participant_name_id schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "nametype_id": {
+                            "$id": "#/properties/participation/properties/participantname/properties/nametype_id",
+                            "type": "null",
+                            "title": "The nametype_id schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "salutation": {
+                            "$id": "#/properties/participation/properties/participantname/properties/salutation",
+                            "type": "null",
+                            "title": "The salutation schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "title": {
+                            "$id": "#/properties/participation/properties/participantname/properties/title",
+                            "type": "null",
+                            "title": "The title schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "firstname_supplement": {
+                            "$id": "#/properties/participation/properties/participantname/properties/firstname_supplement",
+                            "type": "null",
+                            "title": "The firstname_supplement schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "firstname": {
+                            "$id": "#/properties/participation/properties/participantname/properties/firstname",
+                            "type": "null",
+                            "title": "The firstname schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "name": {
+                            "$id": "#/properties/participation/properties/participantname/properties/name",
+                            "type": "null",
+                            "title": "The name schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        },
+                        "name_supplement": {
+                            "$id": "#/properties/participation/properties/participantname/properties/name_supplement",
+                            "type": "null",
+                            "title": "The name_supplement schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "rolenames": {
+                    "$id": "#/properties/participation/properties/rolenames",
+                    "type": "array",
+                    "title": "The rolenames schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": [],
+                    "examples": [
+                        [
+                            {
+                                "rolename": "Landärztin Anna Maria Strickenbach",
+                                "language_id": 6541,
+                                "default_selection": true
+                            },
+                            {
+                                "rolename": "Country doctor Anna Maria Strickenbach",
+                                "language_id": 6598,
+                                "default_selectionX": false
+                            }
+                        ]
+                    ],
+                    "additionalItems": true,
+                    "items": {
+                        "$id": "#/properties/participation/properties/rolenames/items",
+                        "anyOf": [
+                            {
+                                "$id": "#/properties/participation/properties/rolenames/items/anyOf/0",
+                                "type": "object",
+                                "title": "The first anyOf schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "rolename": "Landärztin Anna Maria Strickenbach",
+                                        "language_id": 6541,
+                                        "default_selection": true
+                                    }
+                                ],
+                                "required": [
+                                    "rolename",
+                                    "language_id",
+                                    "default_selection"
+                                ],
+                                "properties": {
+                                    "rolename": {
+                                        "$id": "#/properties/participation/properties/rolenames/items/anyOf/0/properties/rolename",
+                                        "type": "string",
+                                        "title": "The rolename schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "Landärztin Anna Maria Strickenbach"
+                                        ]
+                                    },
+                                    "language_id": {
+                                        "$id": "#/properties/participation/properties/rolenames/items/anyOf/0/properties/language_id",
+                                        "type": "integer",
+                                        "title": "The language_id schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0,
+                                        "examples": [
+                                            6541
+                                        ]
+                                    },
+                                    "default_selection": {
+                                        "$id": "#/properties/participation/properties/rolenames/items/anyOf/0/properties/default_selection",
+                                        "type": "boolean",
+                                        "title": "The default_selection schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": false,
+                                        "examples": [
+                                            true
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": true
+                            },
+                            {
+                                "$id": "#/properties/participation/properties/rolenames/items/anyOf/1",
+                                "type": "object",
+                                "title": "The second anyOf schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "rolename": "Country doctor Anna Maria Strickenbach",
+                                        "language_id": 6598,
+                                        "default_selectionX": false
+                                    }
+                                ],
+                                "required": [
+                                    "rolename",
+                                    "language_id",
+                                    "default_selectionX"
+                                ],
+                                "properties": {
+                                    "rolename": {
+                                        "$id": "#/properties/participation/properties/rolenames/items/anyOf/1/properties/rolename",
+                                        "type": "string",
+                                        "title": "The rolename schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "Country doctor Anna Maria Strickenbach"
+                                        ]
+                                    },
+                                    "language_id": {
+                                        "$id": "#/properties/participation/properties/rolenames/items/anyOf/1/properties/language_id",
+                                        "type": "integer",
+                                        "title": "The language_id schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0,
+                                        "examples": [
+                                            6598
+                                        ]
+                                    },
+                                    "default_selectionX": {
+                                        "$id": "#/properties/participation/properties/rolenames/items/anyOf/1/properties/default_selectionX",
+                                        "type": "boolean",
+                                        "title": "The default_selectionX schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": false,
+                                        "examples": [
+                                            false
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": true
+                            }
+                        ]
+                    }
+                },
+                "remarks": {
+                    "$id": "#/properties/participation/properties/remarks",
+                    "type": "array",
+                    "title": "The remarks schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": [],
+                    "examples": [
+                        [
+                            {
+                                "remark": "Hat nur in dieser einen Serienepisode mitgewirkt",
+                                "remark_type_id": 4321
+                            }
+                        ]
+                    ],
+                    "additionalItems": true,
+                    "items": {
+                        "$id": "#/properties/participation/properties/remarks/items",
+                        "anyOf": [
+                            {
+                                "$id": "#/properties/participation/properties/remarks/items/anyOf/0",
+                                "type": "object",
+                                "title": "The first anyOf schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "remark": "Hat nur in dieser einen Serienepisode mitgewirkt",
+                                        "remark_type_id": 4321
+                                    }
+                                ],
+                                "required": [
+                                    "remark",
+                                    "remark_type_id"
+                                ],
+                                "properties": {
+                                    "remark": {
+                                        "$id": "#/properties/participation/properties/remarks/items/anyOf/0/properties/remark",
+                                        "type": "string",
+                                        "title": "The remark schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "Hat nur in dieser einen Serienepisode mitgewirkt"
+                                        ]
+                                    },
+                                    "remark_type_id": {
+                                        "$id": "#/properties/participation/properties/remarks/items/anyOf/0/properties/remark_type_id",
+                                        "type": "integer",
+                                        "title": "The remark_type_id schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0,
+                                        "examples": [
+                                            4321
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": true
+                            }
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": true
+        }
+    },
+    "additionalProperties": true
+}

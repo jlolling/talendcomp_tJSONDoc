@@ -67,190 +67,51 @@ public class TestSchemaValidation {
 		    + "   }\n"
 		    + "}";
 
-	String jsonSchemaStr = "{\n"
-		    + "    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n"
-		    + "    \"definitions\": {},\n"
-		    + "    \"id\": \"http://example.com/example.json\",\n"
-		    + "    \"properties\": {\n"
-		    + "        \"created_by\": {\n"
-		    + "            \"id\": \"/properties/created_by\",\n"
-		    + "            \"type\": \"integer\"\n"
-		    + "        },\n"
-		    + "        \"data_status_id\": {\n"
-		    + "            \"id\": \"/properties/data_status_id\",\n"
-		    + "            \"type\": \"integer\"\n"
-		    + "        },\n"
-		    + "        \"participation\": {\n"
-		    + "            \"id\": \"/properties/participation\",\n"
-		    + "            \"properties\": {\n"
-		    + "                \"function_id\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/function_id\",\n"
-		    + "                    \"type\": \"integer\"\n"
-		    + "                },\n"
-		    + "                \"participant\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/participant\",\n"
-		    + "                    \"properties\": {\n"
-		    + "                        \"participant_id\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/participant/properties/participant_id\",\n"
-		    + "                            \"type\": \"integer\"\n"
-		    + "                        }\n"
-		    + "                    },\n"
-		    + "                    \"type\": \"object\"\n"
-		    + "                },\n"
-		    + "                \"participantname\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/participantname\",\n"
-		    + "                    \"properties\": {\n"
-		    + "                        \"firstname\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/participantname/properties/firstname\",\n"
-		    + "                            \"type\": [\"string\",\"null\"]\n"
-		    + "                        },\n"
-		    + "                        \"firstname_supplement\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/participantname/properties/firstname_supplement\",\n"
-		    + "                            \"type\": [\"string\",\"null\"]\n"
-		    + "                        },\n"
-		    + "                        \"name\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/participantname/properties/name\",\n"
-		    + "                            \"type\": [\"string\",\"null\"]\n"
-		    + "                        },\n"
-		    + "                        \"name_supplement\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/participantname/properties/name_supplement\",\n"
-		    + "                            \"type\": [\"string\",\"null\"]\n"
-		    + "                        },\n"
-		    + "                        \"nametype_id\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/participantname/properties/nametype_id\",\n"
-		    + "                            \"type\": [\"integer\",\"null\"]\n"
-		    + "                        },\n"
-		    + "                        \"participant_name_id\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/participantname/properties/participant_name_id\",\n"
-		    + "                            \"type\": [\"integer\",\"null\"]\n"
-		    + "                        },\n"
-		    + "                        \"salutation\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/participantname/properties/salutation\",\n"
-		    + "                            \"type\": [\"string\",\"null\"]\n"
-		    + "                        },\n"
-		    + "                        \"title\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/participantname/properties/title\",\n"
-		    + "                            \"type\": [\"string\",\"null\"]\n"
-		    + "                        }\n"
-		    + "                    },\n"
-		    + "                    \"type\": \"object\"\n"
-		    + "                },\n"
-		    + "                \"participation_date\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/participation_date\",\n"
-		    + "                    \"type\": \"string\"\n"
-		    + "                },\n"
-		    + "                \"product_id\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/product_id\",\n"
-		    + "                    \"type\": \"integer\"\n"
-		    + "                },\n"
-		    + "                \"pseudonym\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/pseudonym\",\n"
-		    + "                    \"properties\": {\n"
-		    + "                        \"firstname\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/pseudonym/properties/firstname\",\n"
-		    + "                            \"type\": \"string\"\n"
-		    + "                        },\n"
-		    + "                        \"firstname_supplement\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/pseudonym/properties/firstname_supplement\",\n"
-		    + "                            \"type\": \"null\"\n"
-		    + "                        },\n"
-		    + "                        \"name\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/pseudonym/properties/name\",\n"
-		    + "                            \"type\": \"string\"\n"
-		    + "                        },\n"
-		    + "                        \"name_supplement\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/pseudonym/properties/name_supplement\",\n"
-		    + "                            \"type\": \"string\"\n"
-		    + "                        },\n"
-		    + "                        \"nametype_id\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/pseudonym/properties/nametype_id\",\n"
-		    + "                            \"type\": \"integer\"\n"
-		    + "                        },\n"
-		    + "                        \"pseudonym_id\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/pseudonym/properties/pseudonym_id\",\n"
-		    + "                            \"type\": \"integer\"\n"
-		    + "                        },\n"
-		    + "                        \"salutation\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/pseudonym/properties/salutation\",\n"
-		    + "                            \"type\": \"string\"\n"
-		    + "                        },\n"
-		    + "                        \"title\": {\n"
-		    + "                            \"id\": \"/properties/participation/properties/pseudonym/properties/title\",\n"
-		    + "                            \"type\": \"string\"\n"
-		    + "                        }\n"
-		    + "                    },\n"
-		    + "                    \"type\": \"object\"\n"
-		    + "                },\n"
-		    + "                \"remarks\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/remarks\",\n"
-		    + "                    \"items\": {\n"
-		    + "                        \"id\": \"/properties/participation/properties/remarks/items\",\n"
-		    + "                        \"properties\": {\n"
-		    + "                            \"remark\": {\n"
-		    + "                                \"id\": \"/properties/participation/properties/remarks/items/properties/remark\",\n"
-		    + "                                \"type\": \"string\"\n"
-		    + "                            },\n"
-		    + "                            \"remark_type_id\": {\n"
-		    + "                                \"id\": \"/properties/participation/properties/remarks/items/properties/remark_type_id\",\n"
-		    + "                                \"type\": \"integer\"\n"
-		    + "                            }\n"
-		    + "                        },\n"
-		    + "                        \"type\": \"object\"\n"
-		    + "                    },\n"
-		    + "                    \"type\": \"array\"\n"
-		    + "                },\n"
-		    + "                \"role_id\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/role_id\",\n"
-		    + "                    \"type\": \"integer\"\n"
-		    + "                },\n"
-		    + "                \"rolenames\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/rolenames\",\n"
-		    + "                    \"items\": {\n"
-		    + "                        \"id\": \"/properties/participation/properties/rolenames/items\",\n"
-		    + "                        \"properties\": {\n"
-		    + "                            \"default_selection\": {\n"
-		    + "                                \"id\": \"/properties/participation/properties/rolenames/items/properties/default_selection\",\n"
-		    + "                                \"type\": \"boolean\"\n"
-		    + "                            },\n"
-		    + "                            \"language_id\": {\n"
-		    + "                                \"id\": \"/properties/participation/properties/rolenames/items/properties/language_id\",\n"
-		    + "                                \"type\": \"integer\"\n"
-		    + "                            },\n"
-		    + "                            \"rolename\": {\n"
-		    + "                                \"id\": \"/properties/participation/properties/rolenames/items/properties/rolename\",\n"
-		    + "                                \"type\": \"string\"\n"
-		    + "                            }\n"
-		    + "                        },\n"
-		    + "                        \"additionalProperties\": false,\n"
-		    + "                        \"type\": \"object\"\n"
-		    + "                    },\n"
-		    + "                    \"type\": \"array\"\n"
-		    + "                },\n"
-		    + "                \"shooting_days\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/shooting_days\",\n"
-		    + "                    \"type\": \"integer\"\n"
-		    + "                },\n"
-		    + "                \"source_id\": {\n"
-		    + "                    \"id\": \"/properties/participation/properties/source_id\",\n"
-		    + "                    \"type\": \"integer\"\n"
-		    + "                }\n"
-		    + "            },\n"
-		    + "            \"type\": \"object\"\n"
-		    + "        },\n"
-		    + "        \"process_status_id\": {\n"
-		    + "            \"id\": \"/properties/process_status_id\",\n"
-		    + "            \"type\": \"integer\"\n"
-		    + "        }\n"
-		    + "    },\n"
-		    + "    \"required\": [\"participation\"],\n"
-		    + "    \"additionalProperties\": false,\n"
-		    + "    \"type\": \"object\"\n"
-		    + "}";
+	@Test
+	public void testReadResource() throws Exception {
+		String actual = ResourceUtil.readTextResource("/participation_testdata.json").trim();
+		System.out.println(actual);
+		String expected = jsonDocStr.trim();
+		assertEquals("read data wrong", expected, actual);
+	}
 	
 	@Test
-	public void testValidate() throws Exception {
-		JsonNode schemaNode = JsonDocument.parse(jsonSchemaStr);
-		JsonNode dataNode = JsonDocument.parse(jsonDocStr);
+	public void testValidateV4() throws Exception {
+		JsonNode schemaNode = JsonDocument.parse(ResourceUtil.readTextResource("/participation_schema_v04.json"));
+		JsonNode dataNode = JsonDocument.parse(ResourceUtil.readTextResource("/participation_testdata.json"));
+		String schemaId = "0";
+		JsonDocument.setJsonSchema(schemaId, schemaNode);
+		JsonDocument doc = new JsonDocument(dataNode);
+		System.out.println(doc.validate(schemaId));
+        assertTrue(true);
+	}
+
+	@Test
+	public void testValidateV201909() throws Exception {
+		JsonNode schemaNode = JsonDocument.parse(ResourceUtil.readTextResource("/participation_schema_v201909.json"));
+		JsonNode dataNode = JsonDocument.parse(ResourceUtil.readTextResource("/participation_testdata.json"));
+		String schemaId = "0";
+		JsonDocument.setJsonSchema(schemaId, schemaNode);
+		JsonDocument doc = new JsonDocument(dataNode);
+		System.out.println(doc.validate(schemaId));
+        assertTrue(true);
+	}
+
+	@Test
+	public void testValidateV6() throws Exception {
+		JsonNode schemaNode = JsonDocument.parse(ResourceUtil.readTextResource("/participation_schema_v06.json"));
+		JsonNode dataNode = JsonDocument.parse(ResourceUtil.readTextResource("/participation_testdata.json"));
+		String schemaId = "0";
+		JsonDocument.setJsonSchema(schemaId, schemaNode);
+		JsonDocument doc = new JsonDocument(dataNode);
+		System.out.println(doc.validate(schemaId));
+        assertTrue(true);
+	}
+
+	@Test
+	public void testValidateV7() throws Exception {
+		JsonNode schemaNode = JsonDocument.parse(ResourceUtil.readTextResource("/participation_schema_v07.json"));
+		JsonNode dataNode = JsonDocument.parse(ResourceUtil.readTextResource("/participation_testdata.json"));
 		String schemaId = "0";
 		JsonDocument.setJsonSchema(schemaId, schemaNode);
 		JsonDocument doc = new JsonDocument(dataNode);
@@ -260,9 +121,9 @@ public class TestSchemaValidation {
 
 	@Test
 	public void testValidateUsingJsonDocument() throws Exception {
-		JsonDocument doc = new JsonDocument(jsonDocStr);
+		JsonDocument doc = new JsonDocument(ResourceUtil.readTextResource("/participation_testdata.json"));
 		String schemaId = "project.jobName";
-		JsonDocument.setJsonSchema(schemaId, jsonSchemaStr);
+		JsonDocument.setJsonSchema(schemaId, ResourceUtil.readTextResource("/participation_schema_v04.json"));
 		doc.validate(schemaId);
 		Set<ValidationMessage> report = doc.getLastValidationReport();
 		for (com.networknt.schema.ValidationMessage m : report) {
@@ -275,6 +136,28 @@ public class TestSchemaValidation {
 			System.out.println("-----------------------------------------------------");
 		}
 		assertEquals(6, report.size());
+	}
+
+	@Test
+	public void testValidateV7WithDefinitions() throws Exception {
+		JsonNode schemaNode = JsonDocument.parse(ResourceUtil.readTextResource("/addresses_schema_with_definitions.json"));
+		JsonNode dataNode = JsonDocument.parse(ResourceUtil.readTextResource("/addresses_testdata.json"));
+		String schemaId = "0";
+		JsonDocument.setJsonSchema(schemaId, schemaNode);
+		JsonDocument doc = new JsonDocument(dataNode);
+		System.out.println(doc.validate(schemaId));
+        assertTrue(true);
+	}
+
+	@Test
+	public void testValidateV7WithReferences() throws Exception {
+		JsonNode schemaNode = JsonDocument.parse(ResourceUtil.readTextResource("/addresses_schema_with_external_refs.json"));
+		JsonNode dataNode = JsonDocument.parse(ResourceUtil.readTextResource("/addresses_testdata.json"));
+		String schemaId = "0";
+		JsonDocument.setJsonSchema(schemaId, schemaNode);
+		JsonDocument doc = new JsonDocument(dataNode);
+		System.out.println(doc.validate(schemaId));
+        assertTrue(true);
 	}
 
 }

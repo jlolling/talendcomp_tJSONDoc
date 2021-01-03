@@ -1,0 +1,179 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$defs": {},
+    "$id": "http://example.com/examplev201909.json",
+    "properties": {
+        "created_by": {
+            "$id": "/properties/created_by",
+            "type": "integer"
+        },
+        "data_status_id": {
+            "$id": "/properties/data_status_id",
+            "type": "integer"
+        },
+        "participation": {
+            "$id": "/properties/participation",
+            "properties": {
+                "function_id": {
+                    "$id": "/properties/participation/properties/function_id",
+                    "type": "integer"
+                },
+                "participant": {
+                    "$id": "/properties/participation/properties/participant",
+                    "properties": {
+                        "participant_id": {
+                            "$id": "/properties/participation/properties/participant/properties/participant_id",
+                            "type": "integer"
+                        }
+                    },
+                    "type": "object"
+                },
+                "participantname": {
+                    "$id": "/properties/participation/properties/participantname",
+                    "properties": {
+                        "firstname": {
+                            "$id": "/properties/participation/properties/participantname/properties/firstname",
+                            "type": ["string","null"]
+                        },
+                        "firstname_supplement": {
+                            "$id": "/properties/participation/properties/participantname/properties/firstname_supplement",
+                            "type": ["string","null"]
+                        },
+                        "name": {
+                            "$id": "/properties/participation/properties/participantname/properties/name",
+                            "type": ["string","null"]
+                        },
+                        "name_supplement": {
+                            "$id": "/properties/participation/properties/participantname/properties/name_supplement",
+                            "type": ["string","null"]
+                        },
+                        "nametype_id": {
+                            "$id": "/properties/participation/properties/participantname/properties/nametype_id",
+                            "type": ["integer","null"]
+                        },
+                        "participant_name_id": {
+                            "$id": "/properties/participation/properties/participantname/properties/participant_name_id",
+                            "type": ["integer","null"]
+                        },
+                        "salutation": {
+                            "$id": "/properties/participation/properties/participantname/properties/salutation",
+                            "type": ["string","null"]
+                        },
+                        "title": {
+                            "$id": "/properties/participation/properties/participantname/properties/title",
+                            "type": ["string","null"]
+                        }
+                    },
+                    "type": "object"
+                },
+                "participation_date": {
+                    "$id": "/properties/participation/properties/participation_date",
+                    "type": "string"
+                },
+                "product_id": {
+                    "$id": "/properties/participation/properties/product_id",
+                    "type": "integer"
+                },
+                "pseudonym": {
+                    "$id": "/properties/participation/properties/pseudonym",
+                    "properties": {
+                        "firstname": {
+                            "$id": "/properties/participation/properties/pseudonym/properties/firstname",
+                            "type": "string"
+                        },
+                        "firstname_supplement": {
+                            "$id": "/properties/participation/properties/pseudonym/properties/firstname_supplement",
+                            "type": "null"
+                        },
+                        "name": {
+                            "$id": "/properties/participation/properties/pseudonym/properties/name",
+                            "type": "string"
+                        },
+                        "name_supplement": {
+                            "$id": "/properties/participation/properties/pseudonym/properties/name_supplement",
+                            "type": "string"
+                        },
+                        "nametype_id": {
+                            "$id": "/properties/participation/properties/pseudonym/properties/nametype_id",
+                            "type": "integer"
+                        },
+                        "pseudonym_id": {
+                            "$id": "/properties/participation/properties/pseudonym/properties/pseudonym_id",
+                            "type": "integer"
+                        },
+                        "salutation": {
+                            "$id": "/properties/participation/properties/pseudonym/properties/salutation",
+                            "type": "string"
+                        },
+                        "title": {
+                            "$id": "/properties/participation/properties/pseudonym/properties/title",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "remarks": {
+                    "$id": "/properties/participation/properties/remarks",
+                    "items": {
+                        "$id": "/properties/participation/properties/remarks/items",
+                        "properties": {
+                            "remark": {
+                                "$id": "/properties/participation/properties/remarks/items/properties/remark",
+                                "type": "string"
+                            },
+                            "remark_type_id": {
+                                "$id": "/properties/participation/properties/remarks/items/properties/remark_type_id",
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "role_id": {
+                    "$id": "/properties/participation/properties/role_id",
+                    "type": "integer"
+                },
+                "rolenames": {
+                    "$id": "/properties/participation/properties/rolenames",
+                    "items": {
+                        "$id": "/properties/participation/properties/rolenames/items",
+                        "properties": {
+                            "default_selection": {
+                                "$id": "/properties/participation/properties/rolenames/items/properties/default_selection",
+                                "type": "boolean"
+                            },
+                            "language_id": {
+                                "$id": "/properties/participation/properties/rolenames/items/properties/language_id",
+                                "type": "integer"
+                            },
+                            "rolename": {
+                                "$id": "/properties/participation/properties/rolenames/items/properties/rolename",
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "shooting_days": {
+                    "$id": "/properties/participation/properties/shooting_days",
+                    "type": "integer"
+                },
+                "source_id": {
+                    "$id": "/properties/participation/properties/source_id",
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "process_status_id": {
+            "$id": "/properties/process_status_id",
+            "type": "integer"
+        }
+    },
+    "required": ["participation"],
+    "additionalProperties": false,
+    "type": "object"
+}
