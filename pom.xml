@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.jlo.talendcomp</groupId>
 	<artifactId>jlo-talendcomp-json</artifactId>
-	<version>16.4</version>
+	<version>16.5</version>
 	<name>JSON Talend Components</name>
 	<dependencies>
 		<dependency>
@@ -104,7 +104,7 @@
 				<configuration>
 					<copyFromSourceBaseDir>${project.basedir}/talend_component</copyFromSourceBaseDir>
 					<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
-					<studioUserComponentFolder>/Data/Talend/Studio/talend_user_components</studioUserComponentFolder>
+					<studioUserComponentFolder>${custom_component_folder}</studioUserComponentFolder>
 				</configuration>
 				<executions>
 					<execution>

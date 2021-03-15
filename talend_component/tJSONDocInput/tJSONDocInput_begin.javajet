@@ -210,4 +210,5 @@
 			log.error(currentComponent + ": " + e.getMessage(), e);
 <% 	} %>
 			globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+			throw e;
 		}
