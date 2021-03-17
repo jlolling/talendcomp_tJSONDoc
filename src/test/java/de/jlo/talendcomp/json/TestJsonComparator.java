@@ -26,7 +26,7 @@ public class TestJsonComparator {
 	}
 
 	@Test
-	public void testDifferenceArray() {
+	public void testDifferenceArray() throws Exception {
 		System.out.println("#### testDifferenceArray...");
 		String array1 = "[10,{\"a\":33},30,40]";
 		String array2 = "[11,{\"a\":33},31,40,\"x\"]";
@@ -41,7 +41,7 @@ public class TestJsonComparator {
 	}
 
 	@Test
-	public void testContains() {
+	public void testContains() throws Exception {
 		System.out.println("#### testDifferenceArray (contains) ...");
 		String value = "{\"a\":33}";
 		String array = "[11,{\"a\":33},31,40,\"x\"]";

@@ -15,7 +15,7 @@ import de.jlo.talendcomp.json.ops.Traverse;
 public class TestTraverse {
 	
 	@Test
-	public void testTraverseRecursiv() {
+	public void testTraverseRecursiv() throws Exception {
 		String json = "{ \"_id\" : \"503d1d4794379b47ca011b57\", \"ad_id\" : 166990753, " +
 				"\"2012-09-11\" : " +
 					"{ \"publisher\" : [" +
@@ -38,7 +38,7 @@ public class TestTraverse {
 	}
 
 	@Test
-	public void testTraverseNotRecursiv() {
+	public void testTraverseNotRecursiv() throws Exception {
 		String json = "{ \"_id\" : \"503d1d4794379b47ca011b57\", \"ad_id\" : 166990753, " +
 				"\"2012-09-11\" : " +
 					"{ \"publisher\" : [" +

@@ -127,7 +127,7 @@ public class Diff {
 	 * @param test node is the test object
 	 * @return List of Differences
 	 */
-	public List<Difference> findDifference(String reference, String refJsonPath, String test, String testJsonPath) {
+	public List<Difference> findDifference(String reference, String refJsonPath, String test, String testJsonPath) throws Exception {
 		JsonDocument refDoc = new JsonDocument(reference);
 		JsonNode refNode = null;
 		if (refJsonPath != null && refJsonPath.trim().isEmpty() == false) {
@@ -459,11 +459,11 @@ public class Diff {
 		this.referenceNode = new JsonDocument(reference).getNode(jsonPath);
 	}
 
-	public void setReferenceNode(String reference) {
+	public void setReferenceNode(String reference) throws Exception {
 		this.referenceNode = new JsonDocument(reference).getRootNode();
 	}
 
-	public void setReferenceNode(String reference, String jsonPath) {
+	public void setReferenceNode(String reference, String jsonPath) throws Exception {
 		this.referenceNode = new JsonDocument(reference).getNode(jsonPath);
 	}
 
@@ -475,7 +475,7 @@ public class Diff {
 		this.testNode = testNode;
 	}
 
-	public void setTestNode(String test) {
+	public void setTestNode(String test) throws Exception {
 		this.testNode = new JsonDocument(test).getRootNode();
 	}
 

@@ -112,9 +112,13 @@ public class JsonDocument {
 	 * Creates an json object tree based on the given String content
 	 * @param jsonContent the json to parse
 	 */
-	public JsonDocument(String jsonContent) {
+	public JsonDocument(String jsonContent) throws Exception {
 		if (jsonContent != null && jsonContent.trim().isEmpty() == false) {
-			rootContext = parseContext.parse(jsonContent);
+			try {
+				rootContext = parseContext.parse(jsonContent);
+			} catch (Exception pe) {
+				throw new Exception("Create json document from content:\n" + jsonContent + "\nfailed: " + pe.getMessage(), pe);
+			}
 		} else { 
 			throw new IllegalArgumentException("Json input content cannot be empty or null");
 		}
@@ -136,7 +140,11 @@ public class JsonDocument {
 				throw new Exception("JSON input file: " + jsonFile.getAbsolutePath() + " does not exists or is not readable!");
 			}
 			InputStream in = new FileInputStream(jsonFile); 
-			rootContext = parseContext.parse(in);
+			try {
+				rootContext = parseContext.parse(in);
+			} catch (Exception pe) {
+				throw new Exception("Create json document from file: " + jsonFile + " failed: " + pe.getMessage(), pe);
+			}
 			// parseContext closes this stream
 		} else { 
 			throw new IllegalArgumentException("Json input input file cannot be null!");
@@ -163,7 +171,11 @@ public class JsonDocument {
 	 */
 	public JsonDocument(InputStream inputStream) throws Exception {
 		if (inputStream != null) {
-			rootContext = parseContext.parse(inputStream);
+			try {
+				rootContext = parseContext.parse(inputStream);
+			} catch (Exception pe) {
+				throw new Exception("Create json document from given input stream failed: " + pe.getMessage(), pe);
+			}
 		} else {
 			throw new IllegalArgumentException("Input stream cannot be null!");
 		}
@@ -185,7 +197,13 @@ public class JsonDocument {
 		if (in == null) {
 			throw new Exception("There is no input resource with the name: " + inputResourceName);
 		}
-		return new JsonDocument(in);
+		JsonDocument doc = null;
+		try {
+			doc = new JsonDocument(in);
+		} catch (Exception pe) {
+			throw new Exception("Create json document from resource: " + inputResourceName + " failed: " + pe.getMessage(), pe);
+		}
+		return doc;
 	}
 	
 	public static JsonDocument createByJsonString(String inputJsonString) throws Exception {
@@ -201,7 +219,7 @@ public class JsonDocument {
 	}
 
 	/**
-	 * Creates an instance of JsonDocument beased on the given json node (will be root)
+	 * Creates an instance of JsonDocument based on the given json node (will be root)
 	 * @param jsonNode the root node
 	 * @throws Exception
 	 */
@@ -209,7 +227,11 @@ public class JsonDocument {
 		if (jsonNode == null || jsonNode.isNull()) {
 			throw new IllegalArgumentException("jsonNode cannor be null or a NullNode");
 		}
-		rootContext = parseContext.parse(jsonNode);
+		try {
+			rootContext = parseContext.parse(jsonNode);
+		} catch (Exception pe) {
+			throw new Exception("Create json document from given jsonn document: " + jsonNode.asText() + " failed: " + pe.getMessage(), pe);
+		}
 		rootNode = jsonNode;
 		JsonNode testNode = rootContext.read("$");
 		if (rootNode != testNode) {
