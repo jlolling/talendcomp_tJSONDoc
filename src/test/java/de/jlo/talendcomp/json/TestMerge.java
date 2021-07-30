@@ -18,8 +18,8 @@ public class TestMerge {
 	private com.fasterxml.jackson.databind.JsonNode targetRootNode = null;
 
 	public void setUpObjectToObject() throws Exception {
-		File testFile = new File("/var/testdata/json/auto_assign_input_object_to_object.json");
-		de.jlo.talendcomp.json.JsonDocument doc1 = new de.jlo.talendcomp.json.JsonDocument(testFile);
+		String fileResource = "/auto_assign_input_object_to_object.json";
+		de.jlo.talendcomp.json.JsonDocument doc1 = JsonDocument.createByResource(fileResource);
 		sourceRootNode = doc1.getRootNode();
 		targetRootNode = sourceRootNode;
 	}
@@ -32,8 +32,8 @@ public class TestMerge {
 	}
 
 	public void setUpObjectToArrayMissingSourceLoopPath() throws Exception {
-		File testFile = new File("/var/testdata/json/auto_assign_input_object_to_array_missing_source_loop_path.json");
-		de.jlo.talendcomp.json.JsonDocument doc1 = new de.jlo.talendcomp.json.JsonDocument(testFile);
+		String fileResource = "/auto_assign_input_object_to_array_missing_source_loop_path.json";
+		de.jlo.talendcomp.json.JsonDocument doc1 = JsonDocument.createByResource(fileResource);
 		sourceRootNode = doc1.getRootNode();
 		targetRootNode = sourceRootNode;
 	}
