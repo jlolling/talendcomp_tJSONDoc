@@ -3,8 +3,6 @@ package de.jlo.talendcomp.json;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.BasicConfigurator;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,13 +10,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.jlo.talendcomp.json.streaming.JsonStreamParser;
 
 public class TestJsonStreamer {
-
-	@BeforeClass
-	public static void setupLogging() {
-		System.out.println("Configure log4j");
-		BasicConfigurator.configure();
-		//JsonStreamParser.enableTraceLogging(true);
-	}
 	
 	@Test
 	public void testReadSimpleArray() throws Exception {

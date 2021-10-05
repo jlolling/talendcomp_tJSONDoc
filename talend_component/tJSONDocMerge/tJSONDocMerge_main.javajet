@@ -52,10 +52,8 @@
 	} 
 	boolean cloneObjects = "true".equals(ElementParameterParser.getValue(node, "__CLONE_OBJECTS__"));
 	boolean dieIfTargetNotFound = "true".equals(ElementParameterParser.getValue(node, "__DIE_IF_TARGET_NOT_FOUND__"));
-	boolean debug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG__"));
 %>
 	de.jlo.talendcomp.json.ops.Merge <%=cid%> = new de.jlo.talendcomp.json.ops.Merge();
-	<%=cid%>.setDebug(<%=debug%>);
 <%	if ("READ_FROM_INPUT".equals(sourceSetup)) { %>
 	<%=cid%>.setSourceNode(<%=sourceJsonStringJava%>);
 <%	} else if ("READ_FROM_COMPONENTS".equals(sourceSetup)) { %>

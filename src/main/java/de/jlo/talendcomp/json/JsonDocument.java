@@ -89,6 +89,7 @@ public class JsonDocument {
 	private static final Map<String, JsonNode> schemaMap = new HashMap<String, JsonNode>();
 	private static final JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance();
 	private Set<ValidationMessage> lastValidationReport = new HashSet<>();
+	private boolean useStrictModeForTypeConversion = false;
 	
 	/**
 	 * creates an empty container node

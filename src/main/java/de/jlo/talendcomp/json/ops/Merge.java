@@ -5,9 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -17,7 +14,6 @@ import de.jlo.talendcomp.json.JsonDocument;
 
 public class Merge {
 	
-	private Logger logger = null;
 	private String sourceLoopPath = null;
 	private String sourceIdentifier = null;
 	private String targetLoopPath = null;
@@ -38,39 +34,7 @@ public class Merge {
 	private boolean dieIfTargetKeyNotExists = false;
 	private boolean dieIfSourceLoopPathNotExists = false;
 	private boolean dieIfTargetLoopPathNotExists = false;
-	
-	public void info(String message) {
-		if (logger != null) {
-			logger.info(message);
-		} else {
-			System.out.println("INFO: " + message);
-		}
-	}
-	
-	public void debug(String message) {
-		if (debug) {
-			if (logger != null) {
-				logger.debug(message);
-			} else {
-				System.out.println("DEBUG: " + message);
-			}
-		}
-	}
-
-	public void error(String message, Throwable t) {
-		if (debug) {
-			if (logger != null) {
-				logger.error(message, t);
-			} else {
-				if (message != null) {
-					System.err.println("ERROR: " + message);
-				} else if (t != null) {
-					System.err.println("ERROR: " + t.getMessage());
-				}
-			}
-		}
-	}
-
+		
 	public JsonNode setSourceNode(JsonNode node) throws Exception {
 		this.sourceRootNode = node;
 		this.sourceDoc = new JsonDocument(node);
@@ -182,36 +146,14 @@ public class Merge {
 		}
 		listSourceNodesNotAssigned = new ArrayList<JsonNode>();
 		JsonNode sourceSearchResult = sourceDoc.getNode(sourceLoopPath);
-		if (isDebug()) {
-			debug("Source search result: " + sourceSearchResult);
-		}
 		if (dieIfSourceLoopPathNotExists && sourceSearchResult == null) {
 			throw new Exception("Source loop path does not exist. source-document:\n" + sourceDoc + "\nsourceLoopPath: " + sourceLoopPath);
 		}
 		List<JsonNode> sourceListNodes = sourceDoc.getArrayValuesAsList(sourceSearchResult, true);
-		if (isDebug()) {
-			StringBuilder message = new StringBuilder();
-			message.append("List of source nodes:\n");
-			for (JsonNode node : sourceListNodes) {
-				message.append(node.toString());
-				message.append("\n----------------------------------\n");
-			}
-		}
 		countSourceNodes = sourceListNodes.size();
 		JsonNode targetSearchResult = targetDoc.getNode(targetLoopPath);
-		if (isDebug()) {
-			debug("Target search result: " + targetSearchResult);
-		}
 		if (dieIfTargetLoopPathNotExists && targetSearchResult == null) {
 			throw new Exception("Target loop path does not exist. target-document:\n" + targetDoc + "\ntargetLoopPath: " + targetLoopPath);
-		}
-		if (isDebug()) {
-			StringBuilder message = new StringBuilder();
-			message.append("List of target nodes:\n");
-			for (JsonNode node : targetSearchResult) {
-				message.append(node.toString());
-				message.append("\n----------------------------------\n");
-			}
 		}
 		List<JsonNode> targetListNodes = targetDoc.getArrayValuesAsList(targetSearchResult, false);
 		countTargetNodes = targetListNodes.size();
@@ -237,10 +179,6 @@ public class Merge {
 								targetArray.add(sourceNode);
 							}
 							countAssigned++;
-						} else {
-							if (isDebug()) {
-								debug("Prevent duplicated source node: " + sourceNode + " in array of target node: " + targetNode);
-							}
 						}
 					} else {
 						if (".".equals(targetMountAttribute)) {
@@ -294,19 +232,10 @@ public class Merge {
 	}
 
 	private boolean match(JsonNode node1, JsonNode node2) throws Exception {
-		if (isDebug()) {
-			debug("Check key matching for source node:\n" + node1 + "\nand target node:\n" + node2);
-		}
 		if (node1 == null || node2 == null) {
-			if (isDebug()) {
-				debug("\tSource node or target node are null -> matching FAIL");
-			}
 			return false;
 		}
 		if (node1.equals(node2)) {
-			if (isDebug()) {
-				debug("\tSource node and target node are equal (prevent self assignment) -> matching FAIL");
-			}
 			return false; // prevent self assignment
 		}
 		JsonNode key1 = sourceDoc.getNode(node1, sourceIdentifier);
@@ -319,15 +248,6 @@ public class Merge {
 		}
 		if (key2 instanceof ArrayNode) {
 			boolean found = contains((ArrayNode) key2, key1);
-			if (found) {
-				if (isDebug()) {
-					debug("\tSource key: " + key1 + " exists in target key array: " + key2 + " -> matching OK");
-				}
-			} else {
-				if (isDebug()) {
-					debug("\tSource key: " + key1 + " does not exists in target key array: " + key2 + " -> matching FAIL");
-				}
-			}
 			return found;
 		} else {
 			boolean found = false;
@@ -340,42 +260,14 @@ public class Merge {
 					found = true;
 				}
 				if (found) {
-					if (isDebug()) {
-						debug("\tSource key: " + key1 + " and target key: " + key2 + " are equal -> matching OK");
-					}
 					return true;
 				} else {
-					if (isDebug()) {
-						debug("\tSource key: " + key1 + " and target key: " + key2 + " are NOT equal -> matching FAIL");
-					}
 					return false;
 				}
 			} else {
-				if (isDebug()) {
-					debug("\tSource key: " + key1 + " or target key: " + key2 + " are null -> matching FAIL");
-				}
 				return false;
 			}
 		}
-	}
-
-	public boolean isDebug() {
-		if (logger != null) {
-			return logger.isDebugEnabled();
-		} else {
-			return debug;
-		}
-	}
-
-	public void setDebug(boolean debug) {
-		if (logger != null) {
-			if (debug) {
-				logger.setLevel(Level.DEBUG);
-			} else {
-				logger.setLevel(Level.INFO);
-			}
-		}
-		this.debug = debug;
 	}
 
 	public boolean isDieIfSourceKeyNotExists() {
@@ -392,14 +284,6 @@ public class Merge {
 
 	public void setDieIfTargetKeyNotExists(boolean dieIfTargetKeyNotExists) {
 		this.dieIfTargetKeyNotExists = dieIfTargetKeyNotExists;
-	}
-
-	public Logger getLogger() {
-		return logger;
-	}
-
-	public void setLogger(Logger logger) {
-		this.logger = logger;
 	}
 
 	public boolean isDieIfSourceLoopPathNotExists() {

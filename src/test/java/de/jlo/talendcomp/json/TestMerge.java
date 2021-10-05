@@ -42,7 +42,6 @@ public class TestMerge {
 	public void testObjectToObject() throws Exception {
 		setUpObjectToObject();
 		Merge am = new Merge();
-		am.setDebug(true);
 		am.setDieIfSourceKeyNotExists(true);
 		am.setDieIfTargetKeyNotExists(true);
 		am.setSourceNode(sourceRootNode);
@@ -75,7 +74,6 @@ public class TestMerge {
 	public void testObjectToArray() throws Exception {
 		setUpObjectToArray();
 		Merge am = new Merge();
-		am.setDebug(true);
 		am.setDieIfSourceKeyNotExists(true);
 		am.setDieIfTargetKeyNotExists(true);
 		am.setSourceNode(sourceRootNode);
@@ -98,7 +96,6 @@ public class TestMerge {
 	public void testObjectToArrayMissingSourceLoopPath() throws Exception {
 		setUpObjectToArrayMissingSourceLoopPath();
 		Merge am = new Merge();
-		am.setDebug(true);
 		am.setDieIfSourceKeyNotExists(true);
 		am.setDieIfTargetKeyNotExists(true);
 		am.setSourceNode(sourceRootNode);
@@ -208,7 +205,6 @@ public class TestMerge {
 			    + "]";
 		de.jlo.talendcomp.json.JsonDocument targetDoc = new de.jlo.talendcomp.json.JsonDocument(targetJson);
 		Merge am = new Merge();
-		am.setDebug(false);
 		am.setDieIfSourceKeyNotExists(true);
 		am.setDieIfTargetKeyNotExists(true);
 		am.setSourceNode(sourceDoc.getRootNode());
