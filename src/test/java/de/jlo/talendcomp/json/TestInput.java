@@ -15,6 +15,8 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 public class TestInput {
 	
@@ -387,6 +389,30 @@ public class TestInput {
 		JsonNode parent = doc.getNode(doc.getRootNode(), "$", false);
 		Object result = doc.getValueAsObject(parent, "field.array", false, false, null);
 		assertTrue("Result is not an ArrayNode", result instanceof ArrayNode);
+	}
+
+	@Test
+	public void testReadBackslash() throws Exception {
+		String json = "\"Operation01 \\\\ \"";
+		JsonDocument doc = new JsonDocument(json);
+		System.out.println(doc.getRootNode());
+		TextNode node = (TextNode) doc.getRootNode();
+		String expected = "Operation01 \\ ";
+		String actual = node.textValue();
+		System.out.println(actual);
+		assertEquals("value does not match", expected, actual);
+	}
+	
+	@Test
+	public void testReadBackslashIO() throws Exception {
+		String json = "{\"name\":\"Operation\\n01 \\\\ \"}";
+		JsonDocument doc = new JsonDocument("{\"name\":null}");
+		ObjectNode node = (ObjectNode) doc.getRootNode();
+		String value = "Operation\n01 \\ "; // one backslash
+		node.put("name", value);
+		String actual = node.toString();
+		System.out.println(actual);
+		assertEquals("value does not match", json, actual);
 	}
 
 }
