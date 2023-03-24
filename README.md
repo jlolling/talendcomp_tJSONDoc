@@ -10,4 +10,6 @@ This project consists of components to work with JSON in a fine grained way.
 * tJSONDocMerge - merges 2 JSON documents by the help of key attributes
 * tJSONDocTraverseFields - returns all key value pair for simple attributes, retrieves through the whole object and array hierachy
 
-These components will be published on Talend Exchange: http://exchange.talend.com
+These components will be published on Talend Exchange: http://exchange.talend.com or better here in the Release section.
+
+Please refer to the [documentation](https://github.com/jlolling/talendcomp_tJSONDoc/blob/master/doc/tJSONDoc.pdf)
