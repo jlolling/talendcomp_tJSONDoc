@@ -29,7 +29,6 @@ public class Merge {
 	private int countSourceNodes = 0;
 	private int countTargetNodes = 0;
 	private List<JsonNode> listSourceNodesNotAssigned = null;
-	private boolean debug = false;
 	private boolean dieIfSourceKeyNotExists = false;
 	private boolean dieIfTargetKeyNotExists = false;
 	private boolean dieIfSourceLoopPathNotExists = false;

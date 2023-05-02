@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20220103" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="16.8"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20230502" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="16.8"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -51,19 +51,22 @@
     <PARAMETER NAME="PROVIDE_CURRENT_JSON_OBJECT" FIELD="CHECK" REQUIRED="true" NUM_ROW="10"> 
       <DEFAULT>true</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20220103" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 16.8 build at: 20220103</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20230502" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 16.8 build at: 20230502</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
       <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-16.8.jar" MVN="mvn:org.talend.libraries/jlo-talendcomp-json-16.8/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.13.1.jar" MVN="mvn:org.talend.libraries/jackson-databind-2.13.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.13.1.jar" MVN="mvn:org.talend.libraries/jackson-annotations-2.13.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.13.1.jar" MVN="mvn:org.talend.libraries/jackson-core-2.13.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="json-schema-validator" MODULE="json-schema-validator-1.0.64.jar" MVN="mvn:org.talend.libraries/json-schema-validator-1.0.64/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.7.30.jar" MVN="mvn:org.talend.libraries/slf4j-api-1.7.30/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="json-path" MODULE="json-path-2.6.0.jar" MVN="mvn:org.talend.libraries/json-path-2.6.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.13.4.jar" MVN="mvn:org.talend.libraries/jackson-databind-2.13.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.13.4.jar" MVN="mvn:org.talend.libraries/jackson-annotations-2.13.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.13.4.jar" MVN="mvn:org.talend.libraries/jackson-core-2.13.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="json-schema-validator" MODULE="json-schema-validator-1.0.81.jar" MVN="mvn:org.talend.libraries/json-schema-validator-1.0.81/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-yaml" MODULE="jackson-dataformat-yaml-2.14.2.jar" MVN="mvn:org.talend.libraries/jackson-dataformat-yaml-2.14.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="snakeyaml" MODULE="snakeyaml-1.33.jar" MVN="mvn:org.talend.libraries/snakeyaml-1.33/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-2.0.7.jar" MVN="mvn:org.talend.libraries/slf4j-api-2.0.7/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="itu" MODULE="itu-1.7.0.jar" MVN="mvn:org.talend.libraries/itu-1.7.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="json-path" MODULE="json-path-2.8.0.jar" MVN="mvn:org.talend.libraries/json-path-2.8.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="commons-lang3" MODULE="commons-lang3-3.12.0.jar" MVN="mvn:org.talend.libraries/commons-lang3-3.12.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
     </IMPORTS> 
   </CODEGENERATION>  

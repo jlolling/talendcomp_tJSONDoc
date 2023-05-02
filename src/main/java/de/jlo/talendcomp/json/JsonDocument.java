@@ -53,6 +53,7 @@ import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 
 /**
@@ -87,9 +88,8 @@ public class JsonDocument {
 	private String currentPath = "";
 	private Locale defaultLocale = Locale.getDefault();
 	private static final Map<String, JsonNode> schemaMap = new HashMap<String, JsonNode>();
-	private static final JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance();
+	private static final JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
 	private Set<ValidationMessage> lastValidationReport = new HashSet<>();
-	private boolean useStrictModeForTypeConversion = false;
 	
 	/**
 	 * creates an empty container node

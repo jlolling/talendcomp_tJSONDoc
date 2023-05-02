@@ -9,6 +9,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 
 public class SchemaValidator {
@@ -56,16 +57,16 @@ public class SchemaValidator {
 		JsonSchemaFactory factory = schemaFactoryMap.get(uri);
 		if (factory == null) {
 			if (uri.startsWith(SCHEMA_VERSION_04)) {
-				factory = JsonSchemaFactory.getInstance();
+				factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
 				schemaFactoryMap.put(uri, factory);
 			} else if (uri.startsWith(SCHEMA_VERSION_06)) {
-				factory = JsonSchemaFactory.getInstance();
+				factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V6);
 				schemaFactoryMap.put(uri, factory);
 			} else if (uri.startsWith(SCHEMA_VERSION_07)) {
-				factory = JsonSchemaFactory.getInstance();
+				factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
 				schemaFactoryMap.put(uri, factory);
 			} else if (uri.startsWith(SCHEMA_VERSION_201909)) {
-				factory = JsonSchemaFactory.getInstance();
+				factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
 				schemaFactoryMap.put(uri, factory);
 			} else {
 				throw new Exception("Unknown schema version uri: " + uri);
