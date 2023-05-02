@@ -9,6 +9,9 @@
 	<artifactId>jlo-talendcomp-json</artifactId>
 	<version>16.9</version>
 	<name>JSON Talend Components</name>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
