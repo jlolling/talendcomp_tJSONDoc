@@ -1,10 +1,28 @@
+/**
+ * Copyright 2023 Jan Lolling jan.lolling@gmail.com
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.jlo.talendcomp.json.ops;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,8 +45,13 @@ public class Diff {
 	private String refJsonPath = null;
 	private String testJsonPath = null;
 	private List<Difference> result = null;
-	private int countDifferences = 0;
 	private String rootArraySortAttribute = null;
+	private NumberFormat nf = null;
+	
+	public Diff() {
+		nf = NumberFormat.getInstance(Locale.UK);
+		nf.setGroupingUsed(false);
+	}
 
 	/**
 	 * A class describing one difference between 2 JsonNodes
@@ -118,7 +141,8 @@ public class Diff {
 	 * @return List of Differences
 	 */
 	public List<Difference> findDifference(String reference, String test) throws Exception {
-		return findDifference(reference, null, test, null);
+		result = findDifference(reference, null, test, null);
+		return result;
 	}
 	
 	/**
@@ -414,9 +438,24 @@ public class Diff {
 		}
 	}
 	
+	private String toStringValue(JsonNode n) {
+		if (n.isMissingNode()) {
+			return "missing";
+		} else if (n.isNull()) {
+			return "null";
+		} else if (n.isBigDecimal()) {
+			BigDecimal v = n.decimalValue();
+			return nf.format(v.doubleValue());
+		} else if (n.isDouble()) {
+			return nf.format(n.asDouble());
+		} else {
+			return n.toString();
+		}
+	}
+	
 	private boolean equals(JsonNode n1, JsonNode n2) {
 		if (Util.isNull(n1, takeEmptyLikeNull) == false && Util.isNull(n2, takeEmptyLikeNull) == false) {
-			return n1.toString().equals(n2.toString());
+			return toStringValue(n1).equals(toStringValue(n2));
 		} else {
 			return false;
 		}
@@ -508,7 +547,10 @@ public class Diff {
 	}
 
 	public int getCountDifferences() {
-		return countDifferences;
+		if (result == null) {
+			throw new IllegalStateException("No diff result available, please call executeDiff() or findDifferences before");
+		}
+		return result.size();
 	}
 	
 	public void setSortKeyAttribute(String keypath) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20230502" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="16.8"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" PLATEFORM="ALL" RELEASE_DATE="20230509" SERIAL="" STARTABLE="true" STATUS="PROD" HAS_CONDITIONAL_OUTPUTS="true" VERSION="16.10"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -51,13 +51,13 @@
     <PARAMETER NAME="PROVIDE_CURRENT_JSON_OBJECT" FIELD="CHECK" REQUIRED="true" NUM_ROW="10"> 
       <DEFAULT>true</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20230502" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 16.8 build at: 20230502</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20230509" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 16.10 build at: 20230509</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-16.8.jar" MVN="mvn:org.talend.libraries/jlo-talendcomp-json-16.8/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-16.10.jar" MVN="mvn:org.talend.libraries/jlo-talendcomp-json-16.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.13.4.jar" MVN="mvn:org.talend.libraries/jackson-databind-2.13.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.13.4.jar" MVN="mvn:org.talend.libraries/jackson-annotations-2.13.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="jackson-core" MODULE="jackson-core-2.13.4.jar" MVN="mvn:org.talend.libraries/jackson-core-2.13.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
