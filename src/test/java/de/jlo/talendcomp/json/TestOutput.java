@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -66,4 +68,27 @@ public class TestOutput {
 		assertEquals(exp, act);
 	}
 
+	@Test
+	public void testWriteBigDecimalPlain() throws Exception {
+		JsonDocument doc = new JsonDocument(false);
+		ObjectNode root = (ObjectNode) doc.getNode("$");
+		doc.setValue(root, "test", new BigDecimal("12345678.12345678"));
+		String expected = "{\"test\":12345678.12345678}";
+		String actual = doc.getJsonString(root, false, false);
+		System.out.println(actual);
+		assertEquals("Wrong format", expected, actual);
+	}
+	
+	@Test
+	public void testWriteDoublePlain() throws Exception {
+		JsonDocument doc = new JsonDocument(false);
+		ObjectNode root = (ObjectNode) doc.getNode("$");
+		doc.setValue(root, "test", Double.valueOf("12345678.12345"));
+		String expected = "{\"test\":12345678.12345}";
+		String actual = doc.getJsonString(root, false, false);
+		System.out.println(actual);
+		assertEquals("Wrong format", expected, actual);
+	}
+
+	
 }

@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -90,6 +91,10 @@ public class JsonDocument {
 	private static final Map<String, JsonNode> schemaMap = new HashMap<String, JsonNode>();
 	private static final JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
 	private Set<ValidationMessage> lastValidationReport = new HashSet<>();
+	
+	static {
+		objectMapper.enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
+	}
 	
 	/**
 	 * creates an empty container node
