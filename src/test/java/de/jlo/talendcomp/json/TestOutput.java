@@ -80,7 +80,7 @@ public class TestOutput {
 	}
 	
 	@Test
-	public void testWriteDoublePlain() throws Exception {
+	public void testWriteDoublePlainBig() throws Exception {
 		JsonDocument doc = new JsonDocument(false);
 		ObjectNode root = (ObjectNode) doc.getNode("$");
 		doc.setValue(root, "test", Double.valueOf("12345678.12345"));
@@ -90,5 +90,15 @@ public class TestOutput {
 		assertEquals("Wrong format", expected, actual);
 	}
 
+	@Test
+	public void testWriteDoublePlainSmall() throws Exception {
+		JsonDocument doc = new JsonDocument(false);
+		ObjectNode root = (ObjectNode) doc.getNode("$");
+		doc.setValue(root, "test", Double.valueOf("1234567.89"));
+		String expected = "{\"test\":1234567.89}";
+		String actual = doc.getJsonString(root, false, false);
+		System.out.println(actual);
+		assertEquals("Wrong format", expected, actual);
+	}
 	
 }

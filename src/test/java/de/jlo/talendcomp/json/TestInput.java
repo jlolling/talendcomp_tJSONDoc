@@ -292,7 +292,7 @@ public class TestInput {
 	@Test
 	public void testReturnDateAsString() throws Exception {
 		String json = "{\n"
-			    + "	\"attr_date\" : \"Mar 01, 2017 11:12:58 PM\"\n"
+			    + "	\"attr_date\" : \"2017-03-01 23:12:58\"\n"
 			    + "}";
 		JsonDocument doc = new JsonDocument(json);
 		JsonNode parent = doc.getNode(doc.getRootNode(), "$", false);

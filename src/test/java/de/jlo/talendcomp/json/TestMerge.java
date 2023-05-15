@@ -25,8 +25,8 @@ public class TestMerge {
 	}
 
 	public void setUpObjectToArray() throws Exception {
-		File testFile = new File("/var/testdata/json/auto_assign_input_object_to_array.json");
-		de.jlo.talendcomp.json.JsonDocument doc1 = new de.jlo.talendcomp.json.JsonDocument(testFile);
+		String fileResource = "/auto_assign_input_object_to_array.json";
+		de.jlo.talendcomp.json.JsonDocument doc1 =  JsonDocument.createByResource(fileResource);
 		sourceRootNode = doc1.getRootNode();
 		targetRootNode = sourceRootNode;
 	}
