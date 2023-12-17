@@ -109,7 +109,19 @@ public class Traverse {
 				}
 			} else if (node instanceof ValueNode) {
 				JSONValue value = new JSONValue();
-				value.setValue(node);
+				if (node.isTextual()) {
+					value.setValue(node.asText());
+				} else if (node.isIntegralNumber()) {
+					value.setValue(node.asLong());
+				} else if (node.isDouble()) {
+					value.setValue(node.asDouble());
+				} else if (node.isBigDecimal()) {
+					value.setValue(node.asDouble());
+				} else if (node.isBoolean()) {
+					value.setValue(node.asBoolean());
+				} else {
+					value.setValue(node.asText());
+				}
 			    value.setKeyPath(keyPath);
 			    valueList.add(value);
 			}

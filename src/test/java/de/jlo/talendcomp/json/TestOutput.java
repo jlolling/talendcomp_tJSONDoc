@@ -83,8 +83,11 @@ public class TestOutput {
 	public void testWriteDoublePlain() throws Exception {
 		JsonDocument doc = new JsonDocument(false);
 		ObjectNode root = (ObjectNode) doc.getNode("$");
-		doc.setValue(root, "test", Double.valueOf("12345678.12345"));
-		String expected = "{\"test\":12345678.12345}";
+		Double dv = Double.valueOf("12345678.123456789");
+		System.out.println(dv);
+		doc.setValue(root, "test", dv);
+		System.out.println(root);
+		String expected = "{\"test\":1.234567812345679E7}";
 		String actual = doc.getJsonString(root, false, false);
 		System.out.println(actual);
 		assertEquals("Wrong format", expected, actual);

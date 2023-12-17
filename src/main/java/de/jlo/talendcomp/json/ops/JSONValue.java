@@ -95,7 +95,7 @@ public class JSONValue {
 
 	@Override
 	public String toString() {
-		return getKeyPath(".") + ":" + getValueString() + " | attributeName=" + attributeName + " level=" + level + " isArrayValue=" + isArrayValue;
+		return getKeyPath(".") + "=" + getValueString() + " | attributeName=" + attributeName + " level=" + level + " isArrayValue=" + isArrayValue;
 	}
 	
 	@Override

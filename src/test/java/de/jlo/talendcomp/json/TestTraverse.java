@@ -16,7 +16,7 @@ public class TestTraverse {
 	
 	@Test
 	public void testTraverseRecursiv() throws Exception {
-		String json = "{ \"_id\" : \"503d1d4794379b47ca011b57\", \"ad_id\" : 166990753, " +
+		String json = "{ \"_id\" : \"503d1d4794379b47ca011b57\", \"ad_id\" : 166990753, \"rate\":0.23, " +
 				"\"2012-09-11\" : " +
 					"{ \"publisher\" : [" +
 						"{ \"MESA-MPL-emobilelv\" : \"xxx\", \"MESA-buyingtool\" : 1, \"MESA-mpe_autoonline\" : 1, \"SITE-GERMANY\" : 2, \"kleinanzeigen\" : 2, \"mob-iPhone\" : 1 }, " +
@@ -28,7 +28,7 @@ public class TestTraverse {
 		System.out.println(o);
 		Traverse helper = new Traverse();
 		List<JSONValue> result = helper.traverse(o);
-		int expected = 17;
+		int expected = 18;
 		int actual = 0;
 		for (JSONValue value : result) {
 			System.out.println(value);
