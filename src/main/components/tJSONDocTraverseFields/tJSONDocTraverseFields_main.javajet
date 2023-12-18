@@ -36,6 +36,8 @@
 	}
 	String sourceComp = ElementParameterParser.getValue(node, "__JSON_DOCUMENT__");
 	String maxLevel = ElementParameterParser.getValue(node, "__MAX_LEVEL__");
+	String outputType = ElementParameterParser.getValue(node, "__OUTPUT_TYPE__");
+	boolean excludeArrayNodes = "true".equals(ElementParameterParser.getValue(node, "__EXCLUDE_ARRAY_NODES__"));
    boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
    						   "JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
 %>
@@ -48,6 +50,7 @@
 					"VALUE".equals(incol.getLabel()) == false && 
 					"LEVEL".equals(incol.getLabel()) == false && 
 					"IS_ARRAY_VALUE".equals(incol.getLabel()) == false && 
+					"IS_JSON_NODE".equals(incol.getLabel()) == false && 
 					"COUNT_ATTRIBUTES".equals(incol.getLabel()) == false && 
 					incol.getLabel().equals(outcol.getLabel())) { %>
 	<%=outconn.getName()%>.<%=outcol.getLabel()%> = <%=inconn.getName()%>.<%=incol.getLabel()%>;
@@ -66,14 +69,29 @@
 <%	} %>
 		globalMap.put("<%=cid%>", <%=cid%>);
 	}
+	if ("ONLY_VALUES".equals("<%=outputType%>")) {
+		<%=cid%>.setIncludeObjectsInOutput(false);
+		<%=cid%>.setExcludeValues(false);
+	} else if ("VALUES_AND_JSON_NODES".equals("<%=outputType%>")) {
+		<%=cid%>.setIncludeObjectsInOutput(true);
+		<%=cid%>.setExcludeValues(false);
+	} else if ("ONLY_JSON_NODES".equals("<%=outputType%>")) {
+		<%=cid%>.setIncludeObjectsInOutput(true);
+		<%=cid%>.setExcludeValues(true);
+		<%=cid%>.setExcludeArrays(<%=excludeArrayNodes%>);
+	}
 	List<de.jlo.talendcomp.json.ops.JSONValue> listValues_<%=cid%> = <%=cid%>.traverse((com.fasterxml.jackson.databind.JsonNode) globalMap.get("<%=sourceComp%>_CURRENT_NODE"));
 <%	if (outconn != null) { %>
 	for (de.jlo.talendcomp.json.ops.JSONValue value_<%=cid%> : listValues_<%=cid%>) {
 		<%=outconn.getName()%>.JSON_PATH = value_<%=cid%>.getJsonPath();
 		<%=outconn.getName()%>.ATTRIBUTE_NAME = value_<%=cid%>.getAttributeName();
 		<%=outconn.getName()%>.VALUE = value_<%=cid%>.getValue();
+		<%=outconn.getName()%>.IS_JSON_NODE = value_<%=cid%>.isJsonNode();
+		if (<%=outconn.getName()%>.IS_JSON_NODE) {
+			globalMap.put("<%=cid%>_CURRENT_NODE", <%=outconn.getName()%>.VALUE);
+		}
 		<%=outconn.getName()%>.LEVEL = value_<%=cid%>.getLevel();
-		<%=outconn.getName()%>.IS_ARRAY_VALUE = value_<%=cid%>.isArrayValue();
+		<%=outconn.getName()%>.IS_ARRAY_VALUE = value_<%=cid%>.isValueInArray();
 		<%=outconn.getName()%>.COUNT_ATTRIBUTES = listValues_<%=cid%>.size();
 		Integer counter_<%=cid%> = (Integer) globalMap.get("<%=cid%>_NB_LINE");
 		if (counter_<%=cid%> == null) {

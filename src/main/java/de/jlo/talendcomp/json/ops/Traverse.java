@@ -26,14 +26,23 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 
+import de.jlo.talendcomp.json.JsonDocument;
+
 public class Traverse {
 	
+	private JsonDocument jsonDoc = null;
 	private Set<String> excludeFieldSet = new HashSet<String>();
 	private String[] pathArray = new String[0];
 	private JSONValue dummy = new JSONValue();
 	private int maxLevel = 0;
 	private boolean includeObjectsInOutput = false;
 	private boolean excludeValues = false;
+	private boolean excludeArrays = false;
+	private JsonNode currentNode = null;
+	
+	public JsonNode getCurrentNode() throws Exception {
+		return currentNode;
+	}
 	
 	public void addExcludeFields(String commaDelimitedFieldNames) {
 		String[] fields = commaDelimitedFieldNames.split(",");
@@ -57,6 +66,7 @@ public class Traverse {
 	 * @return list of JSONValue objects containing path, key and value as strings
 	 */
 	public List<JSONValue> traverse(JsonNode node) {
+		currentNode = node;
 		for (String parent : pathArray) {
 			Object child = null;
 			if (parent.equals("$")) {
@@ -107,15 +117,19 @@ public class Traverse {
 					}
 				}
 			} else if (node instanceof ArrayNode) {
-				if (includeObjectsInOutput) {
-				    value.setKeyPath(keyPath);
-				    value.setValue(node);
-				    valueList.add(value);
-				}
 				ArrayNode arrayNode = (ArrayNode) node;
 				int count = arrayNode.size();
+				boolean arrayNodeAdded = false;
 				for (int i = 0; i < count; i++) {
 					JsonNode child = arrayNode.get(i);
+					if (child.isValueNode() == false) {
+						if (includeObjectsInOutput && arrayNodeAdded == false && excludeArrays == false) {
+							arrayNodeAdded = true;
+						    value.setKeyPath(keyPath);
+						    value.setValue(node);
+						    valueList.add(value);
+						}
+					}
 					List<String> childPath = clone(keyPath);
 					childPath.add("[" + i + "]");
 					traverse(child, valueList, childPath);
@@ -179,6 +193,14 @@ public class Traverse {
 
 	public void setExcludeValues(boolean excludeValues) {
 		this.excludeValues = excludeValues;
+	}
+
+	public boolean isExcludeArrays() {
+		return excludeArrays;
+	}
+
+	public void setExcludeArrays(boolean excludeArrays) {
+		this.excludeArrays = excludeArrays;
 	}
 
 }

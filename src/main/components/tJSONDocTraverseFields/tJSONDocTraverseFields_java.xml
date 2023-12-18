@@ -24,21 +24,25 @@
     <PARAMETER NAME="MAX_LEVEL" FIELD="TEXT" REQUIRED="false" NUM_ROW="20"> 
       <DEFAULT/> 
     </PARAMETER>  
-    <PARAMETER FIELD="CLOSED_LIST" NAME="OUTPUT_TYPE" NUM_ROW="30" REQUIRED="true"> 
+    <PARAMETER FIELD="CLOSED_LIST" NAME="OUTPUT_TYPE" NUM_ROW="25" REQUIRED="true"> 
       <ITEMS DEFAULT="ONLY_VALUES"> 
         <ITEM NAME="ONLY_VALUES" VALUE="ONLY_VALUES"/>  
-        <ITEM NAME="VALUES_AND_JSON_OBJECTS" VALUE="VALUES_AND_JSON_OBJECTS"/>  
-        <ITEM NAME="ONLY_JSON_OBJECTS" VALUE="ONLY_JSON_OBJECTS"/>  
+        <ITEM NAME="VALUES_AND_JSON_NODES" VALUE="VALUES_AND_JSON_NODES"/>  
+        <ITEM NAME="ONLY_JSON_NODES" VALUE="ONLY_JSON_NODES"/>  
       </ITEMS> 
+    </PARAMETER>  
+    <PARAMETER NAME="EXCLUDE_ARRAY_NODES" FIELD="CHECK" REQUIRED="false" NUM_ROW="25" SHOW_IF="OUTPUT_TYPE == 'ONLY_JSON_NODES'"> 
+      <DEFAULT>false</DEFAULT> 
     </PARAMETER>  
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="false" NUM_ROW="30"> 
       <TABLE READONLY="false"> 
         <COLUMN NAME="JSON_PATH" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true" COMMENT="json path to the current part of the document"/>  
         <COLUMN NAME="LEVEL" TYPE="id_Integer" READONLY="true" CUSTOM="true" COMMENT="level or number of objects within the path to the current part of the document"/>  
         <COLUMN NAME="ATTRIBUTE_NAME" TYPE="id_String" LENGTH="512" READONLY="true" CUSTOM="true" COMMENT="name of the current json attribute"/>  
-        <COLUMN NAME="VALUE" TYPE="id_Object" READONLY="true" CUSTOM="true" COMMENT="value of the current json attribute"/>  
+        <COLUMN NAME="VALUE" TYPE="id_Object" READONLY="true" CUSTOM="true" COMMENT="value of the current json attribute or a JsonNode"/>  
         <COLUMN NAME="IS_ARRAY_VALUE" TYPE="id_Boolean" READONLY="true" CUSTOM="true" COMMENT="true if the value of the current json attribute is part of an array"/>  
         <COLUMN NAME="COUNT_ATTRIBUTES" TYPE="id_Integer" READONLY="true" CUSTOM="true" COMMENT="number detected attributes within the current traverse run"/> 
+        <COLUMN NAME="IS_JSON_NODE" TYPE="id_Boolean" READONLY="true" CUSTOM="true" COMMENT="Current value is a json node"/>
       </TABLE> 
     </PARAMETER> 
   </PARAMETERS>  
@@ -52,5 +56,6 @@
   </CODEGENERATION>  
   <RETURNS> 
     <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/> 
+    <RETURN AVAILABILITY="AFTER" NAME="CURRENT_NODE" TYPE="id_Object"/>  
   </RETURNS>
 </COMPONENT>
