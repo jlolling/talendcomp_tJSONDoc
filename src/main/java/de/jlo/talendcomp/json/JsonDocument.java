@@ -230,17 +230,21 @@ public class JsonDocument {
 	 * @throws Exception
 	 */
 	public JsonDocument(JsonNode jsonNode) throws Exception {
+		setRootNode(jsonNode);
+	}
+	
+	public void setRootNode(JsonNode jsonNode) throws Exception {
 		if (jsonNode == null || jsonNode.isNull()) {
-			throw new IllegalArgumentException("jsonNode cannor be null or a NullNode");
+			throw new IllegalArgumentException("jsonNode cannot be null or a NullNode");
 		}
 		try {
 			rootContext = parseContext.parse(jsonNode);
 		} catch (Exception pe) {
 			throw new Exception("Create json document from given jsonn document: " + jsonNode.asText() + " failed: " + pe.getMessage(), pe);
 		}
-		rootNode = jsonNode;
+		this.rootNode = jsonNode;
 		JsonNode testNode = rootContext.read("$");
-		if (rootNode != testNode) {
+		if (this.rootNode != testNode) {
 			throw new IllegalStateException("Clones objects detected! Use the latest Jayway library 2.2.1+");
 		}
 	}
@@ -328,6 +332,9 @@ public class JsonDocument {
 	 * @return a new object node
 	 */
 	public ObjectNode createObjectNode(String name) {
+		if (rootNode == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		ObjectNode child = ((ObjectNode) rootNode).objectNode();
 		if (isArray()) {
 			throw new IllegalStateException("Root is an array, use addObjectNode instead!");
@@ -337,6 +344,9 @@ public class JsonDocument {
 	}
 
 	public ObjectNode addObjectNode(String name) {
+		if (rootNode == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		ObjectNode child = ((ArrayNode) rootNode).objectNode();
 		if (isArray() == false) {
 			throw new IllegalStateException("Root is an array, use addObjectNode instead!");
@@ -366,6 +376,9 @@ public class JsonDocument {
 	}
 
 	public ArrayNode createArrayNode(String name) {
+		if (rootNode == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		if (isArray()) {
 			ArrayNode child = ((ArrayNode) rootNode).arrayNode();
 			((ArrayNode) rootNode).add(child);
@@ -397,6 +410,9 @@ public class JsonDocument {
 	 * @return node or null if nothing found or a MissingNode was found
 	 */
 	public JsonNode getNode(String jsonPath) {
+		if (rootContext == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		try {
 			JsonPath compiledPath = getCompiledJsonPath(jsonPath);
 			JsonNode node = rootContext.read(compiledPath);
@@ -416,6 +432,9 @@ public class JsonDocument {
 	 * @return node or null if nothing found or a MissingNode was found
 	 */
 	public JsonNode getNodeIncludeMissing(String jsonPath) {
+		if (rootContext == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		try {
 			JsonPath compiledPath = getCompiledJsonPath(jsonPath);
 			JsonNode node = rootContext.read(compiledPath);
@@ -437,6 +456,9 @@ public class JsonDocument {
 	 * @throws Exception 
 	 */
 	public JsonNode getNode(String jsonPath, boolean create) throws Exception {
+		if (rootNode == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		return getNode(rootNode, jsonPath, create);
 	}
 	
@@ -447,6 +469,9 @@ public class JsonDocument {
 	 * @return an ArrayNode with the search result
 	 */
 	public JsonNode getNode(JsonNode parentNode, String jsonPath) {
+		if (rootNode == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		if (jsonPath == null || jsonPath.trim().isEmpty()) {
 			throw new IllegalArgumentException("jsonPath cannot be null or empty");
 		}
@@ -483,6 +508,9 @@ public class JsonDocument {
 	 * @return an ArrayNode with the search result
 	 */
 	public JsonNode getNodeIncludeMissing(JsonNode parentNode, String jsonPath) {
+		if (rootNode == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		if (jsonPath == null || jsonPath.trim().isEmpty()) {
 			throw new IllegalArgumentException("jsonPath cannot be null or empty");
 		}
@@ -521,6 +549,9 @@ public class JsonDocument {
 	 * @throws Exception if there is an error while creating the missing nodes
 	 */
 	public JsonNode getNode(JsonNode parentNode, String jsonPath, boolean create) throws Exception {
+		if (rootNode == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		if (jsonPath == null || jsonPath.trim().isEmpty()) {
 			throw new IllegalArgumentException("jsonPath cannot be null or empty");
 		}
@@ -827,6 +858,9 @@ public class JsonDocument {
 	}
 
 	public void writeToFile(String filePath, boolean prettyPrint, boolean suppressEmpty) throws Exception {
+		if (rootNode == null) {
+			throw new IllegalStateException("JsonDocument was not correct initialized. Root node is missing");
+		}
 		writeToFile(rootNode, filePath, prettyPrint, suppressEmpty);
 	}
 	

@@ -24,8 +24,9 @@ public class JSONValue {
 	private List<String> keyPath;
 	private String attributeName = null;
 	private Object value;
-	private boolean isArrayValue = false;
+	private boolean isValueInArray = false;
 	private int level = 0;
+	private boolean isJsonNode = false;
 	
 	public String getKeyPath(String delimiter) {
 		if (delimiter == null) {
@@ -53,7 +54,7 @@ public class JSONValue {
 	public void setKeyPath(List<String> keyPath) {
 		this.keyPath = keyPath;
 		level = keyPath.size() - 1;
-		isArrayValue = keyPath.get(keyPath.size() - 1).endsWith("]");
+		isValueInArray = keyPath.get(keyPath.size() - 1).endsWith("]");
 		for (int i = level; i >= 0; i--) {
 			String name = keyPath.get(i);
 			if (name.startsWith("[") == false) {
@@ -91,11 +92,14 @@ public class JSONValue {
 	
 	public void setValue(Object value) {
 		this.value = value;
+		if (value instanceof JsonNode) {
+			isJsonNode = true;
+		}
 	}
 
 	@Override
 	public String toString() {
-		return getKeyPath(".") + "=" + getValueString() + " | attributeName=" + attributeName + " level=" + level + " isArrayValue=" + isArrayValue;
+		return getKeyPath(".") + "=" + getValueString() + " | attributeName=" + attributeName + " level=" + level + " isValueInArray=" + isValueInArray + " isJsonNode=" + isJsonNode;
 	}
 	
 	@Override
@@ -109,8 +113,8 @@ public class JSONValue {
 		return false;
 	}
 
-	public boolean isArrayValue() {
-		return isArrayValue;
+	public boolean isValueInArray() {
+		return isValueInArray;
 	}
 
 	public int getLevel() {
@@ -120,5 +124,9 @@ public class JSONValue {
 	public String getAttributeName() {
 		return attributeName;
 	}
-	
+
+	public boolean isJsonNode() {
+		return isJsonNode;
+	}
+
 }

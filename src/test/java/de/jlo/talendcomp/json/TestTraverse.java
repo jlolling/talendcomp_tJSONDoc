@@ -38,6 +38,57 @@ public class TestTraverse {
 	}
 
 	@Test
+	public void testTraverseRecursivOnlyJsonNodes() throws Exception {
+		String json = "{ \"_id\" : \"503d1d4794379b47ca011b57\", \"ad_id\" : 166990753, \"rate\":0.23, " +
+				"\"2012-09-11\" : " +
+					"{ \"publisher\" : [" +
+						"{ \"MESA-MPL-emobilelv\" : \"xxx\", \"MESA-buyingtool\" : 1, \"MESA-mpe_autoonline\" : 1, \"SITE-GERMANY\" : 2, \"kleinanzeigen\" : 2, \"mob-iPhone\" : 1 }, " +
+						"{ \"MESA-MPL-emobilelvX\" : 1, \"MESA-buyingtoolX\" : 1, \"MESA-mpe_autoonlineX\" : 1, \"SITE-GERMANYX\" : 2, \"kleinanzeigenX\" : 2, \"mob-iPhoneX\" : 1 } ], " +
+						"\"total\" : [11,22,33] }" +
+					" }";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode o = doc.getRootNode();
+		System.out.println(o);
+		Traverse helper = new Traverse();
+		helper.setIncludeObjectsInOutput(true);
+		helper.setExcludeValues(true);
+		List<JSONValue> result = helper.traverse(o);
+		int expected = 5;
+		int actual = 0;
+		for (JSONValue value : result) {
+			System.out.println(value);
+			actual++;
+		}
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testTraverseRecursivOnlyJsonNodesExcludeArrays() throws Exception {
+		String json = "{ \"_id\" : \"503d1d4794379b47ca011b57\", \"ad_id\" : 166990753, \"rate\":0.23, " +
+				"\"2012-09-11\" : " +
+					"{ \"publisher\" : [" +
+						"{ \"MESA-MPL-emobilelv\" : \"xxx\", \"MESA-buyingtool\" : 1, \"MESA-mpe_autoonline\" : 1, \"SITE-GERMANY\" : 2, \"kleinanzeigen\" : 2, \"mob-iPhone\" : 1 }, " +
+						"{ \"MESA-MPL-emobilelvX\" : 1, \"MESA-buyingtoolX\" : 1, \"MESA-mpe_autoonlineX\" : 1, \"SITE-GERMANYX\" : 2, \"kleinanzeigenX\" : 2, \"mob-iPhoneX\" : 1 } ], " +
+						"\"total\" : [11,22,33] }" +
+					" }";
+		JsonDocument doc = new JsonDocument(json);
+		JsonNode o = doc.getRootNode();
+		System.out.println(o);
+		Traverse helper = new Traverse();
+		helper.setIncludeObjectsInOutput(true);
+		helper.setExcludeValues(true);
+		helper.setExcludeArrays(true);
+		List<JSONValue> result = helper.traverse(o);
+		int expected = 4;
+		int actual = 0;
+		for (JSONValue value : result) {
+			System.out.println(value);
+			actual++;
+		}
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void testTraverseNotRecursiv() throws Exception {
 		String json = "{ \"_id\" : \"503d1d4794379b47ca011b57\", \"ad_id\" : 166990753, " +
 				"\"2012-09-11\" : " +
