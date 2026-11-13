@@ -8,7 +8,7 @@
     <FAMILY>JSON</FAMILY> 
   </FAMILIES>  
   <DOCUMENTATION> 
-    <URL/> 
+    <URL>https://github.com/jlolling/talendcomp_tJSONDoc</URL> 
   </DOCUMENTATION>  
   <CONNECTORS> 
     <CONNECTOR CTYPE="FLOW" MIN_INPUT="0" MAX_INPUT="1" MIN_OUTPUT="0" MAX_OUTPUT="1"/>  
